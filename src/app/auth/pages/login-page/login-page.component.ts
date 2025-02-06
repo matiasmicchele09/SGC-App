@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login-page',
@@ -9,8 +9,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 export class LoginPageComponent {
 
   public formLogin: FormGroup = this.fb.group({
-    email:[],
-    pass:[]
+    email:['', [Validators.required, Validators.email]],
+    pass:['', [Validators.required, Validators.minLength(6)]]
   })
 
   constructor(private fb: FormBuilder){}

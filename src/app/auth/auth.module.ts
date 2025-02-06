@@ -21,7 +21,7 @@ import { LayoutComponent } from './layout/layout.component';
   imports: [
     CommonModule,
     AuthRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ]
 })
 export class AuthModule { }
