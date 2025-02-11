@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login-page',
@@ -13,7 +14,25 @@ export class LoginPageComponent {
     pass:['', [Validators.required, Validators.minLength(6)]]
   })
 
-  constructor(private fb: FormBuilder){}
+  constructor(private authService: AuthService,
+    private fb: FormBuilder
+
+  ){}
+
+  onSubmit(){
+
+
+    if(this.formLogin.invalid){
+      this.formLogin.markAllAsTouched();
+      return;
+    }
+    this.authService.login(this.formLogin.value.email, this.formLogin.value.pass)
+    .subscribe(resp => {
+      console.log("resp",resp);
+    });
+    //console.log(this.formLogin.value);
+  }
+
 
 
 }

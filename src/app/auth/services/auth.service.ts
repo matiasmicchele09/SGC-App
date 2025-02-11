@@ -19,28 +19,30 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(email: string, pass: string): Observable<User> {
-    return this.http.post<User>(`${this.baseUrl}/auth/login`, { email, pass })
+    console.log("Login",email, pass);
+    const body = { email, pass };
+    return this.http.post<User>(`${this.baseUrl}/login`, body)
       .pipe(
         tap(user => this._user = user)
       )
   }
 
-  register(email: string, pass: string, name: string): Observable<User> {
-    return this.http.post<User>(`${this.baseUrl}/auth/register`, { email, pass, name })
-      .pipe(
-        tap(user => this._user = user)
-      )
-  }
+  // register(email: string, pass: string, name: string): Observable<User> {
+  //   return this.http.post<User>(`${this.baseUrl}/auth/register`, { email, pass, name })
+  //     .pipe(
+  //       tap(user => this._user = user)
+  //     )
+  // }
 
-  validateToken(): Observable<boolean> {
-    return this.http.get<User>(`${this.baseUrl}/auth/renew`)
-      .pipe(
-        map(user => {
-          this._user = user;
-          return true;
-        })
-      )
-  }
+  // validateToken(): Observable<boolean> {
+  //   return this.http.get<User>(`${this.baseUrl}/auth/renew`)
+  //     .pipe(
+  //       map(user => {
+  //         this._user = user;
+  //         return true;
+  //       })
+  //     )
+  // }
 
   logout() {
     this._user = undefined!;
