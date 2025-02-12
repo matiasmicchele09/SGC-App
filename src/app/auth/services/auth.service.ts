@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { enviroments } from 'src/environments/environments'
 import { User } from '../interfaces/user.interface';
-import { Observable, map, tap } from 'rxjs';
+import { Observable, catchError, map, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +23,17 @@ export class AuthService {
     const body = { email, pass };
     return this.http.post<User>(`${this.baseUrl}/login`, body)
       .pipe(
-        tap(user => this._user = user)
+        tap(user =>{ this._user = user;
+          console.log("User", user)}),
+        catchError(this.handleError)
       )
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('An error occurred:', error.status);
+    console.error('An error occurred:', error.message);
+    //return throwError('Something went wrong; please try again later.');
+    return throwError(error);
   }
 
   // register(email: string, pass: string, name: string): Observable<User> {

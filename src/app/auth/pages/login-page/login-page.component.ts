@@ -20,17 +20,29 @@ export class LoginPageComponent {
   ){}
 
   onSubmit(){
-
-
     if(this.formLogin.invalid){
       this.formLogin.markAllAsTouched();
       return;
     }
     this.authService.login(this.formLogin.value.email, this.formLogin.value.pass)
-    .subscribe(resp => {
-      console.log("resp",resp);
+    .subscribe({
+      next: (resp) => {
+        console.log("resp", resp);
+      },
+      error: (err) => {
+        console.log(err.status);
+        if (err.status === 404) {
+          console.error("Error during login:", err.error.message);
+          alert(err.error.message); // Muestra el mensaje de error al usuario
+        } else if (err.status === 500) {
+          console.error("Server error:", err.error.message);
+          alert("Something went wrong; please try again later."); // Muestra un mensaje genérico de error al usuario
+        } else {
+          console.error("Unexpected error:", err);
+          alert("An unexpected error occurred; please try again later."); // Muestra un mensaje genérico de error al usuario
+        }
+      }
     });
-    //console.log(this.formLogin.value);
   }
 
 
