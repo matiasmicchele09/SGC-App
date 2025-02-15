@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
  import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -15,7 +16,8 @@ export class LoginPageComponent {
   })
 
   constructor(private authService: AuthService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private router: Router
 
   ){}
 
@@ -28,6 +30,7 @@ export class LoginPageComponent {
     .subscribe({
       next: (resp) => {
         console.log("resp", resp);
+        this.router.navigate(['/home/dashboard']);
       },
       error: (err) => {
         console.log(err.status);

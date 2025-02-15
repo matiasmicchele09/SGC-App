@@ -9,6 +9,10 @@ const routes: Routes = [
     loadChildren:()=> import('./auth/auth.module').then(m=>m.AuthModule)
   },
   {
+    path: 'home',
+    loadChildren:()=> import('./home/home.module').then(m=>m.HomeModule)
+  },
+  {
     path:'**', redirectTo: 'auth'
   }
 

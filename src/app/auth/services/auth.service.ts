@@ -19,19 +19,16 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(email: string, pass: string): Observable<User> {
-    console.log("Login",email, pass);
+    //console.log("Login",email, pass);
     const body = { email, pass };
     return this.http.post<User>(`${this.baseUrl}/login`, body)
       .pipe(
-        tap(user =>{ this._user = user;
-          console.log("User", user)}),
+        tap(user => this._user = user),
         catchError(this.handleError)
       )
   }
 
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    console.error('An error occurred:', error.status);
-    console.error('An error occurred:', error.message);
+  private handleError(error: HttpErrorResponse): Observable<never> {    ;
     //return throwError('Something went wrong; please try again later.');
     return throwError(error);
   }
