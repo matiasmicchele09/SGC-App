@@ -30,7 +30,7 @@ export class LoginPageComponent {
     .subscribe({
       next: (resp) => {
         console.log("resp", resp);
-        this.router.navigate(['/home/dashboard']);
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.log(err.status);

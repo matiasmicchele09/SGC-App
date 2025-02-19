@@ -2,23 +2,18 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CustomersComponent } from './pages/customers/customers.component';
+import { LayoutComponent } from './pages/layout/layout.component';
 
 
 const routes: Routes = [
   {
-    path: 'dashboard', component: DashboardComponent,
-    // children: [
-    //   { path: 'login', component: LoginPageComponent },
-    //   { path: '**', redirectTo: 'login' }
-    // ]
-  },
-  {
-    path: 'customers', component: CustomersComponent
-  },
-  {
-    path: '**', redirectTo: 'dashboard'
-  }
-
+    path:'',
+    component: LayoutComponent,
+    children:[
+      {path: 'dashboard', component: DashboardComponent},
+      {path: 'customers', component: CustomersComponent},
+      {path: '**', redirectTo: 'dashboard'}]
+}
 
 ];
 
