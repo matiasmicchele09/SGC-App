@@ -11,9 +11,12 @@ import { Router } from '@angular/router';
 export class LoginPageComponent {
 
   public formLogin: FormGroup = this.fb.group({
-    email:['', [Validators.required, Validators.email]],
-    pass:['', [Validators.required, Validators.minLength(6)]]
+    email:['', [Validators.required]],
+    pass:['', [Validators.required]]
   })
+  public statusError: boolean = false;
+  public messageError: string = '';
+  public loading: boolean = false;
 
   constructor(private authService: AuthService,
     private fb: FormBuilder,
@@ -21,22 +24,50 @@ export class LoginPageComponent {
 
   ){}
 
+  isValidField( field:string ):boolean | null {
+
+    //console.log(this.formLogin.controls[field].errors);
+    return this.formLogin.controls[field].errors &&
+           this.formLogin.controls[field].touched
+  }
+
+  getFieldError(field:string ):string | null {
+    if (!this.formLogin.controls[field]) return null;
+
+    const errors = this.formLogin.controls[field].errors || {};
+
+    //console.log(errors);
+    for (const key of Object.keys(errors)) {
+
+      switch(key){
+        case 'required':
+          return 'Este campo es requerido';
+      }
+    }
+    return null;
+  }
+
   onSubmit(){
     if(this.formLogin.invalid){
       this.formLogin.markAllAsTouched();
       return;
     }
+    this.loading = true;
     this.authService.login(this.formLogin.value.email, this.formLogin.value.pass)
     .subscribe({
       next: (resp) => {
         console.log("resp", resp);
+        this.loading = false;
         this.router.navigate(['/home']);
       },
       error: (err) => {
+        this.loading = false;
         console.log(err.status);
         if (err.status === 404) {
           console.error("Error during login:", err.error.message);
-          alert(err.error.message); // Muestra el mensaje de error al usuario
+          this.statusError = true;
+          this.messageError = err.error.message;
+          //alert(err.error.message); // Muestra el mensaje de error al usuario
         } else if (err.status === 500) {
           console.error("Server error:", err.error.message);
           alert("Something went wrong; please try again later."); // Muestra un mensaje genérico de error al usuario
@@ -47,7 +78,4 @@ export class LoginPageComponent {
       }
     });
   }
-
-
-
 }

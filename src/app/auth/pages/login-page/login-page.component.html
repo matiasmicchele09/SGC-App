@@ -1,25 +1,37 @@
 <div class="div-login">
   <form [formGroup]="formLogin" class="form-login" (submit)="onSubmit()">
-    <h4 style="margin: 0;"><i>SGC - Virginia De Paolo</i></h4>
+    <h4 style="margin: 0;">Estudio Contable De Paolo</h4>
     <hr>
     <div>
-      <h5>Correo</h5>
       <input type="email"
-             class="form-control"
              formControlName="email"
-             placeholder="Ingrese su email">
+             placeholder="Email">
+
+             <span *ngIf="isValidField('email')"
+                    class="form-text text-danger">
+                    {{ getFieldError('email') }}
+             </span>
     </div>
 
     <div>
-      <h5>Contraseña</h5>
       <input type="password"
-             class="form-control"
              formControlName="pass"
-             placeholder="Ingrese su contraseña">
+             placeholder="Contraseña">
+
+             <span *ngIf="isValidField('pass')"
+                    class="form-text text-danger">
+                    {{ getFieldError('pass') }}
+             </span>
     </div>
 
-    <button class="btn btn-primary">
+    <span *ngIf="statusError"
+           class="form-text text-danger">
+          {{messageError}}
+    </span>
+
+    <button *ngIf="!loading" class="btn">
       Ingresar
     </button>
+    <div *ngIf="loading" class="loader"></div>
   </form>
 </div>
