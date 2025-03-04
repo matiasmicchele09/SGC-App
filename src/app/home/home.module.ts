@@ -15,7 +15,7 @@ import { LayoutComponent } from './pages/layout/layout.component';
   ],
   imports: [
     CommonModule,
-    HomeRoutingModule
+    HomeRoutingModule,
   ]
 })
 
