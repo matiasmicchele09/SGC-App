@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { enviroments } from 'src/environments/environments'
 import { User } from '../interfaces/user.interface';
-import { Observable, catchError, map, tap, throwError } from 'rxjs';
+import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,27 +10,38 @@ import { Observable, catchError, map, tap, throwError } from 'rxjs';
 export class AuthService {
 
   private baseUrl: string = enviroments.baseUrl;
-  private _user!: User;
+  private _user!: User | null;
 
-  get user() {
-    return { ...this._user };
+  //getter para obtener el usuario de la variable privada
+  get user():User | null {
+    return this._user ? { ...this._user } : null;
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.validateSession();
+  }
 
   login(email: string, pass: string): Observable<User> {
-    //console.log("Login",email, pass);
+    console.log("Login",email, pass);
     const body = { email, pass };
-    return this.http.post<User>(`${this.baseUrl}/login`, body)
+    return this.http.post<User>(`${this.baseUrl}/login`, body, { withCredentials: true })
       .pipe(
         tap(user => this._user = user),
         catchError(this.handleError)
       )
   }
 
+  validateSession(): void {
+    this.http.get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
+      .pipe(
+        tap(user => this._user = user),
+        catchError(() => of(null)) // Si falla, simplemente deja _user como null
+      ).subscribe();
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {    ;
     //return throwError('Something went wrong; please try again later.');
-    return throwError(error);
+    return throwError(() => new Error('Error en la autenticación'));
   }
 
   // register(email: string, pass: string, name: string): Observable<User> {
@@ -50,7 +61,8 @@ export class AuthService {
   //     )
   // }
 
-  logout() {
-    this._user = undefined!;
+  logout(): void {
+    this._user = null;
+    this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).subscribe();
   }
 }

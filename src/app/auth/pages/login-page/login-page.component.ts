@@ -62,7 +62,7 @@ export class LoginPageComponent {
       },
       error: (err) => {
         this.loading = false;
-        console.log(err.status);
+        console.log(err);
         if (err.status === 404) {
           console.error("Error during login:", err.error.message);
           this.statusError = true;
