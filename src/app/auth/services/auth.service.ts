@@ -51,16 +51,6 @@ export class AuthService {
   //     )
   // }
 
-  // validateToken(): Observable<boolean> {
-  //   return this.http.get<User>(`${this.baseUrl}/auth/renew`)
-  //     .pipe(
-  //       map(user => {
-  //         this._user = user;
-  //         return true;
-  //       })
-  //     )
-  // }
-
   logout(): void {
     this._user = null;
     this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).subscribe();

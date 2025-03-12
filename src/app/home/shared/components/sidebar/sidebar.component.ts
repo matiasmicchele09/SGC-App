@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { User } from 'src/app/auth/interfaces/user.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
 
@@ -12,8 +13,9 @@ export class SidebarComponent {
 
   //authService: AuthService;
 
-  constructor(private authService:AuthService) {
-    this.authService = authService;
+  constructor(private authService:AuthService,
+            private router: Router) {
+    //this.authService = authService;
     console.log("en el constructor del sidebar");
     console.log(authService.user);
   }
@@ -22,5 +24,11 @@ export class SidebarComponent {
     return this.authService.user;
   }
 
+  onLogout(){
+
+    this.authService.logout();
+    this.router.navigate(['/auth/login']);
+
+  }
 
 }
