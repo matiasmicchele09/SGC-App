@@ -19,10 +19,13 @@ export class AuthService {
 
   constructor(private http: HttpClient) {
     this.validateSession();
+    console.log("en el constructor service");
+    this.validateSession().pipe(
+      tap(user => console.log("user", user))
+    );
   }
 
   login(email: string, pass: string): Observable<User> {
-    console.log("Login",email, pass);
     const body = { email, pass };
     return this.http.post<User>(`${this.baseUrl}/login`, body, { withCredentials: true })
       .pipe(
@@ -31,13 +34,28 @@ export class AuthService {
       )
   }
 
-  validateSession(): void {
-    this.http.get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
+
+  validateSession(): Observable<boolean> {
+    return this.http.get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
       .pipe(
-        tap(user => this._user = user),
-        catchError(() => of(null)) // Si falla, simplemente deja _user como null
-      ).subscribe();
+        tap(user => {
+          this._user = user
+          console.log("user", user);
+        }),
+        map(user => {
+          //!!user
+          const isAuthenticated = !!user;
+        console.log("¿Está autenticado? (validateSession):", isAuthenticated);
+        return isAuthenticated;
+        }), // Si existe el usuario, devuelve true, sino false
+        catchError((error) => {
+          console.log("Error en validateSession:", error);
+                   return of(false)
+        }) // Si falla, simplemente devuelve false
+      );
   }
+
+
 
   private handleError(error: HttpErrorResponse): Observable<never> {    ;
     //return throwError('Something went wrong; please try again later.');

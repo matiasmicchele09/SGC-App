@@ -14,13 +14,10 @@ export class SidebarComponent {
   //authService: AuthService;
 
   constructor(private authService:AuthService,
-            private router: Router) {
-    //this.authService = authService;
-    console.log("en el constructor del sidebar");
-    console.log(authService.user);
+              private router: Router) {
   }
 
-  get user(){
+  get user():User | null{
     return this.authService.user;
   }
 

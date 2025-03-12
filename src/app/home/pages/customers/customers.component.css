@@ -1,0 +1,8 @@
+/* Filas pares con color rosa claro */
+tbody tr:nth-child(even) {
+  background-color: #ffe4e1;
+}
+/* Filas impares con color blanco (opcional, ya que es el color por defecto) */
+tbody tr:nth-child(odd) {
+  background-color: white;
+}
