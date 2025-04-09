@@ -3,33 +3,28 @@
     <div class="col">
       <h2 class="mt-4">Mis Clientes</h2>
 
+
+      <!-- <h2>Agregar cliente</h2> -->
+
       <table class="table table-striped">
-        <caption>List of users</caption>
         <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Email</th>
+            <th scope="col">N° Tel.</th>
+            <th scope="col">Ciudad</th>
+            <th scope="col">Dirección</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Walter</td>
-            <td>Chelo</td>
-            <td>mdo</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Coceres</td>
-            <td>Pardini</td>
-            <td>fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>twitter</td>
+          <tr *ngFor="let customer of customers">
+            <th scope="row">{{customer.id}}</th>
+            <td>{{customer.name}} {{customer.surname}}</td>
+            <td>{{customer.email}}</td>
+            <td>{{customer.phone}}</td>
+            <td>{{customer.city}}</td>
+            <td>{{customer.address}}</td>
           </tr>
         </tbody>
       </table>

@@ -18,8 +18,7 @@ export class AuthService {
   }
 
   constructor(private http: HttpClient) {
-    this.validateSession();
-    console.log("en el constructor service");
+    //this.validateSession();
     this.validateSession().pipe(
       tap(user => console.log("user", user))
     );
@@ -29,6 +28,7 @@ export class AuthService {
     const body = { email, pass };
     return this.http.post<User>(`${this.baseUrl}/login`, body, { withCredentials: true })
       .pipe(
+        tap(user => console.log("user", user)),
         tap(user => this._user = user),
         catchError(this.handleError)
       )
@@ -45,12 +45,12 @@ export class AuthService {
         map(user => {
           //!!user
           const isAuthenticated = !!user;
-        console.log("¿Está autenticado? (validateSession):", isAuthenticated);
-        return isAuthenticated;
+          //console.log("¿Está autenticado? (validateSession):", isAuthenticated);
+          return isAuthenticated;
         }), // Si existe el usuario, devuelve true, sino false
         catchError((error) => {
           console.log("Error en validateSession:", error);
-                   return of(false)
+          return of(false)
         }) // Si falla, simplemente devuelve false
       );
   }

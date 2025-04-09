@@ -6,10 +6,10 @@ import { map, tap } from "rxjs";
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  //console.log("en el guard", state);
 
   return authService.validateSession()
   .pipe(
+
     tap(isAuthenticated => {
       console.log("isAuthenticated", isAuthenticated);
       if (!isAuthenticated) {
