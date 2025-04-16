@@ -1,8 +1,36 @@
 /* Filas pares con color rosa claro */
-tbody tr:nth-child(even) {
+/* tbody tr:nth-child(even) {
   background-color: #ffe4e1;
-}
+} */
 /* Filas impares con color blanco (opcional, ya que es el color por defecto) */
-tbody tr:nth-child(odd) {
+/* tbody tr:nth-child(odd) {
   background-color: white;
+} */
+
+.table-row, .icon-fontawesome{
+  cursor: pointer;
+}
+.table-row:hover{
+  --bs-table-bg: #8d8b8b; /* Color personalizado, por ejemplo, azul claro */
+  /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
+}
+.btn-new{
+  color: #00ca0a;
+}
+.btn-delete{
+  color: #f10404;
+}
+.btn-modif{
+  color: #0528ee;
+  margin-left: 20px
+}
+.btn-modif:hover{
+  color: #0282fa;
+}
+
+.btn-delete:hover{
+  color: #f92323;
+}
+.btn-new:hover{
+  color: #4dc853;
 }

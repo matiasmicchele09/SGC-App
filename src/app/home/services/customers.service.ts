@@ -2,6 +2,7 @@ import { inject, Injectable } from "@angular/core";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { enviroments } from 'src/environments/environments'
 import { catchError, Observable, tap, throwError } from "rxjs";
+import { Customer } from "../interfaces/customers.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +14,8 @@ export class CustomersService {
 
   constructor() { }
 
-  getCustomers() {
-    return this.http.get(`${this.baseUrl}/customers`)
+  getCustomers(): Observable<Customer[]>  {
+    return this.http.get<Customer[]>(`${this.baseUrl}/customers`)
       .pipe(
         tap(customers=> console.log("customers", customers)),
         catchError(this.handleError)

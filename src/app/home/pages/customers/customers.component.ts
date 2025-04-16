@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { CustomersService } from '../../services/customers.service';
+import { Customer } from '../../interfaces/customers.interface';
+
 
 @Component({
   selector: 'app-customers',
@@ -8,9 +10,11 @@ import { CustomersService } from '../../services/customers.service';
 })
 export class CustomersComponent {
 
-  public customers: any;
+  public customers: Customer[] = [];
 
-  constructor(private customerService: CustomersService) {
+  constructor(private customerService: CustomersService,
+
+  ) {
     this.customerService.getCustomers().subscribe({
       next: (customers) => {
         console.log(customers);
@@ -23,6 +27,11 @@ export class CustomersComponent {
         console.log("complete");
       }
     });
+  }
+
+  onCustomer(customer: any, isNew: boolean) {
+    console.log(customer);
+
   }
 
 
