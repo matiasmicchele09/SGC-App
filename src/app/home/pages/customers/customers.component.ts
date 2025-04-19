@@ -25,7 +25,7 @@ export class CustomersComponent {
     address: ['', Validators.required],
     city: ['', Validators.required],
     cuit: ['', Validators.required],
-    email: ['', Validators.required],
+    email: [''],
     fec_alta: [''],
     fec_baja: [null],
     name: ['', Validators.required],
