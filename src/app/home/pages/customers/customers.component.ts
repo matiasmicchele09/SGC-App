@@ -21,14 +21,17 @@ export class CustomersComponent {
   public isNew: boolean = false;
 
   public customerForm: FormGroup = this.fb.group({
-    name: ['', Validators.required],
-    email: ['', Validators.required],
-    phone: ['', Validators.required],
+    activity: ['', Validators.required],
     address: ['', Validators.required],
     city: ['', Validators.required],
+    cuit: ['', Validators.required],
+    email: ['', Validators.required],
+    fec_alta: [''],
+    fec_baja: [null],
+    name: ['', Validators.required],
+    phone: ['', Validators.required],
     surname: ['', Validators.required],
-    activity: ['', Validators.required],
-    cuit: ['', Validators.required]
+    tax_code: [''],
    });
 
   constructor(private customerService: CustomersService,

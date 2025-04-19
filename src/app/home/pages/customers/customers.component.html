@@ -14,10 +14,12 @@
             <tr>
               <th scope="col">Nombre</th>
               <th scope="col">CUIT</th>
+              <th scope="col">Clave Fiscal</th>
               <th scope="col">Email</th>
               <th scope="col">N° Tel.</th>
-              <th scope="col">Ciudad</th>
-              <th scope="col">Dirección</th>
+              <th scope="col">Cond. Fiscal</th>
+              <!-- <th scope="col">Ciudad</th> -->
+              <!-- <th scope="col">Dirección</th> -->
               <th scope="col">Actividad</th>
               <!-- <th scope="col">Acciones</th> -->
             </tr>
@@ -28,10 +30,12 @@
                 (click)="onCustomer(customer, false)">
               <td>{{customer.name}} {{customer.surname}}</td>
               <td>{{customer.cuit}}</td>
+              <td>{{customer.tax_code}}</td>
               <td>{{customer.email}}</td>
               <td>{{customer.phone}}</td>
-              <td>{{customer.city}}</td>
-              <td>{{customer.address}}</td>
+              <td>{{customer.phone}}</td>
+              <!-- <td>{{customer.city}}</td> -->
+              <!-- <td>{{customer.address}}</td> -->
               <td>{{customer.activity}}</td>
               <!-- <td> <i class="fa-solid fa-trash-can fa-lg icon-fontawesome btn-delete" title="Eliminar Cliente"></i>
                 <i class="fa-solid fa-pen-to-square icon-fontawesome fa-lg btn-modif"
@@ -50,17 +54,24 @@
               <div class="modal-body">
                     <form [formGroup]="customerForm" autocomplete="off">
                       <div class="customer-form">
-                      <div class="mb-3">
+                      <div class="mb-3" *ngIf="isNew">
                         <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" formControlName="name" id="name" name="name">
+                        <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words" readonly="true">                      </div>
+                      <div class="mb-3" *ngIf="isNew">
+                        <label for="surname" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" formControlName="surname" id="surname" name="surname" disable="true">
                       </div>
                       <div class="mb-3">
-                        <label for="surname" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" formControlName="surname" id="surname" name="surname">
+                        <label for="fec_alta" class="form-label">Fecha Alta</label>
+                        <input type="text" class="form-control" formControlName="fec_alta" id="fec_alta" name="fec_alta" readonly="true">
                       </div>
                       <div class="mb-3">
                         <label for="cuit" class="form-label">CUIT</label>
                         <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
+                      </div>
+                      <div class="mb-3">
+                        <label for="tax_code" class="form-label">Clave Fiscal</label>
+                        <input type="text" class="form-control" formControlName="tax_code" id="tax_code" name="tax_code">
                       </div>
                       <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
@@ -89,7 +100,7 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" (click)="saveChanges(customerForm)">{{buttonForm}}</button>
-                <button type="button" class="btn btn-danger" (click)="onDeleteCustomer(selectedCustomer)">Eliminar</button>
+                <button type="button" class="btn btn-danger" *ngIf="!isNew" (click)="onDeleteCustomer(selectedCustomer)">Eliminar</button>
               </div>
             </div>
           </div>

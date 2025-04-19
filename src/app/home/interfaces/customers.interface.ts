@@ -1,11 +1,14 @@
 export interface Customer{
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
+  activity: string;
   address: string;
   city: string;
-  surname: string;
-  activity: string;
   cuit: string;
+  email: string;
+  fec_alta: string;
+  fec_baja: string | null;
+  id: number;
+  name: string;
+  phone: string;
+  surname: string;
+  tax_code: string;
 }
