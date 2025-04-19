@@ -11,7 +11,7 @@
   cursor: pointer;
 }
 .table-row:hover{
-  --bs-table-bg: #8d8b8b; /* Color personalizado, por ejemplo, azul claro */
+  --bs-table-bg: #cdebf3; /* Color personalizado, por ejemplo, azul claro */
   /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
 }
 .btn-new{
@@ -33,4 +33,9 @@
 }
 .btn-new:hover{
   color: #4dc853;
+}
+.customer-form{
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* Dos columnas, la segunda más ancha */
+  grid-gap: 10px; /*Espacio entre los elementos */
 }

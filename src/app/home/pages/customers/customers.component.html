@@ -4,45 +4,98 @@
       <h2 class="mt-4">Mis Clientes </h2>
 
       <div class="table-responsive">
-      <table class="table table-striped caption-top ">
-        <caption>Agregar
-          <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
-          (click)="onCustomer(customers, true)"
-          title="Agregar Cliente"></i>
-        </caption>
-        <thead>
-          <tr>
-            <th scope="col">Nombre</th>
-            <th scope="col">CUIT</th>
-            <th scope="col">Email</th>
-            <th scope="col">N° Tel.</th>
-            <th scope="col">Ciudad</th>
-            <th scope="col">Dirección</th>
-            <th scope="col">Actividad</th>
-            <th scope="col">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="table-row" *ngFor="let customer of customers">
-            <td>{{customer.name}} {{customer.surname}}</td>
-            <td>{{customer.name}}</td>
-            <td>{{customer.email}}</td>
-            <td>{{customer.phone}}</td>
-            <td>{{customer.city}}</td>
-            <td>{{customer.address}}</td>
-            <td>{{customer.address}}</td>
-            <td> <i class="fa-solid fa-trash-can fa-lg icon-fontawesome btn-delete" title="Eliminar Cliente"></i>
-              <i class="fa-solid fa-pen-to-square icon-fontawesome fa-lg btn-modif"
-              title="Editar Cliente"
-              ></i>
+        <table class="table table-striped caption-top ">
+          <caption>Agregar
+            <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
+            (click)="onCustomer(selectedCustomer, true)"
+            title="Agregar Cliente"></i>
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Nombre</th>
+              <th scope="col">CUIT</th>
+              <th scope="col">Email</th>
+              <th scope="col">N° Tel.</th>
+              <th scope="col">Ciudad</th>
+              <th scope="col">Dirección</th>
+              <th scope="col">Actividad</th>
+              <!-- <th scope="col">Acciones</th> -->
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="table-row"
+                *ngFor="let customer of customers"
+                (click)="onCustomer(customer, false)">
+              <td>{{customer.name}} {{customer.surname}}</td>
+              <td>{{customer.cuit}}</td>
+              <td>{{customer.email}}</td>
+              <td>{{customer.phone}}</td>
+              <td>{{customer.city}}</td>
+              <td>{{customer.address}}</td>
+              <td>{{customer.activity}}</td>
+              <!-- <td> <i class="fa-solid fa-trash-can fa-lg icon-fontawesome btn-delete" title="Eliminar Cliente"></i>
+                <i class="fa-solid fa-pen-to-square icon-fontawesome fa-lg btn-modif"
+                title="Editar Cliente"
+                ></i>
+              </td> -->
+            </tr>
+          </tbody>
+        </table>
+        <div class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel">{{titleForm}}</h1>
+              </div>
+              <div class="modal-body">
+                    <form [formGroup]="customerForm" autocomplete="off">
+                      <div class="customer-form">
+                      <div class="mb-3">
+                        <label for="name" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" formControlName="name" id="name" name="name">
+                      </div>
+                      <div class="mb-3">
+                        <label for="surname" class="form-label">Apellido</label>
+                        <input type="text" class="form-control" formControlName="surname" id="surname" name="surname">
+                      </div>
+                      <div class="mb-3">
+                        <label for="cuit" class="form-label">CUIT</label>
+                        <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
+                      </div>
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" formControlName="email" id="email" name="email">
+                      </div>
+                      <div class="mb-3">
+                        <label for="phone" class="form-label">Teléfono</label>
+                        <input type="text" class="form-control" formControlName="phone" id="phone" name="phone">
+                      </div>
+                      <div class="mb-3">
+                        <label for="city" class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" formControlName="city" id="city" name="city">
+                      </div>
+                      <div class="mb-3">
+                        <label for="address" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" formControlName="address" id="address" name="address">
+                      </div>
+                      <div class="mb-3">
+                        <label for="activity" class="form-label">Actividad</label>
+                        <input type="text" class="form-control" formControlName="activity" id="activity" name="activity">
+                      </div>
 
+                    </div>
+                    </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" (click)="saveChanges(customerForm)">{{buttonForm}}</button>
+                <button type="button" class="btn btn-danger" (click)="onDeleteCustomer(selectedCustomer)">Eliminar</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
-            </td>
-
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      </div>
     </div>
   </div>
 </div>

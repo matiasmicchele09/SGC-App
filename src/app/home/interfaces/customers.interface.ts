@@ -6,4 +6,6 @@ export interface Customer{
   address: string;
   city: string;
   surname: string;
+  activity: string;
+  cuit: string;
 }
