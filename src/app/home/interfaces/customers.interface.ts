@@ -11,4 +11,6 @@ export interface Customer{
   phone: string;
   surname: string;
   tax_code: string;
+  id_tax_condition: number;
+  tax_condition: string;
 }

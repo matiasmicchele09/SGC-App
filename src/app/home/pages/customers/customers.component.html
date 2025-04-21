@@ -5,9 +5,9 @@
 
       <div class="table-responsive">
         <table class="table table-striped caption-top ">
-          <caption>Agregar
+          <caption (click)="onCustomer(selectedCustomer, true)">Agregar
             <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
-            (click)="onCustomer(selectedCustomer, true)"
+
             title="Agregar Cliente"></i>
           </caption>
           <thead>
@@ -33,7 +33,7 @@
               <td>{{customer.tax_code}}</td>
               <td>{{customer.email}}</td>
               <td>{{customer.phone}}</td>
-              <td>{{customer.phone}}</td>
+              <td>{{customer.tax_condition}}</td>
               <!-- <td>{{customer.city}}</td> -->
               <!-- <td>{{customer.address}}</td> -->
               <td>{{customer.activity}}</td>
@@ -74,6 +74,20 @@
                         <input type="text" class="form-control" formControlName="tax_code" id="tax_code" name="tax_code">
                       </div>
                       <div class="mb-3">
+                      <label class="col-sm-3 col-form-label">Cond. Fiscal</label>
+                        <div class="col-sm-9">
+                          <select class="form-select" formControlName="tax_condition">
+                            <option value="" disabled selected>Seleccione una Condición</option>
+                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
+                          </select>
+
+                          <!-- <span *ngIf="isValidField('cod_tipo_camion')"
+                                  class="form-text text-danger">
+                                  {{ getFieldError('cod_tipo_camion') }}
+                          </span> -->
+                        </div>
+                      </div>
+                      <div class="mb-3">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" formControlName="email" id="email" name="email">
                       </div>
@@ -82,12 +96,16 @@
                         <input type="text" class="form-control" formControlName="phone" id="phone" name="phone">
                       </div>
                       <div class="mb-3">
-                        <label for="city" class="form-label">Ciudad</label>
+                        <label for="address" class="form-label">Dirección</label>
+                        <input type="text" class="form-control" formControlName="address" id="address" name="address">
+                      </div>
+                      <div class="mb-3">
+                        <label for="city" class="form-label">Provincia</label>
                         <input type="text" class="form-control" formControlName="city" id="city" name="city">
                       </div>
                       <div class="mb-3">
-                        <label for="address" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" formControlName="address" id="address" name="address">
+                        <label for="city" class="form-label">Ciudad</label>
+                        <input type="text" class="form-control" formControlName="city" id="city" name="city">
                       </div>
                       <div class="mb-3">
                         <label for="activity" class="form-label">Actividad</label>

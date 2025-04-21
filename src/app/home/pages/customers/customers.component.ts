@@ -4,6 +4,7 @@ import { Customer } from '../../interfaces/customers.interface';
 import { Modal } from 'bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Tax_Condition } from '../../interfaces/tax_conditions';
 
 
 @Component({
@@ -15,6 +16,7 @@ export class CustomersComponent {
 
   public customers: Customer[] = [];
   public selectedCustomer: Customer | null = null;
+  public taxConditions: Tax_Condition[] = []
   public titleForm: string = '';
   public buttonForm: string = '';
   public pristine: boolean = false;
@@ -32,15 +34,36 @@ export class CustomersComponent {
     phone: ['', Validators.required],
     surname: ['', Validators.required],
     tax_code: [''],
+    // id_tax_condition: [''],
+    tax_condition: ['']
    });
 
   constructor(private customerService: CustomersService,
               private fb: FormBuilder,
               private authService: AuthService){
+
+    this.customerService.getTaxConditions().subscribe({
+      next: (tax_conditions) => {
+        this.taxConditions = []
+        this.taxConditions = tax_conditions;
+        console.log(tax_conditions);
+      },
+      error: (err) => {
+        console.log(err);
+      }
+    })
     this.customerService.getCustomers(2).subscribe({
       next: (customers) => {
         // console.log(customers);
         this.customers = customers;
+
+
+        this.customers.forEach((customer: Customer) => {
+          let desc;
+          desc = this.taxConditions.filter(type => type.id === customer.id_tax_condition)
+          customer.tax_condition = desc[0].description
+        })
+
       }
       , error: (err) => {
         console.error(err);
