@@ -30,7 +30,7 @@
                 (click)="onCustomer(customer, false)">
               <td>{{customer.name}} {{customer.surname}}</td>
               <td>{{customer.cuit}}</td>
-              <td>{{customer.tax_code}}</td>
+              <td>{{customer.tax_key}}</td>
               <td>{{customer.email}}</td>
               <td>{{customer.phone}}</td>
               <td>{{customer.tax_condition}}</td>
@@ -45,8 +45,11 @@
             </tr>
           </tbody>
         </table>
+
+        <!--* Modal -->
+        <!--*--------->
         <div class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="staticBackdropLabel">{{titleForm}}</h1>
@@ -54,31 +57,36 @@
               <div class="modal-body">
                     <form [formGroup]="customerForm" autocomplete="off">
                       <div class="customer-form">
-                      <div class="mb-3" *ngIf="isNew">
+                        <div class="">
+                        <label for="id" class="form-label">ID</label>
+                        <input type="text" class="form-control" formControlName="id" id="id" name="id" readonly="true">
+                      </div>
+                      <div class="" *ngIf="isNew">
                         <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words" readonly="true">                      </div>
-                      <div class="mb-3" *ngIf="isNew">
+                        <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words" readonly="true">
+                      </div>
+                      <div class="" *ngIf="isNew">
                         <label for="surname" class="form-label">Apellido</label>
                         <input type="text" class="form-control" formControlName="surname" id="surname" name="surname" disable="true">
                       </div>
-                      <div class="mb-3">
-                        <label for="fec_alta" class="form-label">Fecha Alta</label>
-                        <input type="text" class="form-control" formControlName="fec_alta" id="fec_alta" name="fec_alta" readonly="true">
+                      <div class="">
+                        <label for="created_at" class="form-label">Fecha Alta</label>
+                        <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
                       </div>
-                      <div class="mb-3">
+                      <div class="">
                         <label for="cuit" class="form-label">CUIT</label>
                         <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
                       </div>
-                      <div class="mb-3">
-                        <label for="tax_code" class="form-label">Clave Fiscal</label>
-                        <input type="text" class="form-control" formControlName="tax_code" id="tax_code" name="tax_code">
+                      <div class="">
+                        <label for="tax_key" class="form-label">Clave Fiscal</label>
+                        <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
                       </div>
-                      <div class="mb-3">
+                      <div class="">
                       <label class="col-sm-3 col-form-label">Cond. Fiscal</label>
                         <div class="col-sm-9">
-                          <select class="form-select" formControlName="tax_condition">
-                            <option value="" disabled selected>Seleccione una Condición</option>
-                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
+                          <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
+                            <option value="0" disabled selected>Seleccione una Condición</option>
+                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.id}}</option>
                           </select>
 
                           <!-- <span *ngIf="isValidField('cod_tipo_camion')"
@@ -87,27 +95,37 @@
                           </span> -->
                         </div>
                       </div>
-                      <div class="mb-3">
+                      <div class="">
                         <label for="email" class="form-label">Email</label>
                         <input type="email" class="form-control" formControlName="email" id="email" name="email">
                       </div>
-                      <div class="mb-3">
+                      <div class="">
                         <label for="phone" class="form-label">Teléfono</label>
                         <input type="text" class="form-control" formControlName="phone" id="phone" name="phone">
                       </div>
-                      <div class="mb-3">
+                      <div class="">
                         <label for="address" class="form-label">Dirección</label>
                         <input type="text" class="form-control" formControlName="address" id="address" name="address">
                       </div>
-                      <div class="mb-3">
-                        <label for="city" class="form-label">Provincia</label>
-                        <input type="text" class="form-control" formControlName="city" id="city" name="city">
-                      </div>
-                      <div class="mb-3">
+                      <div class="">
+                        <label class="col-sm-3 col-form-label">Provincia</label>
+                          <div class="col-sm-9">
+                            <select class="form-select" formControlName="id_province" id="id_province" name="id_province">
+                              <option value="0" disabled selected>Seleccione una Provincia</option>
+                              <option *ngFor="let type of provinces" value="{{type.id}}">{{type.name}}</option>
+                            </select>
+
+                            <!-- <span *ngIf="isValidField('cod_tipo_camion')"
+                                    class="form-text text-danger">
+                                    {{ getFieldError('cod_tipo_camion') }}
+                            </span> -->
+                          </div>
+                        </div>
+                      <div class="">
                         <label for="city" class="form-label">Ciudad</label>
                         <input type="text" class="form-control" formControlName="city" id="city" name="city">
                       </div>
-                      <div class="mb-3">
+                      <div class="">
                         <label for="activity" class="form-label">Actividad</label>
                         <input type="text" class="form-control" formControlName="activity" id="activity" name="activity">
                       </div>

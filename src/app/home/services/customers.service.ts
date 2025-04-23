@@ -4,6 +4,7 @@ import { enviroments } from 'src/environments/environments'
 import { catchError, Observable, tap, throwError } from "rxjs";
 import { Customer } from "../interfaces/customers.interface";
 import { Tax_Condition } from "../interfaces/tax_conditions";
+import { Province } from "../interfaces/provinces.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -16,13 +17,20 @@ export class CustomersService {
 
   constructor() { }
 
+  //* Condición Fiscal
   getTaxConditions():Observable<Tax_Condition[]>{
     return this.http.get<Tax_Condition[]>(`${this.baseUrl}/tax-conditions`)
     .pipe(
       tap(tax_conditions => console.log(tax_conditions))
     )
+  }
 
-
+  //* Provincias
+  getProvinces():Observable<Province[]>{
+    return this.http.get<Province[]>(`${this.baseUrl}/provinces`)
+    .pipe(
+      tap(provinces => console.log(provinces)),
+    )
   }
 
   getCustomers(id_user: number): Observable<Customer[]>  {
@@ -40,10 +48,8 @@ export class CustomersService {
       );
   }
 
-
   addCustomer(customer: Customer, isNew: boolean): Observable<Customer> {
     if (isNew) {
-
       return this.http.post<Customer>(`${this.baseUrl}/customers`, customer)
             .pipe(
               tap((newCustomer: Customer) => console.log('added customer', newCustomer)),
@@ -57,6 +63,15 @@ export class CustomersService {
         catchError(this.handleError)
       );
   }
+  }
+
+  updateCustomer(customer: Customer): Observable<Customer> {
+    console.log("customer", customer);
+    return this.http.put<Customer>(`${this.baseUrl}/customers/${customer.id}`, customer)
+      .pipe(
+        tap((updatedCustomer: Customer) => console.log('updated customer', updatedCustomer)),
+        catchError(this.handleError)
+      );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
