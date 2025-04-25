@@ -15,7 +15,7 @@
               <th scope="col">Nombre</th>
               <th scope="col">CUIT</th>
               <th scope="col">Clave Fiscal</th>
-              <th scope="col">Email</th>
+              <!-- <th scope="col">Email</th> -->
               <th scope="col">N° Tel.</th>
               <th scope="col">Cond. Fiscal</th>
               <!-- <th scope="col">Ciudad</th> -->
@@ -31,7 +31,7 @@
               <td>{{customer.name}} {{customer.surname}}</td>
               <td>{{customer.cuit}}</td>
               <td>{{customer.tax_key}}</td>
-              <td>{{customer.email}}</td>
+              <!-- <td>{{customer.email}}</td> -->
               <td>{{customer.phone}}</td>
               <td>{{customer.tax_condition}}</td>
               <!-- <td>{{customer.city}}</td> -->
@@ -48,7 +48,7 @@
 
         <!--* Modal -->
         <!--*--------->
-        <div class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div #customerModal class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
@@ -86,7 +86,7 @@
                         <div class="col-sm-9">
                           <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
                             <option value="0" disabled selected>Seleccione una Condición</option>
-                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.id}}</option>
+                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
                           </select>
 
                           <!-- <span *ngIf="isValidField('cod_tipo_camion')"

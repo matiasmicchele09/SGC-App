@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from 'src/app/auth/interfaces/user.interface';
 import { AuthService } from 'src/app/auth/services/auth.service';
+//import { AuthService } from '../../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-sidebar',

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CustomersService } from '../../services/customers.service';
 import { Customer } from '../../interfaces/customers.interface';
 import { Modal } from 'bootstrap';
@@ -7,6 +7,8 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 import { Tax_Condition } from '../../interfaces/tax_conditions';
 import { Province } from '../../interfaces/provinces.interface';
 import Swal from 'sweetalert2';
+import { AlertService } from 'src/app/shared/services/alerts.service';
+import { closeBootstrapModal } from 'src/app/utils/bootstrap-utils';
 
 @Component({
   selector: 'app-customers',
@@ -28,6 +30,8 @@ export class CustomersComponent {
   public provinces: Province[] = []
   public selectedCustomer: Customer | null = null;
   public taxConditions: Tax_Condition[] = []
+
+  @ViewChild('customerModal') customerModalRef!: ElementRef;
 
   public customerForm: FormGroup = this.fb.group({
     activity: ['', Validators.required],
@@ -51,7 +55,8 @@ export class CustomersComponent {
 
   constructor(private customerService: CustomersService,
               private fb: FormBuilder,
-              private authService: AuthService){
+              private authService: AuthService,
+              private alertService: AlertService) {
 
     this.customerService.getTaxConditions().subscribe({
       next: (tax_conditions) => {
@@ -75,6 +80,38 @@ export class CustomersComponent {
       }
     });
 
+    this.loadCustomers();
+    // this.customerService.getCustomers(2).subscribe({
+    //   next: (customers) => {
+    //     // console.log(customers);
+    //     this.customers = customers.filter(c => c.active === true);
+
+
+    //     this.customers.forEach((customer: Customer) => {
+    //       let desc;
+    //       desc = this.taxConditions.filter(type => type.id === customer.id_tax_condition)
+    //       customer.tax_condition = desc[0].description
+    //     })
+
+    //     this.customers.forEach((customer: Customer) => {
+    //       let desc;
+    //       desc = this.provinces.filter(type => type.id === customer.id_province)
+    //       customer.province = desc[0].name
+    //      // console.log(desc);
+    //     }
+    //     )
+
+    //   }
+    //   , error: (err) => {
+    //     console.error(err);
+    //   }
+    //   , complete: () => {
+    //     console.log("complete");
+    //   }
+    // });
+  }
+
+  loadCustomers(){
     this.customerService.getCustomers(2).subscribe({
       next: (customers) => {
         // console.log(customers);
@@ -91,6 +128,7 @@ export class CustomersComponent {
           let desc;
           desc = this.provinces.filter(type => type.id === customer.id_province)
           customer.province = desc[0].name
+         // console.log(desc);
         }
         )
 
@@ -148,6 +186,7 @@ export class CustomersComponent {
            controls['activity'].pristine &&
            controls['city'].pristine;
   }
+
   saveChanges(customer:FormGroup)   {
     console.log(customer);
 
@@ -165,9 +204,6 @@ export class CustomersComponent {
 
     if (this.isNew) {
       console.log(customer.value);
-
-
-
       // this.customerService.addCustomer(customer.value, this.isNew).subscribe({
       //   next: (customer) => {
       //     console.log(customer);
@@ -181,84 +217,40 @@ export class CustomersComponent {
       //   }
       // });
     }
-    // if (this.selectedCustomer) {
-    //   this.customers = this.customers.map(c => c.id === this.selectedCustomer?.id ? customer.value : c);
-    // } else {
-    //   this.customers.push(customer.value);
-    // }
-    // const modalElement = document.getElementById('staticCustomerModal');
-    // if (modalElement) {
-    //   const modal = new Modal(modalElement);
-    //   modal.hide();
-    // }
+
     else{
-      Swal.fire({
-        title: '¿Desea modificar los datos?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Si'
-      }).then((result) => {
+
+      this.alertService.confirm('¿Desea modificar los datos?', '').then((result) => {
         if (result.isConfirmed) {
-          // const modalElement = document.getElementById('staticCustomerModal');
-          // if (modalElement) {
-          //   const modal = new Modal(modalElement);
-          //   modal.hide();
-          // }
-
-
           this.customerService.updateCustomer(customer.value).subscribe({
             next: (customer) => {
               console.log(customer);
-              this.save = true;
-              this.iconSwal = 'success';
-              this.titleSwal = 'Cliente modificado';
-              this.textSwal = 'El cliente fue modificado correctamente';
+              this.alertService.success('Cliente modificado','El cliente fue modificado correctamente');
               this.customers = this.customers.map(c => c.id === customer.id ? customer : c);
+
+
+              // ❌ Cerrar el modal
+              closeBootstrapModal(this.customerModalRef);
+              this.loadCustomers();
             }
             , error: (err) => {
-              this.save = false;
-              this.iconSwal = 'error';
-              this.titleSwal = 'Error: No se pudo modificar el cliente';
-              this.textSwal = err.error.message;
+              this.alertService.error('Error: No se pudieron modificar los datos', err.error.message);
               console.error(err);
             }
             , complete: () => {
               console.log("complete");
             }
           });
-
-          Swal.fire({
-            icon: 'success'  ,
-            title: this.titleSwal,
-            text: this.textSwal,
-            showConfirmButton: false,
-            timer: 4500
-          })
-
-
-
         }
-      })
-      const modalElement = document.getElementById('staticCustomerModal');
-      if (modalElement) {
-        const modal = new Modal(modalElement);
-        modal.hide();
       }
-
+      );
     }
+
+
   }
   onDeleteCustomer(customer: Customer | null) {
-    const modalElement = document.getElementById('staticCustomerModal');
-    console.log(customer);
-    // if (modalElement) {
-    //   const modal = new Modal(modalElement);
-    //   modal.hide();
-    // }
-    // this.customers = this.customers.filter(c => c.id !== customer.id);
-  }
 
+  }
 
 
 
