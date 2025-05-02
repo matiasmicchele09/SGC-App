@@ -26,7 +26,7 @@
           </thead>
           <tbody>
             <tr class="table-row"
-                *ngFor="let customer of customers"
+                *ngFor="let customer of customersPerPage"
                 (click)="onCustomer(customer, false)">
               <td>{{customer.name}} {{customer.surname}}</td>
               <td>{{customer.cuit}}</td>
@@ -45,6 +45,25 @@
             </tr>
           </tbody>
         </table>
+        <nav *ngIf="totalPages() > 1" aria-label="...">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="page === 1">
+              <a class="page-link" href="#" (click)="changePage(page - 1, $event)">Anterior</a>
+            </li>
+
+            <li class="page-item"
+                *ngFor="let p of [].constructor(totalPages()); let i = index"
+                [class.active]="page === i + 1">
+              <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
+            </li>
+
+            <li class="page-item" [class.disabled]="page === totalPages()">
+              <a class="page-link" href="#" (click)="changePage(page + 1, $event)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+
+
 
         <!--* Modal -->
         <!--*--------->

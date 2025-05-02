@@ -21,15 +21,19 @@ export class CustomersComponent {
   public isNew: boolean = false;
   public pristine: boolean = false;
   public titleForm: string = '';
-  public titleSwal: string = '';
-  public iconSwal: string = '';
   public save: boolean = false;
-  public textSwal: string = '';
 
   public customers: Customer[] = [];
   public provinces: Province[] = []
   public selectedCustomer: Customer | null = null;
   public taxConditions: Tax_Condition[] = []
+
+  //* Variables para paginación local. Es decir, mi backend no tiene paginación
+  public customersPerPage: Customer[] = [];
+  public page: number = 1;
+  public pageSize: number = 10;
+  public totalItems: number = 0;
+
 
   @ViewChild('customerModal') customerModalRef!: ElementRef;
 
@@ -116,6 +120,8 @@ export class CustomersComponent {
       next: (customers) => {
         // console.log(customers);
         this.customers = customers.filter(c => c.active === true);
+        this.totalItems = this.customers.length;
+
 
 
         this.customers.forEach((customer: Customer) => {
@@ -129,8 +135,10 @@ export class CustomersComponent {
           desc = this.provinces.filter(type => type.id === customer.id_province)
           customer.province = desc[0].name
          // console.log(desc);
-        }
+          }
         )
+
+        this.updatePage(); //Corta el array para mostrar solo los elementos de la página actual
 
       }
       , error: (err) => {
@@ -141,6 +149,24 @@ export class CustomersComponent {
       }
     });
   }
+
+  updatePage() {
+    const sorted = [...this.customers].sort((a, b) => a.id - b.id);
+    const startIndex = (this.page - 1) * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    this.customersPerPage = sorted.slice(startIndex, endIndex);
+  }
+  changePage(p: number, $event: Event): void {
+    $event.preventDefault();
+    if (p < 1 || p > this.totalPages()) return;
+    this.page = p;
+    this.updatePage();
+  }
+
+  totalPages(): number {
+    return Math.ceil(this.totalItems / this.pageSize);
+  }
+
 
   onCustomer(customer: Customer | null, isNew: boolean) {
     this.isNew = isNew;
