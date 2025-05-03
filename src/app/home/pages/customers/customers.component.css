@@ -34,8 +34,19 @@
 .btn-new:hover{
   color: #4dc853;
 }
+
 .customer-form{
   display: grid;
   grid-template-columns: 1fr 1fr; /* Dos columnas, la segunda más ancha */
-  grid-gap: 10px; /*Espacio entre los elementos */
+  grid-gap: 7px; /*Espacio entre los elementos */
+}
+
+.customer-form label{
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
+}
+.customer-form input{
+  border: 1px solid #000000; /* Borde del input */
+  font-size: 14px; /* Tamaño de fuente del input */
 }

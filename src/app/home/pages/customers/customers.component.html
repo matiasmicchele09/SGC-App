@@ -45,6 +45,7 @@
             </tr>
           </tbody>
         </table>
+        <p>Total de Clientes: {{totalItems}}</p>
         <nav *ngIf="totalPages() > 1" aria-label="...">
           <ul class="pagination">
             <li class="page-item" [class.disabled]="page === 1">
@@ -70,92 +71,133 @@
         <div #customerModal class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">{{titleForm}}</h1>
-              </div>
               <div class="modal-body">
                     <form [formGroup]="customerForm" autocomplete="off">
                       <div class="customer-form">
-                        <div class="">
-                        <label for="id" class="form-label">ID</label>
-                        <input type="text" class="form-control" formControlName="id" id="id" name="id" readonly="true">
-                      </div>
-                      <div class="" *ngIf="isNew">
-                        <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words" readonly="true">
-                      </div>
-                      <div class="" *ngIf="isNew">
-                        <label for="surname" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" formControlName="surname" id="surname" name="surname" disable="true">
-                      </div>
-                      <div class="">
-                        <label for="created_at" class="form-label">Fecha Alta</label>
-                        <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
-                      </div>
-                      <div class="">
-                        <label for="cuit" class="form-label">CUIT</label>
-                        <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
-                      </div>
-                      <div class="">
-                        <label for="tax_key" class="form-label">Clave Fiscal</label>
-                        <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
-                      </div>
-                      <div class="">
-                      <label class="col-sm-3 col-form-label">Cond. Fiscal</label>
-                        <div class="col-sm-9">
-                          <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
-                            <option value="0" disabled selected>Seleccione una Condición</option>
-                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
-                          </select>
-
-                          <!-- <span *ngIf="isValidField('cod_tipo_camion')"
-                                  class="form-text text-danger">
-                                  {{ getFieldError('cod_tipo_camion') }}
-                          </span> -->
+                        <div class="" *ngIf="!isNew">
+                          <label for="id" class="form-label">ID</label>
+                          <input type="text" class="form-control" formControlName="id" id="id" name="id" readonly="true">
+                          <span *ngIf="isValidField('id')"
+                                class="form-text text-danger">
+                                {{ getFieldError('id') }}
+                          </span>
                         </div>
-                      </div>
-                      <div class="">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" formControlName="email" id="email" name="email">
-                      </div>
-                      <div class="">
-                        <label for="phone" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" formControlName="phone" id="phone" name="phone">
-                      </div>
-                      <div class="">
-                        <label for="address" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" formControlName="address" id="address" name="address">
-                      </div>
-                      <div class="">
-                        <label class="col-sm-3 col-form-label">Provincia</label>
+                        <div class="">
+                          <label for="name" class="form-label">Nombre</label>
+                          <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words">
+                          <span *ngIf="isValidField('name')"
+                                class="form-text text-danger">
+                                {{ getFieldError('name') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="surname" class="form-label">Apellido</label>
+                          <input type="text" class="form-control" formControlName="surname" id="surname" name="surname">
+                          <span *ngIf="isValidField('surname')"
+                                class="form-text text-danger">
+                                {{ getFieldError('surname') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="created_at" class="form-label">Fecha Alta</label>
+                          <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
+                          <span *ngIf="isValidField('created_at')"
+                                class="form-text text-danger">
+                                {{ getFieldError('created_at') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="cuit" class="form-label">CUIT</label>
+                          <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
+                          <span *ngIf="isValidField('cuit')"
+                                class="form-text text-danger">
+                                {{ getFieldError('cuit') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="tax_key" class="form-label">Clave Fiscal</label>
+                          <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
+                          <span *ngIf="isValidField('tax_key')"
+                                class="form-text text-danger">
+                                {{ getFieldError('tax_key') }}
+                          </span>
+                        </div>
+                        <div class="">
+                        <label class="col-sm-3 col-form-label">Cond. Fiscal</label>
                           <div class="col-sm-9">
-                            <select class="form-select" formControlName="id_province" id="id_province" name="id_province">
-                              <option value="0" disabled selected>Seleccione una Provincia</option>
-                              <option *ngFor="let type of provinces" value="{{type.id}}">{{type.name}}</option>
+                            <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
+                              <option value="0" disabled selected>Seleccione una Condición</option>
+                              <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
                             </select>
-
-                            <!-- <span *ngIf="isValidField('cod_tipo_camion')"
-                                    class="form-text text-danger">
-                                    {{ getFieldError('cod_tipo_camion') }}
-                            </span> -->
+                            <span *ngIf="isValidField('id_tax_condition')"
+                                  class="form-text text-danger">
+                                  {{ getFieldError('id_tax_condition') }}
+                            </span>
                           </div>
                         </div>
-                      <div class="">
-                        <label for="city" class="form-label">Ciudad</label>
-                        <input type="text" class="form-control" formControlName="city" id="city" name="city">
+                        <div class="">
+                          <label for="email" class="form-label">Email</label>
+                          <input type="email" class="form-control" formControlName="email" id="email" name="email">
+                          <span *ngIf="isValidField('email')"
+                                class="form-text text-danger">
+                                {{ getFieldError('email') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="phone" class="form-label">Teléfono</label>
+                          <input type="text" class="form-control" formControlName="phone" id="phone" name="phone">
+                          <span *ngIf="isValidField('phone')"
+                                class="form-text text-danger">
+                                {{ getFieldError('phone') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="address" class="form-label">Dirección</label>
+                          <input type="text" class="form-control" formControlName="address" id="address" name="address">
+                          <span *ngIf="isValidField('address')"
+                                class="form-text text-danger">
+                                {{ getFieldError('address') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label class="col-sm-3 col-form-label">Provincia</label>
+                            <div class="col-sm-9">
+                              <select class="form-select" formControlName="id_province" id="id_province" name="id_province">
+                                <option value="0" disabled selected>Seleccione una Provincia</option>
+                                <option *ngFor="let type of provinces" value="{{type.id}}">{{type.name}}</option>
+                              </select>
+                              <span *ngIf="isValidField('id_province')"
+                                    class="form-text text-danger">
+                                    {{ getFieldError('id_province') }}
+                              </span>
+                            </div>
+                          </div>
+                        <div class="">
+                          <label for="city" class="form-label">Ciudad</label>
+                          <input type="text" class="form-control" formControlName="city" id="city" name="city">
+                          <span *ngIf="isValidField('city')"
+                                class="form-text text-danger">
+                                {{ getFieldError('city') }}
+                          </span>
+                        </div>
+                        <div class="">
+                          <label for="activity" class="form-label">Actividad</label>
+                          <input type="text" class="form-control" formControlName="activity" id="activity" name="activity">
+                          <span *ngIf="isValidField('activity')"
+                                class="form-text text-danger">
+                                {{ getFieldError('activity') }}
+                          </span>
+                        </div>
                       </div>
-                      <div class="">
-                        <label for="activity" class="form-label">Actividad</label>
-                        <input type="text" class="form-control" formControlName="activity" id="activity" name="activity">
+                      <div *ngIf="pristine" class="form-text text-danger">
+                        Ningún campo ha sido modificado
                       </div>
-
-                    </div>
                     </form>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" (click)="saveChanges(customerForm)">{{buttonForm}}</button>
-                <button type="button" class="btn btn-danger" *ngIf="!isNew" (click)="onDeleteCustomer(selectedCustomer)">Eliminar</button>
+                <button type="button" class="btn btn-danger" *ngIf="!isNew" (click)="onDeleteCustomer(selectedCustomer!)">Eliminar</button>
               </div>
             </div>
           </div>

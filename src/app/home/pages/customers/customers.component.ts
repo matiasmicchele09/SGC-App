@@ -47,8 +47,8 @@ export class CustomersComponent {
     cuit: ['', Validators.required],
     email: [''],
     id: [0],
-    id_province: [''],
-    id_tax_condition: [0],
+    id_province: ['',Validators.required],
+    id_tax_condition: [0,Validators.required],
     name: ['', Validators.required],
     phone: ['', Validators.required],
     province: [''],
@@ -85,34 +85,6 @@ export class CustomersComponent {
     });
 
     this.loadCustomers();
-    // this.customerService.getCustomers(2).subscribe({
-    //   next: (customers) => {
-    //     // console.log(customers);
-    //     this.customers = customers.filter(c => c.active === true);
-
-
-    //     this.customers.forEach((customer: Customer) => {
-    //       let desc;
-    //       desc = this.taxConditions.filter(type => type.id === customer.id_tax_condition)
-    //       customer.tax_condition = desc[0].description
-    //     })
-
-    //     this.customers.forEach((customer: Customer) => {
-    //       let desc;
-    //       desc = this.provinces.filter(type => type.id === customer.id_province)
-    //       customer.province = desc[0].name
-    //      // console.log(desc);
-    //     }
-    //     )
-
-    //   }
-    //   , error: (err) => {
-    //     console.error(err);
-    //   }
-    //   , complete: () => {
-    //     console.log("complete");
-    //   }
-    // });
   }
 
   loadCustomers(){
@@ -156,6 +128,7 @@ export class CustomersComponent {
     const endIndex = startIndex + this.pageSize;
     this.customersPerPage = sorted.slice(startIndex, endIndex);
   }
+
   changePage(p: number, $event: Event): void {
     $event.preventDefault();
     if (p < 1 || p > this.totalPages()) return;
@@ -166,8 +139,13 @@ export class CustomersComponent {
   totalPages(): number {
     return Math.ceil(this.totalItems / this.pageSize);
   }
-
-
+  formatDateToDDMMYYYY(dateStr: string): string {
+    const date = new Date(dateStr);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
   onCustomer(customer: Customer | null, isNew: boolean) {
     this.isNew = isNew;
     this.selectedCustomer = customer;
@@ -187,13 +165,10 @@ export class CustomersComponent {
       this.titleForm = this.selectedCustomer
         ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}`
         : '';
-
         this.customerForm.patchValue(this.selectedCustomer!);
-       /* this.customerForm.get('name')?.patchValue(this.selectedCustomer?.name);
-        this.customerForm.get('email')?.setValue(this.selectedCustomer?.email);
-        this.customerForm.get('email')?.setValue(this.selectedCustomer?.email);
-        this.customerForm.get('email')?.setValue(this.selectedCustomer?.email);
-        this.customerForm.get('email')?.setValue(this.selectedCustomer?.email);*/
+        this.customerForm.patchValue({
+          created_at: this.formatDateToDDMMYYYY(this.selectedCustomer!.created_at)
+        });
     }
 
     const modalElement = document.getElementById('staticCustomerModal');
@@ -202,6 +177,7 @@ export class CustomersComponent {
       modal.show();
     }
   }
+
   areAllFieldsPristine(): boolean {
     const controls = this.customerForm.controls;
     return controls['name'].pristine &&
@@ -213,39 +189,73 @@ export class CustomersComponent {
            controls['city'].pristine;
   }
 
+  isValidField(field: string): boolean | null{
+    return this.customerForm.controls[field].errors &&
+           this.customerForm.controls[field].touched
+  }
+
+  getFieldError(field:string):string | null {
+    if (!this.customerForm.controls[field]) return null;
+
+    const errors = this.customerForm.controls[field].errors || {};
+
+    for (const key of Object.keys(errors)) {
+
+      switch(key){
+        case 'required':
+          return 'Este campo es requerido';
+
+        // case 'minlength':
+        //   return `Mínimo ${errors['minlength'].requiredLength} caracteres`
+      }
+    }
+    return null;
+  }
+
   saveChanges(customer:FormGroup)   {
     console.log(customer);
 
     //* Valido que nada este vacío
-   /* if (this.customerForm.invalid) {
+    if (this.customerForm.invalid) {
       this.customerForm.markAllAsTouched();
       return;
-    }*/
+    }
+    console.log("paso el markAllAsTouched");
     //* Valido que hayan cambiado algún valor
     //Si el valor NO ha sido modificado --> true | Si ha sido modificado --> false
-    /*if (this.areAllFieldsPristine()){
+    if (this.areAllFieldsPristine()){
       this.pristine = true;
       return;
-    } else this.pristine = false;*/
+    } else this.pristine = false;
 
     if (this.isNew) {
       console.log(customer.value);
-      // this.customerService.addCustomer(customer.value, this.isNew).subscribe({
-      //   next: (customer) => {
-      //     console.log(customer);
-      //     this.customers.push(customer);
-      //   }
-      //   , error: (err) => {
-      //     console.error(err);
-      //   }
-      //   , complete: () => {
-      //     console.log("complete");
-      //   }
-      // });
+      const newCustomer = { ...customer.value, id_user: 2, created_at: new Date().toISOString(), active: true, deactivated_at: null };
+      this.alertService.confirm('¿Desea agregar este cliente?', '').then((result) => {
+        if (result.isConfirmed) {
+          this.customerService.addCustomer(newCustomer).subscribe({
+            next: (customer) => {
+              console.log(customer);
+              this.alertService.success('Cliente agregado','El cliente fue agregado correctamente');
+              this.customers.push(customer);
+
+              // ❌ Cerrar el modal
+              closeBootstrapModal(this.customerModalRef);
+              this.loadCustomers();
+            }
+            , error: (err) => {
+              this.alertService.error('Error: No se pudo agregar el cliente', err.error.message);
+              console.error(err);
+            }
+            , complete: () => {
+              console.log("complete");
+            }
+          });
+        }
+      }
+      );
     }
-
     else{
-
       this.alertService.confirm('¿Desea modificar los datos?', '').then((result) => {
         if (result.isConfirmed) {
           this.customerService.updateCustomer(customer.value).subscribe({
@@ -274,10 +284,36 @@ export class CustomersComponent {
 
 
   }
-  onDeleteCustomer(customer: Customer | null) {
+
+  onDeleteCustomer(customer: Customer) {
+    console.log(customer);
+    this.alertService.confirm('¿Desea Eliminar este cliente?', '').then((result) => {
+      if (result.isConfirmed) {
+        const customerDelete = { ...customer, active: false, deactivated_at: new Date().toISOString() };
+        this.customerService.updateCustomer(customerDelete).subscribe({
+          next: (customer) => {
+            console.log(customer);
+            this.alertService.success('Cliente Eliminado','');
+            this.customers = this.customers.map(c => c.id === customer.id ? customer : c);
+
+
+            // ❌ Cerrar el modal
+            closeBootstrapModal(this.customerModalRef);
+            this.loadCustomers();
+          }
+          , error: (err) => {
+            this.alertService.error('Error: No se pudo eliminar el cliente', err.error.message);
+            console.error(err);
+          }
+          , complete: () => {
+            console.log("complete");
+          }
+        });
+      }
+    }
+    );
+
 
   }
-
-
 
 }

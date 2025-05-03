@@ -48,25 +48,15 @@ export class CustomersService {
       );
   }
 
-  addCustomer(customer: Customer, isNew: boolean): Observable<Customer> {
-    if (isNew) {
-      return this.http.post<Customer>(`${this.baseUrl}/customers`, customer)
-            .pipe(
-              tap((newCustomer: Customer) => console.log('added customer', newCustomer)),
-              catchError(this.handleError)
-            );
-  }
-  else {
-    return this.http.put<Customer>(`${this.baseUrl}/customers/${customer.id}`, customer)
+  addCustomer(customer: Customer): Observable<Customer> {
+    return this.http.post<Customer>(`${this.baseUrl}/customers`, customer)
       .pipe(
-        tap((updatedCustomer: Customer) => console.log('updated customer', updatedCustomer)),
+        tap((newCustomer: Customer) => console.log('added customer', newCustomer)),
         catchError(this.handleError)
       );
   }
-  }
 
   updateCustomer(customer: Customer): Observable<Customer> {
-    console.log("customer", customer);
     return this.http.put<Customer>(`${this.baseUrl}/customers/${customer.id}`, customer)
       .pipe(
         tap((updatedCustomer: Customer) => console.log('updated customer', updatedCustomer)),
