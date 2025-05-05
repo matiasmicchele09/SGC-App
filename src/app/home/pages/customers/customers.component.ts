@@ -6,9 +6,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { Tax_Condition } from '../../interfaces/tax_conditions';
 import { Province } from '../../interfaces/provinces.interface';
-import Swal from 'sweetalert2';
 import { AlertService } from 'src/app/shared/services/alerts.service';
 import { closeBootstrapModal } from 'src/app/utils/bootstrap-utils';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-customers',
@@ -19,6 +19,7 @@ export class CustomersComponent {
 
   public buttonForm: string = '';
   public isNew: boolean = false;
+  public loading: boolean = false;
   public pristine: boolean = false;
   public titleForm: string = '';
   public save: boolean = false;
@@ -62,64 +63,46 @@ export class CustomersComponent {
               private authService: AuthService,
               private alertService: AlertService) {
 
-    this.customerService.getTaxConditions().subscribe({
-      next: (tax_conditions) => {
-        this.taxConditions = []
-        this.taxConditions = tax_conditions;
-        console.log(tax_conditions);
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
 
-    this.customerService.getProvinces().subscribe({
-      next: (provinces) => {
-        this.provinces = []
-        this.provinces = provinces;
-        console.log(provinces);
-      },
-      error: (err) => {
-        console.log(err);
-      }
-    });
-
-    this.loadCustomers();
+    this.loadCustomers(this.authService.user!.id);
   }
 
-  loadCustomers(){
-    this.customerService.getCustomers(2).subscribe({
-      next: (customers) => {
-        // console.log(customers);
+  loadCustomers(id_user: number) {
+    this.loading = true;
+
+    // función de RxJS que te permite ejecutar varias llamadas asíncronas en paralelo (como peticiones HTTP), y esperar a que todas terminen antes de continuar.
+    forkJoin({
+      customers: this.customerService.getCustomers(id_user),
+      tax_conditions: this.customerService.getTaxConditions(),
+      provinces: this.customerService.getProvinces()
+    }).subscribe({
+      next: ({ customers, tax_conditions, provinces }) => {
         this.customers = customers.filter(c => c.active === true);
         this.totalItems = this.customers.length;
+        this.taxConditions = tax_conditions;
+        this.provinces = provinces;
 
-
-
-        this.customers.forEach((customer: Customer) => {
-          let desc;
-          desc = this.taxConditions.filter(type => type.id === customer.id_tax_condition)
-          customer.tax_condition = desc[0].description
-        })
+        /*console.log(customers);
+        console.log(tax_conditions);
+        console.log(provinces);*/
 
         this.customers.forEach((customer: Customer) => {
-          let desc;
-          desc = this.provinces.filter(type => type.id === customer.id_province)
-          customer.province = desc[0].name
-         // console.log(desc);
-          }
-        )
+          customer.tax_condition = this.taxConditions.find(tc => tc.id === customer.id_tax_condition)?.description ?? 'Desconocido';
+          customer.province = this.provinces.find(p => p.id === customer.id_province)?.name ?? 'Desconocido';
+        });
+
+        this.loading = false;
 
         this.updatePage(); //Corta el array para mostrar solo los elementos de la página actual
 
-      }
-      , error: (err) => {
+      },
+      error: (err) => {
         console.error(err);
       }
       , complete: () => {
         console.log("complete");
       }
-    });
+    })
   }
 
   updatePage() {
@@ -139,6 +122,7 @@ export class CustomersComponent {
   totalPages(): number {
     return Math.ceil(this.totalItems / this.pageSize);
   }
+
   formatDateToDDMMYYYY(dateStr: string): string {
     const date = new Date(dateStr);
     const day = String(date.getDate()).padStart(2, '0');
@@ -147,6 +131,7 @@ export class CustomersComponent {
     return `${day}-${month}-${year}`;
   }
   onCustomer(customer: Customer | null, isNew: boolean) {
+    this.pristine = false
     this.isNew = isNew;
     this.selectedCustomer = customer;
     console.log(this.selectedCustomer);
@@ -241,7 +226,7 @@ export class CustomersComponent {
 
               // ❌ Cerrar el modal
               closeBootstrapModal(this.customerModalRef);
-              this.loadCustomers();
+              this.loadCustomers(this.authService.user!.id);
             }
             , error: (err) => {
               this.alertService.error('Error: No se pudo agregar el cliente', err.error.message);
@@ -267,7 +252,7 @@ export class CustomersComponent {
 
               // ❌ Cerrar el modal
               closeBootstrapModal(this.customerModalRef);
-              this.loadCustomers();
+              this.loadCustomers(this.authService.user!.id);
             }
             , error: (err) => {
               this.alertService.error('Error: No se pudieron modificar los datos', err.error.message);
@@ -299,7 +284,7 @@ export class CustomersComponent {
 
             // ❌ Cerrar el modal
             closeBootstrapModal(this.customerModalRef);
-            this.loadCustomers();
+            this.loadCustomers(this.authService.user!.id);
           }
           , error: (err) => {
             this.alertService.error('Error: No se pudo eliminar el cliente', err.error.message);

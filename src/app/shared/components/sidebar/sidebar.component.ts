@@ -19,6 +19,7 @@ export class SidebarComponent {
   }
 
   get user():User | null{
+    // console.log("sidebar", this.authService.user);
     return this.authService.user;
   }
 

@@ -20,26 +20,16 @@ export class CustomersService {
   //* Condición Fiscal
   getTaxConditions():Observable<Tax_Condition[]>{
     return this.http.get<Tax_Condition[]>(`${this.baseUrl}/tax-conditions`)
-    .pipe(
-      tap(tax_conditions => console.log(tax_conditions))
-    )
   }
 
   //* Provincias
   getProvinces():Observable<Province[]>{
     return this.http.get<Province[]>(`${this.baseUrl}/provinces`)
-    .pipe(
-      tap(provinces => console.log(provinces)),
-    )
   }
 
   getCustomers(id_user: number): Observable<Customer[]>  {
-    //const body = { id_user };
-    //id_user = 2;
-    const params = new HttpParams().set('id_user', id_user);
-    console.log(params);
 
-    //console.log(body);
+    const params = new HttpParams().set('id_user', id_user);
 
     return this.http.get<Customer[]>(`${this.baseUrl}/customers`,{ params })
       .pipe(

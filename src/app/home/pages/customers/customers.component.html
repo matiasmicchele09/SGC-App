@@ -1,27 +1,41 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h2 class="mt-4">Mis Clientes </h2>
+      <!--* Loader -->
+      <div class="content-spinner" *ngIf="loading">
+        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+          <defs>
+            <radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)">
+              <stop offset="0"/>
+              <stop offset=".3" stop-opacity=".9" />
+              <stop offset=".6" stop-opacity=".6" />
+              <stop offset=".8" stop-opacity=".3" />
+              <stop offset="1" stop-opacity="0" />
+            </radialGradient>
+          </defs>
 
-      <div class="table-responsive">
+          <circle class="spinner-animated" cx="100" cy="100" r="70" />
+          <circle class="spinner-background" cx="100" cy="100" r="70" />
+        </svg>
+        <h4>Cargando Clientes...</h4>
+      </div>
+
+      <div class="table-responsive" *ngIf="!loading">
+        <h2 class="mt-4">Mis Clientes </h2>
+        <caption class="d-inline"
+        (click)="onCustomer(selectedCustomer, true)">Agregar
+          <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
+             title="Agregar Cliente"></i>
+        </caption>
         <table class="table table-striped caption-top ">
-          <caption (click)="onCustomer(selectedCustomer, true)">Agregar
-            <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
-
-            title="Agregar Cliente"></i>
-          </caption>
           <thead>
             <tr>
               <th scope="col">Nombre</th>
               <th scope="col">CUIT</th>
               <th scope="col">Clave Fiscal</th>
-              <!-- <th scope="col">Email</th> -->
               <th scope="col">N° Tel.</th>
               <th scope="col">Cond. Fiscal</th>
-              <!-- <th scope="col">Ciudad</th> -->
-              <!-- <th scope="col">Dirección</th> -->
               <th scope="col">Actividad</th>
-              <!-- <th scope="col">Acciones</th> -->
             </tr>
           </thead>
           <tbody>
@@ -31,57 +45,51 @@
               <td>{{customer.name}} {{customer.surname}}</td>
               <td>{{customer.cuit}}</td>
               <td>{{customer.tax_key}}</td>
-              <!-- <td>{{customer.email}}</td> -->
               <td>{{customer.phone}}</td>
               <td>{{customer.tax_condition}}</td>
-              <!-- <td>{{customer.city}}</td> -->
-              <!-- <td>{{customer.address}}</td> -->
               <td>{{customer.activity}}</td>
-              <!-- <td> <i class="fa-solid fa-trash-can fa-lg icon-fontawesome btn-delete" title="Eliminar Cliente"></i>
-                <i class="fa-solid fa-pen-to-square icon-fontawesome fa-lg btn-modif"
-                title="Editar Cliente"
-                ></i>
-              </td> -->
             </tr>
           </tbody>
         </table>
         <p>Total de Clientes: {{totalItems}}</p>
+        <!--* Paginator -->
         <nav *ngIf="totalPages() > 1" aria-label="...">
           <ul class="pagination">
             <li class="page-item" [class.disabled]="page === 1">
               <a class="page-link" href="#" (click)="changePage(page - 1, $event)">Anterior</a>
             </li>
-
             <li class="page-item"
                 *ngFor="let p of [].constructor(totalPages()); let i = index"
                 [class.active]="page === i + 1">
               <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
             </li>
-
             <li class="page-item" [class.disabled]="page === totalPages()">
               <a class="page-link" href="#" (click)="changePage(page + 1, $event)">Siguiente</a>
             </li>
           </ul>
         </nav>
 
-
-
         <!--* Modal -->
         <!--*--------->
         <div #customerModal class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">{{titleForm}}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
               <div class="modal-body">
                     <form [formGroup]="customerForm" autocomplete="off">
+
                       <div class="customer-form">
-                        <div class="" *ngIf="!isNew">
+                        <!-- <div class="" *ngIf="false">
                           <label for="id" class="form-label">ID</label>
                           <input type="text" class="form-control" formControlName="id" id="id" name="id" readonly="true">
                           <span *ngIf="isValidField('id')"
                                 class="form-text text-danger">
                                 {{ getFieldError('id') }}
                           </span>
-                        </div>
+                        </div> -->
                         <div class="">
                           <label for="name" class="form-label">Nombre</label>
                           <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words">
@@ -98,14 +106,7 @@
                                 {{ getFieldError('surname') }}
                           </span>
                         </div>
-                        <div class="">
-                          <label for="created_at" class="form-label">Fecha Alta</label>
-                          <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
-                          <span *ngIf="isValidField('created_at')"
-                                class="form-text text-danger">
-                                {{ getFieldError('created_at') }}
-                          </span>
-                        </div>
+
                         <div class="">
                           <label for="cuit" class="form-label">CUIT</label>
                           <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
@@ -115,6 +116,19 @@
                           </span>
                         </div>
                         <div class="">
+                          <label class="form-label">Cond. Fiscal</label>
+                            <div class="">
+                              <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
+                                <option value="0" disabled selected>Seleccione una Condición</option>
+                                <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
+                              </select>
+                              <span *ngIf="isValidField('id_tax_condition')"
+                                    class="form-text text-danger">
+                                    {{ getFieldError('id_tax_condition') }}
+                              </span>
+                            </div>
+                          </div>
+                        <div class="">
                           <label for="tax_key" class="form-label">Clave Fiscal</label>
                           <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
                           <span *ngIf="isValidField('tax_key')"
@@ -122,18 +136,14 @@
                                 {{ getFieldError('tax_key') }}
                           </span>
                         </div>
-                        <div class="">
-                        <label class="col-sm-3 col-form-label">Cond. Fiscal</label>
-                          <div class="col-sm-9">
-                            <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
-                              <option value="0" disabled selected>Seleccione una Condición</option>
-                              <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
-                            </select>
-                            <span *ngIf="isValidField('id_tax_condition')"
-                                  class="form-text text-danger">
-                                  {{ getFieldError('id_tax_condition') }}
-                            </span>
-                          </div>
+
+                        <div class="" *ngIf="!isNew">
+                          <label for="created_at" class="form-label">Fecha Alta</label>
+                          <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
+                          <span *ngIf="isValidField('created_at')"
+                                class="form-text text-danger">
+                                {{ getFieldError('created_at') }}
+                          </span>
                         </div>
                         <div class="">
                           <label for="email" class="form-label">Email</label>
@@ -160,8 +170,8 @@
                           </span>
                         </div>
                         <div class="">
-                          <label class="col-sm-3 col-form-label">Provincia</label>
-                            <div class="col-sm-9">
+                          <label class="form-label">Provincia</label>
+                            <div class="">
                               <select class="form-select" formControlName="id_province" id="id_province" name="id_province">
                                 <option value="0" disabled selected>Seleccione una Provincia</option>
                                 <option *ngFor="let type of provinces" value="{{type.id}}">{{type.name}}</option>
@@ -195,7 +205,6 @@
                     </form>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" (click)="saveChanges(customerForm)">{{buttonForm}}</button>
                 <button type="button" class="btn btn-danger" *ngIf="!isNew" (click)="onDeleteCustomer(selectedCustomer!)">Eliminar</button>
               </div>

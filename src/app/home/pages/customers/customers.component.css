@@ -7,15 +7,16 @@
   background-color: white;
 } */
 
-.table-row, .icon-fontawesome{
+/* .table-row, .icon-fontawesome{
   cursor: pointer;
-}
+} */
 .table-row:hover{
   --bs-table-bg: #cdebf3; /* Color personalizado, por ejemplo, azul claro */
   /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
 }
 .btn-new{
   color: #00ca0a;
+  cursor: pointer
 }
 .btn-delete{
   color: #f10404;
@@ -37,16 +38,67 @@
 
 .customer-form{
   display: grid;
-  grid-template-columns: 1fr 1fr; /* Dos columnas, la segunda más ancha */
-  grid-gap: 7px; /*Espacio entre los elementos */
+  grid-template-columns: 1fr 1fr 1fr; /* Dos columnas, la segunda más ancha */
+  grid-gap: 10px; /*Espacio entre los elementos */
 }
 
 .customer-form label{
   font-size: 14px;
   font-weight: bold;
-  margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
+  /*margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
 }
-.customer-form input{
+.customer-form input, select{
   border: 1px solid #000000; /* Borde del input */
   font-size: 14px; /* Tamaño de fuente del input */
+}
+
+.modal-title{
+  font-size: 20px;
+  font-weight: bold;
+  color: #194bd6;
+}
+
+/** loader */
+.spinner {
+  width: 100px; /* ajustá según necesidad */
+  height: 100px;
+}
+
+.spinner-animated {
+  transform-origin: center;
+  fill: none;
+  stroke: url(#a12);
+  stroke-width: 13;
+  stroke-linecap: round;
+  stroke-dasharray: 200 1000;
+  stroke-dashoffset: 0;
+  animation: spin 1.6s linear infinite;
+}
+
+.spinner-background {
+  transform-origin: center;
+  fill: none;
+  opacity: 0.2;
+  stroke: #194bd6;
+  stroke-width: 13;
+  stroke-linecap: round;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/** fin loader */
+.content-spinner{
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+
 }
