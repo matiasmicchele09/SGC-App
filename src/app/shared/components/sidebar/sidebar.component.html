@@ -1,24 +1,30 @@
-<div class="p-0 col-auto" style="background-color: #1a3ba8;">
-  <!-- #ffe4e1 color rosadito -->
+<!-- #ffe4e1 color rosadito -->
 <!-- <div class="col-auto col-md-3 col-xl-2 px-sm-2 px-0" style="background-color: #d9dee4;"> -->
+<!-- <div class="p-0 col-auto" style="background-color: #2a3fbd;">
   <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
 
         <span class="fs-4 text-white">Menú</span>
         <hr>
       <ul class="nav nav-pills flex-column mb-auto">
-        <!-- <li class="nav-item">
-          <a href="#" class="nav-link active" aria-current="page">
-            <i class="bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
-          </a>
-        </li> -->
+
         <li class="nav-item">
-          <a class="nav-link" aria-current="page" [routerLink]="['/home/dashboard']" routerLinkActive="active">
+          <a class="nav-link text-white text-decoration-none" aria-current="page" [routerLink]="['/home/dashboard']" routerLinkActive="active">
             <i class="bi-speedometer2"></i> <span class="ms-1 d-none d-sm-inline">Dashboard</span>
           </a>
         </li>
         <li class="nav-item">
-          <a href="#" class="nav-link" aria-current="page" [routerLink]="['/home/customers']" routerLinkActive="active">
+          <a href="#" class="nav-link text-white text-decoration-none" aria-current="page" [routerLink]="['/home/customers']" routerLinkActive="active">
             <i class="bi-people"></i> <span class="ms-1 d-none d-sm-inline">Clientes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link text-white text-decoration-none" aria-current="page" routerLinkActive="active">
+            <i class="bi bi-activity"></i><span class="ms-1 d-none d-sm-inline">Actividades</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" class="nav-link text-white text-decoration-none" aria-current="page" routerLinkActive="active">
+            <i class="bi bi-coin"></i><span class="ms-1 d-none d-sm-inline">Honorarios</span>
           </a>
         </li>
       </ul>
@@ -26,7 +32,7 @@
       <div class="dropdown pb-4">
           <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
               <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
-              <!-- <span class="d-none d-sm-inline mx-1">{{user?.email}}</span> -->
+
           </a>
           <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
               <li><a class="dropdown-item" href="#">Configuración</a></li>
@@ -37,5 +43,52 @@
               <li><a class="dropdown-item" (click)="onLogout()">Salir</a></li>
           </ul>
       </div>
+  </div>
+</div> -->
+<div class="p-0 col-auto" style="background-color: #2a3fbd;">
+  <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 min-vh-100 text-white">
+    <!-- <span class="fs-5 fw-bold mb-3 text-white text-center text-sm-start w-100">Menú</span>
+      -->
+      <span class="fs-5 fw-bold mb-3 text-white text-center text-sm-start w-100">
+        Virginia De Paolo
+      </span>
+    <ul class="nav nav-pills flex-column w-100 mb-auto">
+      <li class="nav-item">
+        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/dashboard']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+          <i class="bi bi-speedometer2"></i> <span class="d-none d-sm-inline">Dashboard</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/customers']" routerLinkActive="active">
+          <i class="bi bi-people"></i> <span class="d-none d-sm-inline">Clientes</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/actividades']" routerLinkActive="active">
+          <i class="bi bi-activity"></i> <span class="d-none d-sm-inline">Actividades</span>
+        </a>
+      </li>
+      <li>
+        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/honorarios']" routerLinkActive="active">
+          <i class="bi bi-coin"></i> <span class="d-none d-sm-inline">Honorarios</span>
+        </a>
+      </li>
+    </ul>
+
+    <hr class="text-white w-100" />
+
+    <!-- Usuario -->
+    <div class="dropdown pb-4 w-100">
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://github.com/mdo.png" alt="usuario" width="32" height="32" class="rounded-circle me-2">
+        <span class="d-none d-sm-inline">Usuario</span>
+      </a>
+      <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="dropdownUser">
+        <li><a class="dropdown-item" href="#">Configuración</a></li>
+        <li><a class="dropdown-item" href="#">Perfil</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" (click)="onLogout()">Salir</a></li>
+      </ul>
+    </div>
   </div>
 </div>

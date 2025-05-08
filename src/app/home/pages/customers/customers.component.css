@@ -11,6 +11,7 @@
   cursor: pointer;
 } */
 .table-row:hover{
+  cursor: pointer;
   --bs-table-bg: #cdebf3; /* Color personalizado, por ejemplo, azul claro */
   /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
 }

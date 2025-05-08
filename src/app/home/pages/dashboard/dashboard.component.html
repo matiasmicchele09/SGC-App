@@ -1,1 +1,102 @@
-<h3>DASHBOARD</h3>
+
+  <div class="container py-4">
+    <h1 class="mb-4">Bienvenida Virginia</h1>
+
+    <!-- Resumen General -->
+    <div class="row g-4">
+      <div class="col-md-3">
+        <div class="card text-bg-primary shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Clientes activos</h5>
+            <p class="fs-3">45</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-bg-success shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Ingresos del mes</h5>
+            <p class="fs-3">$ 320.000</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-bg-warning shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Declaraciones pendientes</h5>
+            <p class="fs-3">8</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="card text-bg-danger shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">Vencimientos esta semana</h5>
+            <p class="fs-3">3</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vencimientos -->
+    <div class="mt-5">
+      <h4>Próximos Vencimientos</h4>
+      <ul class="list-group">
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          IVA - Cliente López S.A.
+          <span class="badge bg-danger rounded-pill">5 de Mayo</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Monotributo - Cliente Fernández
+          <span class="badge bg-warning rounded-pill">6 de Mayo</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          Ingresos Brutos - Cliente Marta Pérez
+          <span class="badge bg-primary rounded-pill">8 de Mayo</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Gestión de Clientes -->
+    <div class="mt-5">
+      <h4>Clientes</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Última declaración</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>López S.A.</td>
+            <td>Responsable Inscripto</td>
+            <td>30/04/2025</td>
+            <td><span class="badge bg-success">Al día</span></td>
+          </tr>
+          <tr>
+            <td>Fernández Juan</td>
+            <td>Monotributista</td>
+            <td>28/04/2025</td>
+            <td><span class="badge bg-warning">Pendiente</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Accesos rápidos -->
+    <div class="mt-5">
+      <h4>Accesos rápidos</h4>
+      <div class="d-flex flex-wrap gap-3">
+        <button class="btn btn-outline-primary">➕ Agregar Cliente</button>
+        <button class="btn btn-outline-secondary">📤 Cargar Documentación</button>
+        <button class="btn btn-outline-success">🧾 Nueva Declaración</button>
+        <button class="btn btn-outline-dark">📊 Descargar Reporte</button>
+      </div>
+    </div>
+  </div>
+
+
+

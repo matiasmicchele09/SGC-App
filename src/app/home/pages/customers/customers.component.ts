@@ -25,6 +25,7 @@ export class CustomersComponent {
   public save: boolean = false;
 
   public customers: Customer[] = [];
+  public  filteredCustomers: Customer[] = [];
   public provinces: Province[] = []
   public selectedCustomer: Customer | null = null;
   public taxConditions: Tax_Condition[] = []
@@ -78,7 +79,8 @@ export class CustomersComponent {
     }).subscribe({
       next: ({ customers, tax_conditions, provinces }) => {
         this.customers = customers.filter(c => c.active === true);
-        this.totalItems = this.customers.length;
+        this.filteredCustomers = [...this.customers];
+        this.totalItems = this.filteredCustomers.length;
         this.taxConditions = tax_conditions;
         this.provinces = provinces;
 
@@ -105,8 +107,8 @@ export class CustomersComponent {
     })
   }
 
-  updatePage() {
-    const sorted = [...this.customers].sort((a, b) => a.id - b.id);
+  updatePage(): void {
+    const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
     const startIndex = (this.page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.customersPerPage = sorted.slice(startIndex, endIndex);
@@ -130,11 +132,11 @@ export class CustomersComponent {
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
   }
+
   onCustomer(customer: Customer | null, isNew: boolean) {
     this.pristine = false
     this.isNew = isNew;
     this.selectedCustomer = customer;
-    console.log(this.selectedCustomer);
 
     if (isNew) {
       this.titleForm = 'Nuevo Cliente';
@@ -162,6 +164,20 @@ export class CustomersComponent {
       modal.show();
     }
   }
+
+  onSearch(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const search = input.value.toLowerCase();
+    this.filteredCustomers = this.customers.filter((customer: Customer) =>
+      customer.name.toLowerCase().includes(search) ||
+      customer.surname.toLowerCase().includes(search)
+    );
+
+    this.totalItems = this.filteredCustomers.length;
+    this.page = 1; // opcional, volver a la primera página
+    this.updatePage();
+  }
+
 
   areAllFieldsPristine(): boolean {
     const controls = this.customerForm.controls;
@@ -215,7 +231,7 @@ export class CustomersComponent {
 
     if (this.isNew) {
       console.log(customer.value);
-      const newCustomer = { ...customer.value, id_user: 2, created_at: new Date().toISOString(), active: true, deactivated_at: null };
+      const newCustomer = { ...customer.value, id_user: this.authService.user!.id, created_at: new Date().toISOString(), active: true, deactivated_at: null };
       this.alertService.confirm('¿Desea agregar este cliente?', '').then((result) => {
         if (result.isConfirmed) {
           this.customerService.addCustomer(newCustomer).subscribe({
