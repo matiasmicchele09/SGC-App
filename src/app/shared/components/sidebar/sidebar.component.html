@@ -53,7 +53,7 @@
         Virginia De Paolo
       </span>
     <ul class="nav nav-pills flex-column w-100 mb-auto">
-      <li class="nav-item">
+      <li>
         <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/dashboard']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bi bi-speedometer2"></i> <span class="d-none d-sm-inline">Dashboard</span>
         </a>
@@ -79,16 +79,15 @@
 
     <!-- Usuario -->
     <div class="dropdown pb-4 w-100">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-        <img src="https://github.com/mdo.png" alt="usuario" width="32" height="32" class="rounded-circle me-2">
-        <span class="d-none d-sm-inline">Usuario</span>
-      </a>
-      <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="dropdownUser">
-        <li><a class="dropdown-item" href="#">Configuración</a></li>
-        <li><a class="dropdown-item" href="#">Perfil</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" (click)="onLogout()">Salir</a></li>
+
+      <ul class="nav nav-pills flex-column w-100 mb-auto">
+        <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active"><span class="d-none d-sm-inline">Configuración</span></a></li>
+        <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active">Perfil</a></li>
+        <hr class="text-white w-100" />
+        <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active" (click)="onLogout()">Salir</a></li>
       </ul>
     </div>
+
+
   </div>
 </div>
