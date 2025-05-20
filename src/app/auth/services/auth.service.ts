@@ -18,10 +18,10 @@ export class AuthService {
   }
 
   constructor(private http: HttpClient) {
-    //this.validateSession();
-    this.validateSession().pipe(
-      tap(user => console.log("user", user))
-    );
+    // this.getCurrentUser().subscribe(user => {
+    //   console.log("user", user);
+    //   this._user = user;
+    // });
   }
 
   login(email: string, pass: string): Observable<User> {
@@ -34,18 +34,43 @@ export class AuthService {
       )
   }
 
+//   getCurrentUser(): Observable<User | null> {
+//   return this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true }).pipe(
+//     tap(user => this._user = user),
+//     catchError(err => {
+//       this._user = null;
+//       return of(null); // Si no está autenticado
+//     })
+//   );
+// }
+
+
+  getUser(id: number): Observable<User> {
+    return this.http.get<User>(`${this.baseUrl}/users/${id}`)
+    .pipe(
+      tap(user => {
+        this._user = user;
+        console.log("user", user);
+      }),
+      // catchError((error: HttpErrorResponse) => {
+      //   console.error('Error al obtener el usuario:', error);
+      //   return of(null); // o manejar el error de otra manera
+      // })
+    )
+
+
+  }
+
+
 
   validateSession(): Observable<boolean> {
     return this.http.get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
       .pipe(
         tap(user => {
           this._user = user
-          console.log("user", user);
         }),
         map(user => {
-          //!!user
           const isAuthenticated = !!user;
-          //console.log("¿Está autenticado? (validateSession):", isAuthenticated);
           return isAuthenticated;
         }), // Si existe el usuario, devuelve true, sino false
         catchError((error) => {
@@ -53,8 +78,7 @@ export class AuthService {
           return of(false)
         }) // Si falla, simplemente devuelve false
       );
-  }
-
+    }
 
 
   private handleError(error: HttpErrorResponse): Observable<never> {    ;

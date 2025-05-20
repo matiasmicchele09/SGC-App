@@ -4,6 +4,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CustomersComponent } from './pages/customers/customers.component';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { authGuard } from '../auth/guards/auth.guard';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 
 const routes: Routes = [
@@ -14,6 +15,7 @@ const routes: Routes = [
     children:[
       {path: 'dashboard', component: DashboardComponent},
       {path: 'customers', component: CustomersComponent},
+      {path: 'my-profile', component: ProfileComponent},
       {path: '**', redirectTo: 'dashboard'}]
 }
 

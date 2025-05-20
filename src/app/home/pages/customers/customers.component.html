@@ -29,7 +29,7 @@
               <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
                  title="Agregar Cliente"></i>
             </caption>
-            <input type="text" class="form-control my-4" placeholder="Buscar Cliente"
+            <input type="text" class="form-control mt-3" placeholder="Buscar Cliente"
             (input)="onSearch($event)"
             >
             <!-- (input)="onSearch($event)"  -->
@@ -57,7 +57,7 @@
                 </tr>
               </tbody>
             </table>
-            <p>Total de Clientes: {{totalItems}}</p>
+            <b class="my-0">Total de Clientes: {{totalItems}}</b>
             <!--* Paginator -->
             <nav *ngIf="totalPages() > 1" aria-label="...">
               <ul class="pagination">
@@ -78,16 +78,14 @@
 
 
           </div>
-        </ng-container>
-        <ng-template #noCustomers>
-          <div class="mt-5">
-            <h2>¡Usted no tiene ningún cliente!</h2>
-            <button class="btn btn-outline-success" (click)="onCustomer(selectedCustomer, true)">Agregar
-              <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"></i></button>
-          </div>
-        </ng-template>
-
-
+      </ng-container>
+      <ng-template #noCustomers>
+        <div class="mt-5" *ngIf="!loading">
+          <h2>¡Usted no tiene ningún cliente!</h2>
+          <button class="btn btn-outline-success" (click)="onCustomer(selectedCustomer, true)">Agregar
+            <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"></i></button>
+        </div>
+      </ng-template>
 
       <!--* Modal -->
       <!--*--------->

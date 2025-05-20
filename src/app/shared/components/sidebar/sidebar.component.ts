@@ -12,16 +12,21 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 export class SidebarComponent {
 
 
-  //authService: AuthService;
+  public user : User | null = null;
 
   constructor(private authService:AuthService,
               private router: Router) {
-  }
+                // console.log(this.user);
+                // this.authService.getUser(this.user!.id).subscribe(user => {
+                //   console.log("user", user);
+                //   //this.authService.user = user;
+                // });
 
-  get user():User | null{
-    // console.log("sidebar", this.authService.user);
-    return this.authService.user;
-  }
+                this.authService.getUser(this.authService.user!.id).subscribe(user => {
+                  console.log("user", user);
+                  this.user = user;
+                })
+              }
 
   onLogout(){
 

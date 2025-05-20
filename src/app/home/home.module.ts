@@ -6,6 +6,7 @@ import { HomeRoutingModule } from './home-routing.module';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ProfileComponent } from './pages/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -13,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     DashboardComponent,
     SidebarComponent,
     LayoutComponent,
+    ProfileComponent,
   ],
   imports: [
     CommonModule,

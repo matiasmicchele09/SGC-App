@@ -64,7 +64,10 @@ export class CustomersComponent {
               private authService: AuthService,
               private alertService: AlertService) {
 
-
+    // this.authService.getCurrentUser().subscribe(user => {
+    //   console.log("user", user);
+    //   this.loadCustomers(user!.id);
+    // });
     this.loadCustomers(this.authService.user!.id);
   }
 
