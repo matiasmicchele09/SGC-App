@@ -68,7 +68,7 @@ export class CustomersComponent {
     //   console.log("user", user);
     //   this.loadCustomers(user!.id);
     // });
-    this.loadCustomers(this.authService.user!.id);
+    this.loadCustomers(this.authService.user!.id_user);
   }
 
   loadCustomers(id_user: number) {
@@ -105,7 +105,7 @@ export class CustomersComponent {
         console.error(err);
       }
       , complete: () => {
-        console.log("complete");
+        //console.log("complete");
       }
     })
   }
@@ -234,7 +234,7 @@ export class CustomersComponent {
 
     if (this.isNew) {
       console.log(customer.value);
-      const newCustomer = { ...customer.value, id_user: this.authService.user!.id, created_at: new Date().toISOString(), active: true, deactivated_at: null };
+      const newCustomer = { ...customer.value, id_user: this.authService.user!.id_user, created_at: new Date().toISOString(), active: true, deactivated_at: null };
       this.alertService.confirm('¿Desea agregar este cliente?', '').then((result) => {
         if (result.isConfirmed) {
           this.customerService.addCustomer(newCustomer).subscribe({
@@ -245,7 +245,7 @@ export class CustomersComponent {
 
               // ❌ Cerrar el modal
               closeBootstrapModal(this.customerModalRef);
-              this.loadCustomers(this.authService.user!.id);
+              this.loadCustomers(this.authService.user!.id_user);
             }
             , error: (err) => {
               this.alertService.error('Error: No se pudo agregar el cliente', err.error.message);
@@ -271,7 +271,7 @@ export class CustomersComponent {
 
               // ❌ Cerrar el modal
               closeBootstrapModal(this.customerModalRef);
-              this.loadCustomers(this.authService.user!.id);
+              this.loadCustomers(this.authService.user!.id_user);
             }
             , error: (err) => {
               this.alertService.error('Error: No se pudieron modificar los datos', err.error.message);
@@ -303,7 +303,7 @@ export class CustomersComponent {
 
             // ❌ Cerrar el modal
             closeBootstrapModal(this.customerModalRef);
-            this.loadCustomers(this.authService.user!.id);
+            this.loadCustomers(this.authService.user!.id_user);
           }
           , error: (err) => {
             this.alertService.error('Error: No se pudo eliminar el cliente', err.error.message);

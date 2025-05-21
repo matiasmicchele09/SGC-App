@@ -10,7 +10,7 @@ export class DashboardComponent {
 
   constructor(private authService: AuthService) {
 
-    console.log("DASHBOARD", this.authService.user);
+    //console.log("DASHBOARD", this.authService.user);
   }
   // OnInit(): void {
   //   this.authService

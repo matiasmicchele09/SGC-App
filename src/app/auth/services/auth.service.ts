@@ -34,15 +34,15 @@ export class AuthService {
       )
   }
 
-//   getCurrentUser(): Observable<User | null> {
-//   return this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true }).pipe(
-//     tap(user => this._user = user),
-//     catchError(err => {
-//       this._user = null;
-//       return of(null); // Si no está autenticado
-//     })
-//   );
-// }
+  getCurrentUser(): Observable<User | null> {
+  return this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true }).pipe(
+    tap(user => this._user = user),
+    catchError(err => {
+      this._user = null;
+      return of(null); // Si no está autenticado
+    })
+  );
+}
 
 
   getUser(id: number): Observable<User> {

@@ -22,8 +22,9 @@ export class SidebarComponent {
                 //   //this.authService.user = user;
                 // });
 
-                this.authService.getUser(this.authService.user!.id).subscribe(user => {
-                  console.log("user", user);
+                //console.log(this.authService.user?.id_user);
+                this.authService.getUser(this.authService.user!.id_user).subscribe(user => {
+                  //console.log("user", user);
                   this.user = user;
                 })
               }

@@ -1,0 +1,47 @@
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  /* align-content: center; */
+  margin:auto;
+  height: 100vh;
+  max-width: 600px;
+  background-color: #f3f5ff; /* azul muy claro */
+  padding: 2rem;
+}
+
+.form-label i {
+  margin-right: 6px;
+}
+
+.btn-edit {
+  background-color: #2a3fbd;
+  color: #ffffff;
+}
+
+.btn-edit:hover {
+  background-color: #1f32a1;
+  border-color: #1f32a1;
+}
+
+.btn-edit2 {
+  background-color: #2a3fbd;
+  color: #ffffff;
+}
+
+.btn-edit2:hover {
+  background-color: #1f32a1;
+  border-color: #1f32a1;
+}
+
+.btn-primary{
+  color: #ffffff ;
+  background-color: #198754;
+  border-color: #198754 ;
+}
+
+.btn-primary:hover{
+  background-color: #157347;
+  border-color: #157347 ;
+}

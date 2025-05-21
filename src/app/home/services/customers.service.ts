@@ -30,11 +30,11 @@ export class CustomersService {
   getCustomers(id_user: number): Observable<Customer[]>  {
 
     const params = new HttpParams().set('id_user', id_user);
-    console.log( params);
+    //console.log( params);
 
     return this.http.get<Customer[]>(`${this.baseUrl}/customers`,{ params })
       .pipe(
-        tap(customers=> console.log("customers", customers)),
+        //tap(customers=> console.log("customers", customers)),
         catchError(this.handleError)
       );
   }

@@ -36,7 +36,9 @@
 
       <ul class="nav nav-pills flex-column w-100 mb-auto">
         <!-- <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active"><span class="d-none d-sm-inline">Configuración</span></a></li> -->
-        <li><a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/my-profile']" routerLinkActive="active">Perfil</a></li>
+        <li><a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/my-profile']" routerLinkActive="active">
+          <i class="bi bi-person-circle"></i><span class="d-none d-sm-inline">Perfil</span>
+        </a></li>
         <hr class="text-white w-100" />
         <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active" (click)="onLogout()">Salir</a></li>
       </ul>

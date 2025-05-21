@@ -1,1 +1,98 @@
-<p>profile works!</p>
+<!-- Formulario -->
+<div class="form-container">
+
+  <!-- <div class="mb-3">
+    <label for="userId" class="form-label">
+      <i class="bi bi-hash"></i>ID (no editable)
+    </label>
+    <input type="text" id="userId" class="form-control bg-light text-muted" value="123" disabled>
+  </div> -->
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit('profile')">
+    <h3>Datos del perfil</h3>
+    <hr>
+
+    <div class="mb-3">
+      <label for="name" class="form-label">
+        <i class="bi bi-person-fill"></i>Nombre
+      </label>
+      <input type="text" id="name" class="form-control" formControlName="name">
+      <span *ngIf="isValidField('name', 'profile')"
+            class="form-text text-danger">
+            {{ getFieldError('name', 'profile') }}
+      </span>
+    </div>
+
+    <div class="mb-3">
+      <label for="surname" class="form-label">
+        <i class="bi bi-person-lines-fill"></i>Apellido
+      </label>
+      <input type="text" id="surname" class="form-control" formControlName="surname">
+    </div>
+    <span *ngIf="isValidField('surname', 'profile')"
+          class="form-text text-danger">
+          {{ getFieldError('surname', 'profile') }}
+    </span>
+
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button"
+              [ngClass]="isEditProfile ? 'btn btn-outline-secondary' : 'btn btn-edit'"
+              (click)="onEdit('profile')">
+        <i [ngClass]="isEditProfile ? 'bi bi-x-circle' : 'bi bi-pen'"></i> {{titleButtonProfile}}
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="!isEditProfile">
+        <i class="bi bi-check-circle"></i> Guardar
+      </button>
+    </div>
+  </form>
+
+  <form [formGroup]="accountForm" (ngSubmit)="onSubmit('account')">
+    <h3>Datos de la cuenta</h3>
+    <hr>
+
+    <div class="mb-3">
+      <label for="email" class="form-label">
+        <i class="bi bi-envelope-at"></i>Email
+      </label>
+      <input type="email" id="email" class="form-control" formControlName="email">
+    </div>
+    <span *ngIf="isValidField('email', 'account')"
+          class="form-text text-danger">
+          {{ getFieldError('email', 'account') }}
+    </span>
+
+    <div class="mb-3">
+      <div class="mb-3 position-relative">
+        <label for="password" class="form-label">
+          <i class="bi bi-lock-fill"></i>Contraseña
+        </label>
+        <input type="password" id="password" class="form-control pe-5" formControlName="password">
+        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 m" id="togglePassword" style="cursor: pointer;"></i>
+      </div>
+      <div class="mb-3 position-relative">
+        <label for="password" class="form-label">
+          <i class="bi bi-lock-fill"></i>Repetir Contraseña
+        </label>
+        <input type="password" id="password" class="form-control pe-5" formControlName="passwordConfirm">
+        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 m" id="togglePassword" style="cursor: pointer;"></i>
+      </div>
+
+    </div>
+
+
+
+
+
+    <div class="d-flex justify-content-end gap-2">
+     <button type="button"
+              [ngClass]="isEditAccount ? 'btn btn-outline-secondary' : 'btn btn-edit2'"
+              (click)="onEdit('account')">
+        <i [ngClass]="isEditAccount ? 'bi bi-x-circle' : 'bi bi-pen'"></i> {{titleButtonAccount}}
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="!isEditAccount">
+        <i class="bi bi-check-circle"></i> Guardar
+      </button>
+    </div>
+  </form>
+</div>
+
+
