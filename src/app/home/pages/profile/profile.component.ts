@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { UserService } from 'src/app/auth/services/user.service';
+import { AlertService } from 'src/app/shared/services/alerts.service';
 
 
 @Component({
@@ -26,8 +28,11 @@ export class ProfileComponent {
   public isEditProfile: boolean = false;
   public isEditAccount: boolean = false;
   public originalData: any;
+
   constructor(private fb: FormBuilder,
-              private authService: AuthService){}
+              private authService: AuthService,
+              private userService: UserService,
+              private alertService: AlertService ){}
 
   ngOnInit(): void {
     this.authService.getUser(this.authService.user!.id_user).subscribe((user) => {
@@ -153,6 +158,36 @@ export class ProfileComponent {
 
   onSubmit(form:string){
     if (form === 'profile'){
+
+      this.alertService.confirm('¿Desea modificar sus datos de perfil?', '')
+      .then((result) => {
+        if (result.isConfirmed) {
+          console.log(this.authService.user!.id_user);
+          console.log(this.profileForm.value);
+          this.userService.updateUser(this.authService.user!.id_user, this.profileForm.value)
+            .subscribe({
+              next: (res) => {
+                console.log(res);
+                this.authService.setUser(res);
+                this.alertService.success('Datos actualizados correctamente');
+                this.isEditProfile = false;
+                this.titleButtonProfile = 'Editar';
+
+
+              },
+              error: (err) => {
+                console.log(err);
+                this.alertService.error('Error al actualizar los datos');
+              }, complete: () => {
+              console.log("complete");
+            }
+          })
+        } else if (result.isDismissed) {
+
+        }
+      })
+
+
       // this.authService.updateUser(this.profileForm.value).subscribe((res) => {
       //   console.log(res);
       //   this.isEditProfile = false;

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { enviroments } from 'src/environments/environments'
 import { User } from '../interfaces/user.interface';
-import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,17 +11,29 @@ export class AuthService {
 
   private baseUrl: string = enviroments.baseUrl;
   private _user!: User | null;
+  private userSubject = new BehaviorSubject<User | null>(null);
+  user$ = this.userSubject.asObservable(); // Para usar con async pipe
+
 
   //getter para obtener el usuario de la variable privada
   get user():User | null {
     return this._user ? { ...this._user } : null;
   }
+  //  get user(): User | null {
+  //   return this.userSubject.value;
+  // }
 
   constructor(private http: HttpClient) {
     // this.getCurrentUser().subscribe(user => {
     //   console.log("user", user);
     //   this._user = user;
     // });
+  }
+  setUser(user: User) {
+    this.userSubject.next(user);
+  }
+  clearUser() {
+    this.userSubject.next(null);
   }
 
   login(email: string, pass: string): Observable<User> {
@@ -30,6 +42,10 @@ export class AuthService {
       .pipe(
         tap(user => console.log("user", user)),
         tap(user => this._user = user),
+        // tap(user => {
+        //   //this._user = user;
+        //   this.userSubject.next(user);
+        // }),
         catchError(this.handleError)
       )
   }
@@ -60,8 +76,6 @@ export class AuthService {
 
 
   }
-
-
 
   validateSession(): Observable<boolean> {
     return this.http.get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
