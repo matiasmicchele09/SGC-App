@@ -1,12 +1,4 @@
-<!-- Formulario -->
 <div class="form-container">
-
-  <!-- <div class="mb-3">
-    <label for="userId" class="form-label">
-      <i class="bi bi-hash"></i>ID (no editable)
-    </label>
-    <input type="text" id="userId" class="form-control bg-light text-muted" value="123" disabled>
-  </div> -->
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit('profile')">
     <h3>Datos del perfil</h3>
     <hr>
@@ -32,6 +24,9 @@
           class="form-text text-danger">
           {{ getFieldError('surname', 'profile') }}
     </span>
+    <div *ngIf="pristineProfile" class="form-text text-danger">
+      Ningún campo ha sido modificado
+    </div>
 
     <div class="d-flex justify-content-end gap-2">
       <button type="button"
@@ -65,22 +60,34 @@
         <label for="password" class="form-label">
           <i class="bi bi-lock-fill"></i>Contraseña
         </label>
-        <input type="password" id="password" class="form-control pe-5" formControlName="password">
-        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 m" id="togglePassword" style="cursor: pointer;"></i>
+        <input #inputPass type="password" id="password" class="form-control pe-5" formControlName="password" (blur)="checkPassword()">
+        <i [ngClass]="!isShowPass ? 'bi bi-eye position-absolute top-50 end-0 me-3 m' : 'bi bi-eye-slash position-absolute top-50 end-0 me-3 m'"
+           [title]="isShowPass ? 'Ocultar Contraseña' : 'Mostrar Contraseña'"
+           id="togglePassword"
+           style="cursor: pointer;"
+           (click)="showPass('password', inputPass)">
+        </i>
       </div>
       <div class="mb-3 position-relative">
-        <label for="password" class="form-label">
+        <label for="passwordConfirm" class="form-label">
           <i class="bi bi-lock-fill"></i>Repetir Contraseña
         </label>
-        <input type="password" id="password" class="form-control pe-5" formControlName="passwordConfirm">
-        <i class="bi bi-eye position-absolute top-50 end-0 translate-middle-y me-3 m" id="togglePassword" style="cursor: pointer;"></i>
+        <input #inputPassConfirm type="password" id="passwordConfirm" class="form-control pe-5" formControlName="passwordConfirm" (blur)="checkPassword()">
+        <i [ngClass]="!isShowPass ? 'bi bi-eye position-absolute top-50 end-0 me-3 m' : 'bi bi-eye-slash position-absolute top-50 end-0 me-3 m'"
+           [title]="isShowPassConfirm ? 'Ocultar Contraseña' : 'Mostrar Contraseña'"
+           id="togglePassword"
+           style="cursor: pointer;"
+           (click)="showPass('passwordConfirm', inputPassConfirm)">
+        </i>
       </div>
-
+      <span *ngIf="isValidField('passwordConfirm', 'account')"
+          class="form-text text-danger">
+          {{ getFieldError('passwordConfirm', 'account') }}
+      </span>
+      <div *ngIf="pristineAccount" class="form-text text-danger">
+        Ningún campo ha sido modificado
+      </div>
     </div>
-
-
-
-
 
     <div class="d-flex justify-content-end gap-2">
      <button type="button"

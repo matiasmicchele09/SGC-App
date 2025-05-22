@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/auth/services/auth.service';
 import { UserService } from 'src/app/auth/services/user.service';
@@ -27,6 +27,10 @@ export class ProfileComponent {
   public titleButtonAccount: string = 'Editar';
   public isEditProfile: boolean = false;
   public isEditAccount: boolean = false;
+  public isShowPass: boolean = false;
+  public isShowPassConfirm: boolean = false;
+  public pristineProfile: boolean = false;
+  public pristineAccount: boolean = false;
   public originalData: any;
 
   constructor(private fb: FormBuilder,
@@ -35,174 +39,159 @@ export class ProfileComponent {
               private alertService: AlertService ){}
 
   ngOnInit(): void {
-    this.authService.getUser(this.authService.user!.id_user).subscribe((user) => {
-      console.log(user);
-      this.profileForm.patchValue({
-        name: user.name,
-        surname: user.surname
-      })
-
-      this.originalData = {
-        name: user.name,
-        surname: user.surname,
-        email: user.email
-      }
-
-
-      this.profileForm.get('name')?.disable();
-      this.profileForm.get('surname')?.disable();
-
-      this.accountForm.patchValue({
-        email: user.email
-      });
-      this.accountForm.get('email')?.disable();
-      this.accountForm.get('password')?.disable();
-      this.accountForm.get('passwordConfirm')?.disable();
-
-    })
-
-
+    this.loadProfile();
   }
 
-  onEdit(form:string){
-    if (form === 'profile'){
-      this.isEditProfile = !this.isEditProfile;
+  loadProfile(){
+    this.authService.getUser(this.authService.user!.id_user)
+      .subscribe((user) => {
+        console.log(user);
 
-      if(this.isEditProfile){
-        this.profileForm.get('name')?.enable();
-        this.profileForm.get('surname')?.enable();
-        this.titleButtonProfile = 'Cancelar';
-      }
-      else{
-        this.profileForm.reset({
-          name: this.originalData.name,
-          surname: this.originalData.surname
-          });
+        this.profileForm.patchValue({
+          name: user.name,
+          surname: user.surname
+        })
 
-          this.profileForm.get('name')?.disable();
-          this.profileForm.get('surname')?.disable();
-          this.titleButtonProfile = 'Editar';
-      }
-    }
-    else if (form === 'account'){
-      this.isEditAccount = !this.isEditAccount;
+        this.originalData = {
+          name: user.name,
+          surname: user.surname,
+          email: user.email
+        }
 
-      if(this.isEditAccount){
-        this.accountForm.get('email')?.enable();
-        this.accountForm.get('password')?.enable();
-        this.accountForm.get('passwordConfirm')?.enable();
-        this.titleButtonAccount = 'Cancelar';
-      }
-      else{
-        this.accountForm.reset({
-          email: this.originalData.email
+        this.profileForm.get('name')?.disable();
+        this.profileForm.get('surname')?.disable();
+
+        this.accountForm.patchValue({
+          email: user.email
         });
 
         this.accountForm.get('email')?.disable();
         this.accountForm.get('password')?.disable();
         this.accountForm.get('passwordConfirm')?.disable();
-        this.titleButtonAccount = 'Editar';
-      }
-    }
+      })
   }
 
-  // areAllFieldsPristine(): boolean {
-  //   const controls = this.profileForm.controls;
-  //   return controls['name'].pristine &&
-  //          controls['surname'].pristine &&
-  //          controls['email'].pristine &&
-  //          controls['phone'].pristine &&
-  //          controls['cuit'].pristine &&
-  //          controls['activity'].pristine &&
-  //          controls['city'].pristine;
-  // }
-
-  isValidField(field: string, form:string): boolean | null{
-
-    if (form === 'profile'){
-      return this.profileForm.controls[field].errors &&
-             this.profileForm.controls[field].touched
-    }
-    else if (form === 'account'){
-      return this.accountForm.controls[field].errors &&
-             this.accountForm.controls[field].touched
-    }
-    return null;
+  areAllFieldsPristine(form: 'profile' | 'account'): boolean {
+    const controls = form === 'profile' ? this.profileForm.controls : this.accountForm.controls;
+    return Object.keys(controls).every(control => controls[control].pristine);
   }
 
-  getFieldError(field:string,  form:string):string | null {
+  isValidField(field: string, form: 'profile' | 'account'): boolean | null{
+    const controls = form === 'profile' ? this.profileForm.controls : this.accountForm.controls;
+    return controls[field].errors && controls[field].touched;
+  }
+
+  getFieldError(field:string,  form: 'profile' | 'account'):string | null {
     let errors: any;
-    if (form === 'profile'){
-      if (!this.profileForm.controls[field]) return null;
-      errors = this.profileForm.controls[field].errors || {};
-    }
-    else if (form === 'account'){
-      if (!this.accountForm.controls[field]) return null;
-      errors = this.accountForm.controls[field].errors || {};
+    const controls = form === 'profile' ? this.profileForm.controls : this.accountForm.controls;
 
-    }
+    if (!controls[field]) return null;
+    errors = controls[field].errors || {};
 
     for (const key of Object.keys(errors)) {
-
       switch(key){
         case 'required':
           return 'Este campo es requerido';
-
-        // case 'minlength':
-        //   return `Mínimo ${errors['minlength'].requiredLength} caracteres`
+        case 'notEqual':
+          return 'Las contraseñas no coinciden';
       }
     }
     return null;
   }
 
+  checkPassword(){
+    const password = this.accountForm.get('password')?.value;
+    const passwordConfirm = this.accountForm.get('passwordConfirm')?.value;
 
-  onSubmit(form:string){
-    if (form === 'profile'){
+    if (password !== passwordConfirm){
+      this.accountForm.get('passwordConfirm')?.setErrors({notEqual: true});
+      this.accountForm.get('password')?.setErrors({notEqual: true});
+    }
+    else{
+      this.accountForm.get('passwordConfirm')?.setErrors(null);
+      this.accountForm.get('password')?.setErrors(null);
+    }
+  }
 
-      this.alertService.confirm('¿Desea modificar sus datos de perfil?', '')
-      .then((result) => {
-        if (result.isConfirmed) {
-          console.log(this.authService.user!.id_user);
-          console.log(this.profileForm.value);
-          this.userService.updateUser(this.authService.user!.id_user, this.profileForm.value)
+  showPass(inputPassRef: string, inputelement: HTMLInputElement){
+    if (inputPassRef === 'password'){
+      this.isShowPass = !this.isShowPass;
+      inputelement.type = this.isShowPass ? 'text' : 'password';
+    }
+    else if (inputPassRef === 'passwordConfirm'){
+      this.isShowPassConfirm = !this.isShowPassConfirm;
+      inputelement.type = this.isShowPassConfirm ? 'text' : 'password';
+    }
+  }
+
+  onEdit(form:'profile' | 'account'){
+    console.log(form);
+    const pristineCheck = form === 'profile' ? 'pristineProfile' : 'pristineAccount';
+    const isEditFlag = form === 'profile' ? 'isEditProfile' : 'isEditAccount';
+    const formGroup = form === 'profile' ? 'profileForm' : 'accountForm';
+    const titleButton = form === 'profile' ? 'titleButtonProfile' : 'titleButtonAccount';
+
+    console.log(this[isEditFlag]);
+    this[isEditFlag] = !this[isEditFlag];
+
+    if (this[isEditFlag]){
+      this[pristineCheck] = false
+      Object.keys(this[formGroup].controls).forEach((key) => {
+        this[formGroup].get(key)?.enable();
+      })
+      this[titleButton] = 'Cancelar';
+    } else {
+      this[formGroup].patchValue(this.originalData);
+      Object.keys(this[formGroup].controls).forEach((key) => {
+        this[formGroup].get(key)?.disable();
+        this[titleButton] = 'Editar';
+      })
+    }
+  }
+
+  onSubmit(form: 'profile' | 'account') {
+    const isProfile = form === 'profile';
+    const formGroup = isProfile ? this.profileForm : this.accountForm;
+    const pristineCheck = isProfile ? this.areAllFieldsPristine('profile') : this.areAllFieldsPristine('account');
+    const pristineFlag = isProfile ? 'pristineProfile' : 'pristineAccount';
+    const isEditFlag = isProfile ? 'isEditProfile' : 'isEditAccount';
+    const titleButton = isProfile ? 'titleButtonProfile' : 'titleButtonAccount';
+    const confirmMessage = isProfile ? '¿Desea modificar sus datos de perfil?' : '¿Desea modificar sus datos de cuenta?';
+
+    formGroup.markAllAsTouched();
+
+    if (formGroup.invalid) return;
+
+    if (pristineCheck) {
+      this[pristineFlag] = true;
+      return;
+    } else this[pristineFlag] = false;
+
+    this.alertService.confirm(confirmMessage, '')
+      .then(result =>{
+        if (result.isConfirmed){
+          const userId = this.authService.user!.id_user;
+          const formData = formGroup.value
+
+          this.userService.updateUser(userId, formData)
             .subscribe({
               next: (res) => {
                 console.log(res);
                 this.authService.setUser(res);
                 this.alertService.success('Datos actualizados correctamente');
-                this.isEditProfile = false;
-                this.titleButtonProfile = 'Editar';
-
-
+                this[isEditFlag] = false;
+                this[titleButton] = 'Editar';
+                this.loadProfile();
               },
               error: (err) => {
                 console.log(err);
                 this.alertService.error('Error al actualizar los datos');
-              }, complete: () => {
-              console.log("complete");
-            }
-          })
-        } else if (result.isDismissed) {
-
+              },
+              complete: () => {
+                console.log("complete");
+              }
+            })
         }
       })
-
-
-      // this.authService.updateUser(this.profileForm.value).subscribe((res) => {
-      //   console.log(res);
-      //   this.isEditProfile = false;
-      //   this.titleButtonProfile = 'Editar';
-      // })
-    }
-    else if (form === 'account'){
-      // this.authService.updateUser(this.accountForm.value).subscribe((res) => {
-      //   console.log(res);
-      //   this.isEditAccount = false;
-      //   this.titleButtonAccount = 'Editar';
-      // })
-    }
-
   }
-
-
 }

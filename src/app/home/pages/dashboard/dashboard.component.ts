@@ -12,11 +12,10 @@ export class DashboardComponent {
 
   constructor(private authService: AuthService) {
 
-this.authService.getUser(this.authService.user!.id_user).subscribe(user => {
-                  //console.log("user", user);
-                  this.user = user;
-                })  }
-  // OnInit(): void {
-  //   this.authService
-  // }
+    this.authService.getUser(this.authService.user!.id_user)
+      .subscribe(user => {
+                this.user = user;
+                });
+  }
+
 }

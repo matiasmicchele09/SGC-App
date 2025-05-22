@@ -17,17 +17,13 @@ export class SidebarComponent {
   //user$ = this.authService.user$;
   constructor(private authService:AuthService,
               private router: Router) {
-                // console.log(this.user);
-                // this.authService.getUser(this.user!.id).subscribe(user => {
-                //   console.log("user", user);
-                //   //this.authService.user = user;
-                // });
+
 
                 console.log(this.authService.user?.id_user);
-                this.authService.getUser(this.authService.user!.id_user).subscribe(user => {
-                  //console.log("user", user);
-                  this.user = user;
-                })
+                this.authService.getUser(this.authService.user!.id_user)
+                  .subscribe(user => {
+                    this.user = user;
+                  })
                //this.user$ = this.authService.user$
               }
 
