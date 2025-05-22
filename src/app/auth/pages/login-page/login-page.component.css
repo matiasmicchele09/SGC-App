@@ -1,5 +1,6 @@
 .div-login{
-  background-color: #ffe4e1;
+  /* background-color: #ffe4e1; */
+  background-color: #bec9ff;
   height: 100vh;
   display: flex;
   justify-content: center;
@@ -8,12 +9,14 @@
 }
 
 .div-login button{
-  background-color: #af9694;
+  /* background-color: #af9694; */
+  background-color: #2a3fbd;
   color: #FFFFFF;
 }
 
 .div-login button:hover{
-  background-color: #c4a4a2;
+  /* background-color: #c4a4a2; */
+  background-color: #0054a3;
   color: #FFFFFF;
 }
 
@@ -39,7 +42,8 @@
 
 .form-login input{
   border: none;
-  border-bottom: 1px solid #b3b1b1; /* Línea gris por defecto */
+  /* border-bottom: 1px solid #b3b1b1;  Línea gris por defecto  */
+  border-bottom: 1px solid #2a3fbd;
   /* transition: border-bottom 0.2s ease-in-out; */
   padding: 8px;
   outline: none;
@@ -48,7 +52,8 @@
 }
 
 .form-login input:focus {
-  border-bottom: 3px solid #917977; /* Línea azul cuando se enfoca */
+  /* border-bottom: 3px solid #917977;  Línea azul cuando se enfoca  */
+  border-bottom: 3px solid #223397;
 }
 
 /** LOADER */
@@ -56,7 +61,8 @@
   width: 100%; /*120px;*/
   height: 22px;
   border-radius: 20px;
-  color: #917977;
+  /* color: #917977; */
+  color: #2a3fbd;
   border: 2px solid;
   position: relative;
 }

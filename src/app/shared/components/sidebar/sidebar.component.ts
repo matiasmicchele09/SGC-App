@@ -12,7 +12,7 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 })
 export class SidebarComponent {
 
-
+  public logOut: boolean = false;
   public user: User | null = null;
   //user$ = this.authService.user$;
   constructor(private authService:AuthService,
@@ -32,9 +32,11 @@ export class SidebarComponent {
               }
 
   onLogout(){
-
+    this.logOut = true;
+    setTimeout(() => {
     this.authService.logout();
     this.router.navigate(['/auth/login']);
+    }, 1500);
 
   }
 

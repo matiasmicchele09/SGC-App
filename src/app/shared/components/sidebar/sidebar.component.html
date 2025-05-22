@@ -42,10 +42,14 @@
           <i class="bi bi-person-circle"></i><span class="d-none d-sm-inline">Perfil</span>
         </a></li>
         <hr class="text-white w-100" />
-        <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active" (click)="onLogout()">Salir</a></li>
+        <li><a class="btn-logout nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active" (click)="onLogout()">
+          <i class="bi bi-box-arrow-left"></i><span class="d-none d-sm-inline">Salir</span>
+        </a></li>
       </ul>
     </div>
-
-
   </div>
+</div>
+<div *ngIf="logOut" class="d-flex flex-column overlay">
+  <p>Cerrando sesión</p>
+  <span class="loader-logout"></span>
 </div>
