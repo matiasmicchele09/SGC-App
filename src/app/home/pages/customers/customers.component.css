@@ -20,18 +20,22 @@
   cursor: pointer
 }
 .btn-delete{
-  color: #f10404;
+  background-color: #bd2a2a;
+  color: #ffffff;
 }
 .btn-modif{
-  color: #0528ee;
+  background-color: #2a3fbd;
+  color: #ffffff;
   margin-left: 20px
 }
 .btn-modif:hover{
-  color: #0282fa;
+  background-color: #0282fa;
+  color: #ffffff;
 }
 
 .btn-delete:hover{
-  color: #f92323;
+  background-color: #f92323;
+  color: #FFFFFF;
 }
 .btn-new:hover{
   color: #4dc853;

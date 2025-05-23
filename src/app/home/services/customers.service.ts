@@ -5,6 +5,7 @@ import { catchError, Observable, tap, throwError } from "rxjs";
 import { Customer } from "../interfaces/customers.interface";
 import { Tax_Condition } from "../interfaces/tax_conditions";
 import { Province } from "../interfaces/provinces.interface";
+import { Bank } from "../interfaces/banks.interface";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,10 @@ export class CustomersService {
   //* Provincias
   getProvinces():Observable<Province[]>{
     return this.http.get<Province[]>(`${this.baseUrl}/provinces`)
+  }
+
+  getBanks():Observable<Bank[]>{
+    return this.http.get<Bank[]>(`${this.baseUrl}/banks`)
   }
 
   getCustomers(id_user: number): Observable<Customer[]>  {

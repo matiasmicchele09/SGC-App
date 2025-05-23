@@ -9,6 +9,7 @@ import { Province } from '../../interfaces/provinces.interface';
 import { AlertService } from 'src/app/shared/services/alerts.service';
 import { closeBootstrapModal } from 'src/app/utils/bootstrap-utils';
 import { forkJoin } from 'rxjs';
+import { Bank } from '../../interfaces/banks.interface';
 
 @Component({
   selector: 'app-customers',
@@ -25,7 +26,8 @@ export class CustomersComponent {
   public save: boolean = false;
 
   public customers: Customer[] = [];
-  public  filteredCustomers: Customer[] = [];
+  public filteredCustomers: Customer[] = [];
+  public banks: Bank[] = [];
   public provinces: Province[] = []
   public selectedCustomer: Customer | null = null;
   public taxConditions: Tax_Condition[] = []
@@ -42,6 +44,7 @@ export class CustomersComponent {
   public customerForm: FormGroup = this.fb.group({
     activity: ['', Validators.required],
     active: [true],
+    bank: [''],
     created_at: [''],
     deactivated_at: [null],
     address: ['', Validators.required],
@@ -49,6 +52,7 @@ export class CustomersComponent {
     cuit: ['', Validators.required],
     email: [''],
     id: [0],
+    id_bank: [],
     id_province: ['',Validators.required],
     id_tax_condition: [0,Validators.required],
     name: ['', Validators.required],
@@ -78,22 +82,27 @@ export class CustomersComponent {
     forkJoin({
       customers: this.customerService.getCustomers(id_user),
       tax_conditions: this.customerService.getTaxConditions(),
-      provinces: this.customerService.getProvinces()
+      provinces: this.customerService.getProvinces(),
+      banks: this.customerService.getBanks()
     }).subscribe({
-      next: ({ customers, tax_conditions, provinces }) => {
+      next: ({ customers, tax_conditions, provinces, banks }) => {
         this.customers = customers.filter(c => c.active === true);
+        console.log(customers);
         this.filteredCustomers = [...this.customers];
         this.totalItems = this.filteredCustomers.length;
         this.taxConditions = tax_conditions;
         this.provinces = provinces;
+        this.banks = banks;
 
-        /*console.log(customers);
+        /*console.log(banks);
+        console.log(customers);
         console.log(tax_conditions);
         console.log(provinces);*/
 
         this.customers.forEach((customer: Customer) => {
           customer.tax_condition = this.taxConditions.find(tc => tc.id === customer.id_tax_condition)?.description ?? 'Desconocido';
           customer.province = this.provinces.find(p => p.id === customer.id_province)?.name ?? 'Desconocido';
+          customer.bank = this.banks.find(b => b.id_bank === customer.id_bank)?.name ?? 'Desconocido';
         });
 
         this.loading = false;

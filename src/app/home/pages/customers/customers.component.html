@@ -39,6 +39,7 @@
                   <th scope="col">Nombre</th>
                   <th scope="col">CUIT</th>
                   <th scope="col">Clave Fiscal</th>
+                  <th scope="col">Banco</th>
                   <th scope="col">N° Tel.</th>
                   <th scope="col">Cond. Fiscal</th>
                   <th scope="col">Actividad</th>
@@ -51,6 +52,7 @@
                   <td>{{customer.name}} {{customer.surname}}</td>
                   <td>{{customer.cuit}}</td>
                   <td>{{customer.tax_key}}</td>
+                  <td>{{customer.bank}}</td>
                   <td>{{customer.phone}}</td>
                   <td>{{customer.tax_condition}}</td>
                   <td>{{customer.activity}}</td>
@@ -138,14 +140,27 @@
                             </span>
                           </div>
                         </div>
-                      <div class="">
-                        <label for="tax_key" class="form-label">Clave Fiscal</label>
-                        <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
-                        <span *ngIf="isValidField('tax_key')"
-                              class="form-text text-danger">
-                              {{ getFieldError('tax_key') }}
+                        <div class="">
+                          <label for="tax_key" class="form-label">Clave Fiscal</label>
+                          <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
+                          <span *ngIf="isValidField('tax_key')"
+                          class="form-text text-danger">
+                          {{ getFieldError('tax_key') }}
                         </span>
                       </div>
+                      <div class="">
+                        <label class="form-label">Banco</label>
+                          <div class="">
+                            <select class="form-select" formControlName="id_bank" id="id_bank" name="id_bank">
+                              <option value="0" disabled selected>Seleccione un Banco</option>
+                              <option *ngFor="let type of banks" value="{{type.id_bank}}">{{type.name}}</option>
+                            </select>
+                            <!-- <span *ngIf="isValidField('id_tax_condition')"
+                                  class="form-text text-danger">
+                                  {{ getFieldError('id_tax_condition') }}
+                            </span> -->
+                          </div>
+                        </div>
 
                       <div class="" *ngIf="!isNew">
                         <label for="created_at" class="form-label">Fecha Alta</label>
@@ -215,8 +230,10 @@
                   </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary" (click)="saveChanges(customerForm)">{{buttonForm}}</button>
-              <button type="button" class="btn btn-danger" *ngIf="!isNew" (click)="onDeleteCustomer(selectedCustomer!)">Eliminar</button>
+              <button type="button" class="btn btn-modif" (click)="saveChanges(customerForm)">
+                <i [ngClass]="isNew ? 'bi bi-cloud-arrow-up' : 'bi bi-save2'"></i> {{buttonForm}}</button>
+              <button type="button" class="btn btn-delete" *ngIf="!isNew" (click)="onDeleteCustomer(selectedCustomer!)">
+                <i class="bi bi-trash3"></i> Eliminar</button>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ export interface Customer{
   active: boolean;
   activity: string;
   address: string;
+  bank: string;
   city: string;
   created_at: string;
   cuit: string;
@@ -11,6 +12,7 @@ export interface Customer{
   fec_baja: string | null;
   id_province: number;
   id_tax_condition: number;
+  id_bank: number;
   id: number;
   name: string;
   phone: string;
