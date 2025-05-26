@@ -23,13 +23,13 @@
 
       <ng-container *ngIf="customers.length > 0; else noCustomers">
           <div class="table-responsive" *ngIf="!loading">
-            <h2 class="mt-4">Mis Clientes </h2>
+            <h2 class="mt-3">Mis Clientes </h2>
             <caption class="d-inline btn btn-outline-success"
             (click)="onCustomer(selectedCustomer, true)">Agregar
               <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"
                  title="Agregar Cliente"></i>
             </caption>
-            <input type="text" class="form-control mt-3" placeholder="Buscar Cliente"
+            <input type="text" class="form-control my-3" style="max-width: 500px;" placeholder="Buscar Cliente"
             (input)="onSearch($event)"
             >
             <!-- (input)="onSearch($event)"  -->
@@ -94,43 +94,74 @@
       <div #customerModal class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
           <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-success bg-opacity-25 text-success">
               <h5 class="modal-title" id="staticBackdropLabel">{{titleForm}}</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                   <form [formGroup]="customerForm" autocomplete="off">
 
-                    <div class="customer-form">
-                      <div class="">
-                        <label for="name" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" formControlName="name" id="name" name="name" autocapitalize="words">
+                    <div class="customer-form p-2">
+
+                      <!--* Nombre -->
+                      <div class="mb-3">
+                        <label for="name" class="form-label text-success">Nombre</label>
+                        <input #inputName
+                               type="text"
+                               class="form-control"
+                               formControlName="name"
+                               id="name"
+                               name="name"
+                               [ngClass]="{'is-valid': customerForm.get('name')?.valid && customerForm.get('name')?.touched}"
+                               (blur)="capitalizeWords(inputName.value, 'name')">
+
                         <span *ngIf="isValidField('name')"
                               class="form-text text-danger">
                               {{ getFieldError('name') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label for="surname" class="form-label">Apellido</label>
-                        <input type="text" class="form-control" formControlName="surname" id="surname" name="surname">
+
+                      <!--* Apellido -->
+                      <div class="mb-3">
+                        <label for="surname" class="form-label text-success">Apellido</label>
+                        <input #inputSurname
+                               type="text"
+                               class="form-control"
+                               formControlName="surname"
+                               id="surname"
+                               name="surname"
+                               (blur)="capitalizeWords(inputSurname.value, 'surname')"
+                               [ngClass]="{'is-valid': customerForm.get('surname')?.valid && customerForm.get('surname')?.touched}">
                         <span *ngIf="isValidField('surname')"
                               class="form-text text-danger">
                               {{ getFieldError('surname') }}
                         </span>
                       </div>
 
-                      <div class="">
-                        <label for="cuit" class="form-label">CUIT</label>
-                        <input type="text" class="form-control" formControlName="cuit" id="cuit" name="cuit">
+                      <!--* CUIT -->
+                      <div class="mb-3">
+                        <label for="cuit" class="form-label text-success">CUIT</label>
+                        <input type="text"
+                               class="form-control"
+                               formControlName="cuit"
+                               id="cuit"
+                               name="cuit"
+                               [ngClass]="{'is-valid': customerForm.get('cuit')?.valid && customerForm.get('cuit')?.touched}">
                         <span *ngIf="isValidField('cuit')"
                               class="form-text text-danger">
                               {{ getFieldError('cuit') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label class="form-label">Cond. Fiscal</label>
+
+                      <!--* Cond. Fiscal -->
+                      <div class="mb-3">
+                        <label class="form-label text-success">Cond. Fiscal</label>
                           <div class="">
-                            <select class="form-select" formControlName="id_tax_condition" id="id_tax_condition" name="id_tax_condition">
+                            <select class="form-select"
+                                    formControlName="id_tax_condition"
+                                    id="id_tax_condition"
+                                    name="id_tax_condition"
+                                    [ngClass]="{'is-valid': customerForm.get('id_tax_condition')?.valid && customerForm.get('id_tax_condition')?.touched}">
                               <option value="0" disabled selected>Seleccione una Condición</option>
                               <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
                             </select>
@@ -139,65 +170,103 @@
                                   {{ getFieldError('id_tax_condition') }}
                             </span>
                           </div>
-                        </div>
-                        <div class="">
-                          <label for="tax_key" class="form-label">Clave Fiscal</label>
-                          <input type="text" class="form-control" formControlName="tax_key" id="tax_key" name="tax_key">
-                          <span *ngIf="isValidField('tax_key')"
+                      </div>
+
+                      <!--* Clave Fiscal -->
+                      <div class="mb-3">
+                        <label for="tax_key" class="form-label text-success">Clave Fiscal</label>
+                        <input type="text"
+                               class="form-control"
+                               formControlName="tax_key"
+                               id="tax_key"
+                               name="tax_key"
+                               [ngClass]="{'is-valid': customerForm.get('tax_key')?.valid && customerForm.get('tax_key')?.touched}">
+                        <span *ngIf="isValidField('tax_key')"
                           class="form-text text-danger">
                           {{ getFieldError('tax_key') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label class="form-label">Banco</label>
+
+                      <!--* Banco -->
+                      <div class="mb-3">
+                        <label class="form-label text-success">Banco</label>
                           <div class="">
-                            <select class="form-select" formControlName="id_bank" id="id_bank" name="id_bank">
+                            <select class="form-select"
+                                    formControlName="id_bank"
+                                    id="id_bank"
+                                    name="id_bank"
+                                    [ngClass]="{'is-valid': customerForm.get('id_bank')?.valid && customerForm.get('id_bank')?.touched}">
                               <option value="0" disabled selected>Seleccione un Banco</option>
                               <option *ngFor="let type of banks" value="{{type.id_bank}}">{{type.name}}</option>
                             </select>
-                            <!-- <span *ngIf="isValidField('id_tax_condition')"
-                                  class="form-text text-danger">
-                                  {{ getFieldError('id_tax_condition') }}
-                            </span> -->
                           </div>
-                        </div>
+                      </div>
 
-                      <div class="" *ngIf="!isNew">
-                        <label for="created_at" class="form-label">Fecha Alta</label>
+                      <div class="mb-3" *ngIf="!isNew">
+                        <label for="created_at" class="form-label text-success">Fecha Alta</label>
                         <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
                         <span *ngIf="isValidField('created_at')"
                               class="form-text text-danger">
                               {{ getFieldError('created_at') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" formControlName="email" id="email" name="email">
+
+                      <!--* Email -->
+                      <div class="mb-3">
+                        <label for="email" class="form-label text-success">Email</label>
+                        <input type="email"
+                               class="form-control"
+                               formControlName="email"
+                               id="email"
+                               name="email"
+                               [ngClass]="{'is-valid': customerForm.get('email')?.valid && customerForm.get('email')?.touched}">
                         <span *ngIf="isValidField('email')"
                               class="form-text text-danger">
                               {{ getFieldError('email') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label for="phone" class="form-label">Teléfono</label>
-                        <input type="text" class="form-control" formControlName="phone" id="phone" name="phone">
+
+                      <!--* Teléfono -->
+                      <div class="mb-3">
+                        <label for="phone" class="form-label text-success">Teléfono</label>
+                        <input type="text"
+                               class="form-control"
+                               formControlName="phone"
+                               id="phone"
+                               name="phone"
+                               [ngClass]="{'is-valid': customerForm.get('phone')?.valid && customerForm.get('phone')?.touched}">
                         <span *ngIf="isValidField('phone')"
                               class="form-text text-danger">
                               {{ getFieldError('phone') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label for="address" class="form-label">Dirección</label>
-                        <input type="text" class="form-control" formControlName="address" id="address" name="address">
+
+                      <!--* Dirección -->
+                      <div class="mb-3">
+                        <label for="address" class="form-label text-success">Dirección</label>
+                        <input #inputAdress
+                               type="text"
+                               class="form-control"
+                               formControlName="address"
+                               id="address"
+                               name="address"
+                               (blur)="capitalizeWords(inputAdress.value, 'address')"
+                               [ngClass]="{'is-valid': customerForm.get('address')?.valid && customerForm.get('address')?.touched}">
                         <span *ngIf="isValidField('address')"
                               class="form-text text-danger">
                               {{ getFieldError('address') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label class="form-label">Provincia</label>
+
+                      <!--* Provincia -->
+                      <div class="mb-3">
+                        <label class="form-label text-success">Provincia</label>
                           <div class="">
-                            <select class="form-select" formControlName="id_province" id="id_province" name="id_province">
+                            <select class="form-select"
+                                    formControlName="id_province"
+                                    id="id_province"
+                                    name="id_province"
+                                    [ngClass]="{'is-valid': customerForm.get('id_province')?.valid && customerForm.get('id_province')?.touched}">
                               <option value="0" disabled selected>Seleccione una Provincia</option>
                               <option *ngFor="let type of provinces" value="{{type.id}}">{{type.name}}</option>
                             </select>
@@ -206,23 +275,42 @@
                                   {{ getFieldError('id_province') }}
                             </span>
                           </div>
-                        </div>
-                      <div class="">
-                        <label for="city" class="form-label">Ciudad</label>
-                        <input type="text" class="form-control" formControlName="city" id="city" name="city">
+                      </div>
+
+                      <!--* Ciudad -->
+                      <div class="mb-3">
+                        <label for="city" class="form-label text-success">Ciudad</label>
+                        <input #inputCity
+                              type="text"
+                              class="form-control"
+                              formControlName="city"
+                              id="city"
+                              name="city"
+                              (blur)="capitalizeWords(inputCity.value, 'city')"
+                              [ngClass]="{'is-valid': customerForm.get('city')?.valid && customerForm.get('city')?.touched}">
                         <span *ngIf="isValidField('city')"
                               class="form-text text-danger">
                               {{ getFieldError('city') }}
                         </span>
                       </div>
-                      <div class="">
-                        <label for="activity" class="form-label">Actividad</label>
-                        <input type="text" class="form-control" formControlName="activity" id="activity" name="activity">
+
+                      <!--* Actividad-->
+                      <div class="mb-3">
+                        <label for="activity" class="form-label text-success">Actividad</label>
+                        <input #inputActivity
+                               type="text"
+                               class="form-control"
+                               formControlName="activity"
+                               id="activity"
+                               name="activity"
+                               (blur)="capitalizeWords(inputActivity.value, 'activity')"
+                               [ngClass]="{'is-valid': customerForm.get('activity')?.valid && customerForm.get('activity')?.touched}">
                         <span *ngIf="isValidField('activity')"
                               class="form-text text-danger">
                               {{ getFieldError('activity') }}
                         </span>
                       </div>
+
                     </div>
                     <div *ngIf="pristine" class="form-text text-danger">
                       Ningún campo ha sido modificado

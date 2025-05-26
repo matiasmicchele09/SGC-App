@@ -12,7 +12,7 @@
 } */
 .table-row:hover{
   cursor: pointer;
-  --bs-table-bg: #cdebf3; /* Color personalizado, por ejemplo, azul claro */
+  --bs-table-bg: #bdffa9; /* Color personalizado, por ejemplo, azul claro */
   /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
 }
 .btn-new{
@@ -60,7 +60,7 @@
 .modal-title{
   font-size: 20px;
   font-weight: bold;
-  color: #194bd6;
+  /* color: #194bd6; */
 }
 
 /** loader */

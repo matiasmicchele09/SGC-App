@@ -1,10 +1,10 @@
 <div class="form-container">
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit('profile')">
-    <h3>Datos del perfil</h3>
+    <h3 class="text-success">Datos del perfil</h3>
     <hr>
 
     <div class="mb-3">
-      <label for="name" class="form-label">
+      <label for="name" class="form-label ">
         <i class="bi bi-person-fill"></i>Nombre
       </label>
       <input type="text" id="name" class="form-control" formControlName="name">
@@ -41,7 +41,7 @@
   </form>
 
   <form [formGroup]="accountForm" (ngSubmit)="onSubmit('account')">
-    <h3>Datos de la cuenta</h3>
+    <h3 class="text-success">Datos de la cuenta</h3>
     <hr>
 
     <div class="mb-3">

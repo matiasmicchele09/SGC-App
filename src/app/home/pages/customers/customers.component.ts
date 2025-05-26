@@ -225,8 +225,17 @@ export class CustomersComponent {
     return null;
   }
 
+  capitalizeWords(input: string, field:string) {
+    const formattedInput = input.replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+    this.customerForm.get(`${field}`)?.setValue(formattedInput);
+  }
+
   saveChanges(customer:FormGroup)   {
     console.log(customer);
+
+
 
     //* Valido que nada este vacío
     if (this.customerForm.invalid) {
@@ -241,59 +250,59 @@ export class CustomersComponent {
       return;
     } else this.pristine = false;
 
-    if (this.isNew) {
-      console.log(customer.value);
-      const newCustomer = { ...customer.value, id_user: this.authService.user!.id_user, created_at: new Date().toISOString(), active: true, deactivated_at: null };
-      this.alertService.confirm('¿Desea agregar este cliente?', '').then((result) => {
-        if (result.isConfirmed) {
-          this.customerService.addCustomer(newCustomer).subscribe({
-            next: (customer) => {
-              console.log(customer);
-              this.alertService.success('Cliente agregado','El cliente fue agregado correctamente');
-              this.customers.push(customer);
+    // if (this.isNew) {
+    //   console.log(customer.value);
+    //   const newCustomer = { ...customer.value, id_user: this.authService.user!.id_user, created_at: new Date().toISOString(), active: true, deactivated_at: null };
+    //   this.alertService.confirm('¿Desea agregar este cliente?', '').then((result) => {
+    //     if (result.isConfirmed) {
+    //       this.customerService.addCustomer(newCustomer).subscribe({
+    //         next: (customer) => {
+    //           console.log(customer);
+    //           this.alertService.success('Cliente agregado','El cliente fue agregado correctamente');
+    //           this.customers.push(customer);
 
-              // ❌ Cerrar el modal
-              closeBootstrapModal(this.customerModalRef);
-              this.loadCustomers(this.authService.user!.id_user);
-            }
-            , error: (err) => {
-              this.alertService.error('Error: No se pudo agregar el cliente', err.error.message);
-              console.error(err);
-            }
-            , complete: () => {
-              console.log("complete");
-            }
-          });
-        }
-      }
-      );
-    }
-    else{
-      this.alertService.confirm('¿Desea modificar los datos?', '').then((result) => {
-        if (result.isConfirmed) {
-          this.customerService.updateCustomer(customer.value).subscribe({
-            next: (customer) => {
-              console.log(customer);
-              this.alertService.success('Cliente modificado','El cliente fue modificado correctamente');
-              this.customers = this.customers.map(c => c.id === customer.id ? customer : c);
+    //           // ❌ Cerrar el modal
+    //           closeBootstrapModal(this.customerModalRef);
+    //           this.loadCustomers(this.authService.user!.id_user);
+    //         }
+    //         , error: (err) => {
+    //           this.alertService.error('Error: No se pudo agregar el cliente', err.error.message);
+    //           console.error(err);
+    //         }
+    //         , complete: () => {
+    //           console.log("complete");
+    //         }
+    //       });
+    //     }
+    //   }
+    //   );
+    // }
+    // else{
+    //   this.alertService.confirm('¿Desea modificar los datos?', '').then((result) => {
+    //     if (result.isConfirmed) {
+    //       this.customerService.updateCustomer(customer.value).subscribe({
+    //         next: (customer) => {
+    //           console.log(customer);
+    //           this.alertService.success('Cliente modificado','El cliente fue modificado correctamente');
+    //           this.customers = this.customers.map(c => c.id === customer.id ? customer : c);
 
 
-              // ❌ Cerrar el modal
-              closeBootstrapModal(this.customerModalRef);
-              this.loadCustomers(this.authService.user!.id_user);
-            }
-            , error: (err) => {
-              this.alertService.error('Error: No se pudieron modificar los datos', err.error.message);
-              console.error(err);
-            }
-            , complete: () => {
-              console.log("complete");
-            }
-          });
-        }
-      }
-      );
-    }
+    //           // ❌ Cerrar el modal
+    //           closeBootstrapModal(this.customerModalRef);
+    //           this.loadCustomers(this.authService.user!.id_user);
+    //         }
+    //         , error: (err) => {
+    //           this.alertService.error('Error: No se pudieron modificar los datos', err.error.message);
+    //           console.error(err);
+    //         }
+    //         , complete: () => {
+    //           console.log("complete");
+    //         }
+    //       });
+    //     }
+    //   }
+    //   );
+    // }
 
 
   }
