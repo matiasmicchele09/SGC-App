@@ -47,6 +47,9 @@ export class CustomersComponent {
     bank: [''],
     created_at: [''],
     deactivated_at: [null],
+    hasDREI: [false],
+    nro_cuenta_DREI: [],
+    nro_reg_DREI: [],
     address: ['', Validators.required],
     city: ['', Validators.required],
     cuit: ['', Validators.required],
@@ -86,7 +89,8 @@ export class CustomersComponent {
       banks: this.customerService.getBanks()
     }).subscribe({
       next: ({ customers, tax_conditions, provinces, banks }) => {
-        this.customers = customers.filter(c => c.active === true);
+        // this.customers = customers.filter(c => c.active === true);
+        this.customers = customers;
         console.log(customers);
         this.filteredCustomers = [...this.customers];
         this.totalItems = this.filteredCustomers.length;
@@ -120,6 +124,7 @@ export class CustomersComponent {
   }
 
   updatePage(): void {
+    //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
     const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
     const startIndex = (this.page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -145,7 +150,24 @@ export class CustomersComponent {
     return `${day}-${month}-${year}`;
   }
 
+  onChangeDREI(event: Event): void {
+    console.log(typeof(this.customerForm.get('has_DREI')?.value));
+  const isChecked = (event.target as HTMLInputElement).checked;
+  console.log('¿DREI activado?', isChecked); // true o false
+
+  if (!isChecked){
+    this.customerForm.get('nro_cuenta_DREI')?.disable;
+    this.customerForm.get('nro_reg_DREI')?.disable;
+  }
+  else{
+    this.customerForm.get('nro_cuenta_DREI')?.enable;
+    this.customerForm.get('nro_reg_DREI')?.enable;
+  }
+
+
+  }
   onCustomer(customer: Customer | null, isNew: boolean) {
+    console.log(customer);
     this.pristine = false
     this.isNew = isNew;
     this.selectedCustomer = customer;

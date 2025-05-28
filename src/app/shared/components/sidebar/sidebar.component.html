@@ -1,14 +1,9 @@
-<!-- #ffe4e1 color rosadito -->
 <div class="p-0 col-auto bg-success" style=" max-width: 170px; height: 100vh;">
   <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 min-vh-100 text-white">
-    <!-- <span class="fs-5 fw-bold mb-3 text-white text-center text-sm-start w-100">Menú</span>
-      -->
-      <span class="fs-5  text-white text-center text-sm-start w-100">
-        IMAGEN
-      </span>
-
-      <hr class="text-white w-100" />
-    <ul class="nav nav-pills flex-column w-100 mb-auto">
+    <span class="fs-5 fw-bold text-white text-center text-sm-start w-100">{{user?.name}}</span>
+    <span class="fs-5 fw-bold text-white text-center text-sm-start w-100">{{user?.surname}}</span>
+    <hr class="text-white w-100" />
+    <ul class="nav nav-pills flex-column w-100 mb-auto ">
       <li>
         <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/dashboard']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
           <i class="bi bi-speedometer2"></i> <span class="d-none d-sm-inline">Dashboard</span>

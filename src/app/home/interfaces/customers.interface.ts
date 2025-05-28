@@ -10,7 +10,7 @@ export interface Customer{
   email: string;
   fec_alta: string;
   fec_baja: string | null;
-  has_DREI: boolean;
+  hasDREI: boolean;
   id_bank: number;
   id_province: number;
   id_sex: number;

@@ -42,19 +42,30 @@
 }
 
 .customer-form{
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr; /* Dos columnas, la segunda más ancha */
-  grid-gap: 10px; /*Espacio entre los elementos */
+   display: grid;
+   grid-template-columns: 1fr 1fr 1fr;
+   grid-gap: 10px;
 }
 
+.section{
+  grid-column: 1 / -1; /*que ocupe el ancho completo del grid*/
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #f8f9fa; /* fondo gris claro */
+  margin-bottom: 15px;
+
+}
+.section {
+  border-left: 4px solid #198754; /* verde Bootstrap */
+}
 .customer-form label{
-  font-size: 14px;
+  /* font-size: 14px;*/
   font-weight: bold;
   /*margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
 }
-.customer-form input, select{
+input, select{
   border: 1px solid #000000; /* Borde del input */
-  font-size: 14px; /* Tamaño de fuente del input */
+   /* Tamaño de fuente del input */
 }
 
 .modal-title{
@@ -84,7 +95,7 @@
   transform-origin: center;
   fill: none;
   opacity: 0.2;
-  stroke: #194bd6;
+  stroke: #0c7e3b;
   stroke-width: 13;
   stroke-linecap: round;
 }
