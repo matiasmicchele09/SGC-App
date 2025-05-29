@@ -1,4 +1,4 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, Type } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { enviroments } from 'src/environments/environments'
 import { catchError, Observable, tap, throwError } from "rxjs";
@@ -6,6 +6,7 @@ import { Customer } from "../interfaces/customers.interface";
 import { Tax_Condition } from "../interfaces/tax_conditions";
 import { Province } from "../interfaces/provinces.interface";
 import { Bank } from "../interfaces/banks.interface";
+import { Type_Person } from "../interfaces/types_persons";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,10 @@ export class CustomersService {
     return this.http.get<Bank[]>(`${this.baseUrl}/banks`)
   }
 
+  getTypesPerson():Observable<Type_Person[]>{
+    return this.http.get<Type_Person[]>(`${this.baseUrl}/types_person`)
+  }
+
   getCustomers(id_user: number): Observable<Customer[]>  {
 
     const params = new HttpParams().set('id_user', id_user);
@@ -44,13 +49,29 @@ export class CustomersService {
       );
   }
 
-  addCustomer(customer: Customer): Observable<Customer> {
-    return this.http.post<Customer>(`${this.baseUrl}/customers`, customer)
+  addCustomer(customer: Customer, isNew:boolean): Observable<Customer> {
+    if (isNew){
+      return this.http.post<Customer>(`${this.baseUrl}/customers`, customer)
+        .pipe(
+          tap((newCustomer: Customer) => console.log('added customer', newCustomer)),
+          catchError(this.handleError)
+        );
+    }
+    else{
+      return this.http.put<Customer>(`${this.baseUrl}/customers/${customer.id}`, customer)
       .pipe(
-        tap((newCustomer: Customer) => console.log('added customer', newCustomer)),
+        tap((updatedCustomer: Customer) => console.log('updated customer', updatedCustomer)),
         catchError(this.handleError)
       );
+    }
   }
+  // addCustomer(customer: Customer): Observable<Customer> {
+  //   return this.http.post<Customer>(`${this.baseUrl}/customers`, customer)
+  //     .pipe(
+  //       tap((newCustomer: Customer) => console.log('added customer', newCustomer)),
+  //       catchError(this.handleError)
+  //     );
+  // }
 
   updateCustomer(customer: Customer): Observable<Customer> {
     return this.http.put<Customer>(`${this.baseUrl}/customers/${customer.id}`, customer)

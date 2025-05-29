@@ -12,7 +12,7 @@ export class AlertService {
       icon: 'success',
       title: title,
       text: text || '',
-      timer: 2000,
+      timer: 3000,
       showConfirmButton: false
     });
   }
@@ -22,7 +22,7 @@ export class AlertService {
       icon: 'error',
       title: title,
       text: text || '',
-      timer: 2000,
+      timer: 5000,
       showConfirmButton: false
     });
   }

@@ -15,7 +15,7 @@ export interface Customer{
   id_province: number;
   id_sex: number;
   id_tax_condition: number;
-  id_type_person: number;
+  id_type: number;
   id: number;
   name: string;
   nro_cuenta_DREI: number;
@@ -25,5 +25,6 @@ export interface Customer{
   surname: string;
   tax_condition: string;
   tax_key: string;
+  type_person: string;
 }
 

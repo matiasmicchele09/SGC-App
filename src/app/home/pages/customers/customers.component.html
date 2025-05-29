@@ -50,14 +50,14 @@
                 <tr class="table-row"
                     *ngFor="let customer of customersPerPage"
                     (click)="onCustomer(customer, false)">
-                  <td>{{customer.name}} {{customer.surname}}</td>
+                  <td>{{customer.surname}}, {{customer.name}}</td>
                   <td>{{customer.cuit}}</td>
                   <td>{{customer.tax_key}}</td>
                   <td>{{customer.bank}}</td>
                   <td>{{customer.phone}}</td>
                   <td>{{customer.tax_condition}}</td>
                   <td>{{customer.activity}}</td>
-                  <td>{{customer.active}}</td>
+                  <td class="badge text-bg-success">{{customer.active}}</td>
                 </tr>
               </tbody>
             </table>
@@ -141,6 +141,25 @@
                                   class="form-text text-danger">
                                   {{ getFieldError('surname') }}
                             </span>
+                          </div>
+
+                          <!--* Tipo Persona -->
+                          <div>
+                            <label class="form-label text-success">Tipo Persona</label>
+                              <div class="">
+                                <select class="form-select"
+                                        formControlName="id_type"
+                                        id="id_type"
+                                        name="id_type"
+                                        [ngClass]="{'is-valid': customerForm.get('id_type')?.valid && customerForm.get('id_type')?.touched}">
+                                  <option value="0" disabled selected>Seleccione un Tipo de Persona</option>
+                                  <option *ngFor="let type of types_person" value="{{type.id_type}}">{{type.description}}</option>
+                                </select>
+                                <span *ngIf="isValidField('id_province')"
+                                      class="form-text text-danger">
+                                      {{ getFieldError('id_province') }}
+                                </span>
+                              </div>
                           </div>
 
                           <!--* CUIT -->
@@ -241,7 +260,7 @@
                         </span>
                           </div>
 
-                          <!--* Fec. Alta  -->
+                          <!--* Fec. Alta -->
                           <div *ngIf="!isNew">
                             <label for="created_at" class="form-label text-success">Fecha Alta</label>
                             <input type="text" class="form-control" formControlName="created_at" id="created_at" name="created_at" readonly="true">
@@ -340,22 +359,22 @@
                               <label for="hasDREI" class="form-check-label text-success fw-semibold">DREI - Si/No</label>
                           </div>
                           <div>
-                            <label for="nro_cuenta" class="form-label text-success fw-semibold">Nro. Cuenta</label>
-                            <input type="text"
+                            <label for="nro_cuenta_DREI" class="form-label text-success fw-semibold">Nro. Cuenta</label>
+                            <input type="number"
                                   class="form-control"
                                   formControlName="nro_cuenta_DREI"
-                                  id="nro_cuenta"
-                                  name="nro_cuenta"
+                                  id="nro_cuenta_DREI"
+                                  name="nro_cuenta_DREI"
 
                             >
                           </div>
                           <div>
-                            <label for="nro_registracion" class="form-label text-success fw-semibold">Nro. Registración</label>
-                            <input type="text"
+                            <label for="nro_reg_DREI" class="form-label text-success fw-semibold">Nro. Registración</label>
+                            <input type="number"
                                   class="form-control"
                                   formControlName="nro_reg_DREI"
-                                  id="nro_registracion"
-                                  name="nro_registracion"
+                                  id="nro_reg_DREI"
+                                  name="nro_reg_DREI"
 
                             >
                           </div>

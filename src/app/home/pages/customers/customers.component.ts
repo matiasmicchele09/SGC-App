@@ -10,6 +10,7 @@ import { AlertService } from 'src/app/shared/services/alerts.service';
 import { closeBootstrapModal } from 'src/app/utils/bootstrap-utils';
 import { forkJoin } from 'rxjs';
 import { Bank } from '../../interfaces/banks.interface';
+import { Type_Person } from '../../interfaces/types_persons';
 
 @Component({
   selector: 'app-customers',
@@ -31,6 +32,7 @@ export class CustomersComponent {
   public provinces: Province[] = []
   public selectedCustomer: Customer | null = null;
   public taxConditions: Tax_Condition[] = []
+  public types_person: Type_Person[] = [];
 
   //* Variables para paginación local. Es decir, mi backend no tiene paginación
   public customersPerPage: Customer[] = [];
@@ -58,12 +60,16 @@ export class CustomersComponent {
     id_bank: [],
     id_province: ['',Validators.required],
     id_tax_condition: [0,Validators.required],
+    id_sex: [1],
+    id_type: [0],
+    id_user: [],
     name: ['', Validators.required],
     phone: ['', Validators.required],
     province: [''],
     surname: ['', Validators.required],
     tax_key: [''],
     tax_condition: [''],
+    type_person:['']
    });
 
   constructor(private customerService: CustomersService,
@@ -86,9 +92,10 @@ export class CustomersComponent {
       customers: this.customerService.getCustomers(id_user),
       tax_conditions: this.customerService.getTaxConditions(),
       provinces: this.customerService.getProvinces(),
-      banks: this.customerService.getBanks()
+      banks: this.customerService.getBanks(),
+      type_person: this.customerService.getTypesPerson(),
     }).subscribe({
-      next: ({ customers, tax_conditions, provinces, banks }) => {
+      next: ({ customers, tax_conditions, provinces, banks, type_person }) => {
         // this.customers = customers.filter(c => c.active === true);
         this.customers = customers;
         console.log(customers);
@@ -97,6 +104,7 @@ export class CustomersComponent {
         this.taxConditions = tax_conditions;
         this.provinces = provinces;
         this.banks = banks;
+        this.types_person = type_person;
 
         /*console.log(banks);
         console.log(customers);
@@ -107,6 +115,7 @@ export class CustomersComponent {
           customer.tax_condition = this.taxConditions.find(tc => tc.id === customer.id_tax_condition)?.description ?? 'Desconocido';
           customer.province = this.provinces.find(p => p.id === customer.id_province)?.name ?? 'Desconocido';
           customer.bank = this.banks.find(b => b.id_bank === customer.id_bank)?.name ?? 'Desconocido';
+          customer.type_person = this.types_person.find(tp => tp.id_type === customer.id_type)?.description ?? 'Desconocido';
         });
 
         this.loading = false;
@@ -125,7 +134,9 @@ export class CustomersComponent {
 
   updatePage(): void {
     //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
-    const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
+    //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
+    const sorted = [...this.filteredCustomers].sort((a, b) => a.surname.localeCompare(b.surname));
+
     const startIndex = (this.page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.customersPerPage = sorted.slice(startIndex, endIndex);
@@ -151,21 +162,22 @@ export class CustomersComponent {
   }
 
   onChangeDREI(event: Event): void {
-    console.log(typeof(this.customerForm.get('has_DREI')?.value));
   const isChecked = (event.target as HTMLInputElement).checked;
-  console.log('¿DREI activado?', isChecked); // true o false
 
-  if (!isChecked){
-    this.customerForm.get('nro_cuenta_DREI')?.disable;
-    this.customerForm.get('nro_reg_DREI')?.disable;
-  }
-  else{
-    this.customerForm.get('nro_cuenta_DREI')?.enable;
-    this.customerForm.get('nro_reg_DREI')?.enable;
+    if (!isChecked){
+      this.customerForm.get('nro_cuenta_DREI')?.disable();
+      this.customerForm.get('nro_reg_DREI')?.disable();
+      this.customerForm.get('nro_cuenta_DREI')?.setValue(null);
+      this.customerForm.get('nro_reg_DREI')?.setValue(null);
+    }
+    else{
+      this.customerForm.get('nro_cuenta_DREI')?.setValue(this.customers.find(c => c.id === this.selectedCustomer?.id)?.nro_cuenta_DREI ?? null);
+      this.customerForm.get('nro_reg_DREI')?.setValue(this.customers.find(c => c.id === this.selectedCustomer?.id)?.nro_reg_DREI ?? null);
+      this.customerForm.get('nro_cuenta_DREI')?.enable();
+      this.customerForm.get('nro_reg_DREI')?.enable();
+    }
   }
 
-
-  }
   onCustomer(customer: Customer | null, isNew: boolean) {
     console.log(customer);
     this.pristine = false
@@ -187,9 +199,13 @@ export class CustomersComponent {
         ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}`
         : '';
         this.customerForm.patchValue(this.selectedCustomer!);
-        this.customerForm.patchValue({
-          created_at: this.formatDateToDDMMYYYY(this.selectedCustomer!.created_at)
-        });
+        if (!this.selectedCustomer?.hasDREI) {
+          this.customerForm.get('nro_cuenta_DREI')?.disable();
+          this.customerForm.get('nro_reg_DREI')?.disable();
+        }
+        // this.customerForm.patchValue({
+        //   created_at: this.formatDateToDDMMYYYY(this.selectedCustomer!.created_at)
+        // });
     }
 
     const modalElement = document.getElementById('staticCustomerModal');
@@ -212,16 +228,8 @@ export class CustomersComponent {
     this.updatePage();
   }
 
-
   areAllFieldsPristine(): boolean {
-    const controls = this.customerForm.controls;
-    return controls['name'].pristine &&
-           controls['surname'].pristine &&
-           controls['email'].pristine &&
-           controls['phone'].pristine &&
-           controls['cuit'].pristine &&
-           controls['activity'].pristine &&
-           controls['city'].pristine;
+  return Object.values(this.customerForm.controls).every(control => control.pristine);
   }
 
   isValidField(field: string): boolean | null{
@@ -255,16 +263,12 @@ export class CustomersComponent {
   }
 
   saveChanges(customer:FormGroup)   {
-    console.log(customer);
-
-
 
     //* Valido que nada este vacío
     if (this.customerForm.invalid) {
       this.customerForm.markAllAsTouched();
       return;
     }
-    console.log("paso el markAllAsTouched");
     //* Valido que hayan cambiado algún valor
     //Si el valor NO ha sido modificado --> true | Si ha sido modificado --> false
     if (this.areAllFieldsPristine()){
@@ -272,61 +276,51 @@ export class CustomersComponent {
       return;
     } else this.pristine = false;
 
-    // if (this.isNew) {
-    //   console.log(customer.value);
-    //   const newCustomer = { ...customer.value, id_user: this.authService.user!.id_user, created_at: new Date().toISOString(), active: true, deactivated_at: null };
-    //   this.alertService.confirm('¿Desea agregar este cliente?', '').then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.customerService.addCustomer(newCustomer).subscribe({
-    //         next: (customer) => {
-    //           console.log(customer);
-    //           this.alertService.success('Cliente agregado','El cliente fue agregado correctamente');
-    //           this.customers.push(customer);
+    const confirmMessage = this.isNew ? '¿Desea agregar este cliente?' : '¿Desea modificar los datos?';
+    const titleMessage = this.isNew ? 'Cliente agregado' : 'Cliente modificado';
+    const textMessage = this.isNew ? 'El cliente fue agregado correctamente' : 'El cliente fue modificado correctamente';
+    const errorMessage = this.isNew ? 'Error: No se pudo agregar el cliente' : 'Error: No se pudieron modificar los datos';
+    /* Agrego campos al objeto */
+    const newCustomer = this.isNew ? { ...customer.value,
+                        id_user: this.authService.user!.id_user,
+                        created_at: new Date().toISOString(),
+                        active: true,
+                        deactivated_at: null } : { ...customer.value,
+                        id_user: this.authService.user!.id_user, };
+                      //}
 
-    //           // ❌ Cerrar el modal
-    //           closeBootstrapModal(this.customerModalRef);
-    //           this.loadCustomers(this.authService.user!.id_user);
-    //         }
-    //         , error: (err) => {
-    //           this.alertService.error('Error: No se pudo agregar el cliente', err.error.message);
-    //           console.error(err);
-    //         }
-    //         , complete: () => {
-    //           console.log("complete");
-    //         }
-    //       });
-    //     }
-    //   }
-    //   );
-    // }
-    // else{
-    //   this.alertService.confirm('¿Desea modificar los datos?', '').then((result) => {
-    //     if (result.isConfirmed) {
-    //       this.customerService.updateCustomer(customer.value).subscribe({
-    //         next: (customer) => {
-    //           console.log(customer);
-    //           this.alertService.success('Cliente modificado','El cliente fue modificado correctamente');
-    //           this.customers = this.customers.map(c => c.id === customer.id ? customer : c);
+    /* Y ahora saco algunos campos que no deben ir al back */
+    const {province, tax_condition, bank, ...backendCustomer} = newCustomer;
+    console.log(backendCustomer);
 
+    this.alertService.confirm(confirmMessage, '').then((result) => {
+        if (result.isConfirmed) {
+          this.customerService.addCustomer(backendCustomer, this.isNew).subscribe({
+            next: (customer) => {
 
-    //           // ❌ Cerrar el modal
-    //           closeBootstrapModal(this.customerModalRef);
-    //           this.loadCustomers(this.authService.user!.id_user);
-    //         }
-    //         , error: (err) => {
-    //           this.alertService.error('Error: No se pudieron modificar los datos', err.error.message);
-    //           console.error(err);
-    //         }
-    //         , complete: () => {
-    //           console.log("complete");
-    //         }
-    //       });
-    //     }
-    //   }
-    //   );
-    // }
+              console.log(customer);
+              console.log(titleMessage);
+              this.alertService.success(titleMessage, textMessage);
+              if (this.isNew)
+                this.customers.push(customer);
+              else
+              this.customers = this.customers.map(c => c.id === customer.id ? customer : c);
 
-
+              // ❌ Cerrar el modal
+              closeBootstrapModal(this.customerModalRef);
+              this.loadCustomers(this.authService.user!.id_user);
+            }
+            , error: (err) => {
+              console.log(err);
+              this.alertService.error(errorMessage, err);
+              console.error(err);
+            }
+            , complete: () => {
+              console.log("complete");
+            }
+          });
+        }
+      });
   }
 
   onDeleteCustomer(customer: Customer) {
