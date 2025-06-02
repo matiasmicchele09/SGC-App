@@ -1,15 +1,16 @@
+import { AlertService } from 'src/app/shared/services/alerts.service';
+import { AuthService } from 'src/app/auth/services/auth.service';
+import { closeBootstrapModal } from 'src/app/utils/bootstrap-utils';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CustomersService } from '../../services/customers.service';
-import { Customer } from '../../interfaces/customers.interface';
-import { Modal } from 'bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthService } from 'src/app/auth/services/auth.service';
-import { Tax_Condition } from '../../interfaces/tax_conditions';
-import { Province } from '../../interfaces/provinces.interface';
-import { AlertService } from 'src/app/shared/services/alerts.service';
-import { closeBootstrapModal } from 'src/app/utils/bootstrap-utils';
-import { forkJoin } from 'rxjs';
+import { Modal } from 'bootstrap';
+
 import { Bank } from '../../interfaces/banks.interface';
+import { Customer } from '../../interfaces/customers.interface';
+import { forkJoin } from 'rxjs';
+import { Province } from '../../interfaces/provinces.interface';
+import { Tax_Condition } from '../../interfaces/tax_conditions';
 import { Type_Person } from '../../interfaces/types_persons';
 
 @Component({
@@ -20,11 +21,11 @@ import { Type_Person } from '../../interfaces/types_persons';
 export class CustomersComponent {
 
   public buttonForm: string = '';
+  public emailPattern: string = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
   public isNew: boolean = false;
   public loading: boolean = false;
   public pristine: boolean = false;
   public titleForm: string = '';
-  public save: boolean = false;
 
   public customers: Customer[] = [];
   public filteredCustomers: Customer[] = [];
@@ -54,8 +55,8 @@ export class CustomersComponent {
     nro_reg_DREI: [],
     address: ['', Validators.required],
     city: ['', Validators.required],
-    cuit: ['', Validators.required],
-    email: [''],
+    cuit: ['', [Validators.required, Validators.maxLength(11), Validators.minLength(11)]],
+    email: ['', [Validators.pattern(this.emailPattern)]],
     id: [0],
     id_bank: [],
     id_province: ['',Validators.required],
@@ -69,18 +70,16 @@ export class CustomersComponent {
     surname: ['', Validators.required],
     tax_key: [''],
     tax_condition: [''],
-    type_person:['']
+    type_person:[]
    });
+
+
+
 
   constructor(private customerService: CustomersService,
               private fb: FormBuilder,
               private authService: AuthService,
               private alertService: AlertService) {
-
-    // this.authService.getCurrentUser().subscribe(user => {
-    //   console.log("user", user);
-    //   this.loadCustomers(user!.id);
-    // });
     this.loadCustomers(this.authService.user!.id_user);
   }
 
@@ -153,12 +152,62 @@ export class CustomersComponent {
     return Math.ceil(this.totalItems / this.pageSize);
   }
 
-  formatDateToDDMMYYYY(dateStr: string): string {
-    const date = new Date(dateStr);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+  // formatDateToDDMMYYYY(dateStr: string): string {
+  //   const date = new Date(dateStr);
+  //   const day = String(date.getDate()).padStart(2, '0');
+  //   const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+  //   const year = date.getFullYear();
+  //   return `${day}-${month}-${year}`;
+  // }
+
+
+  areAllFieldsPristine(): boolean {
+  return Object.values(this.customerForm.controls).every(control => control.pristine);
+  }
+
+  isValidField(field: string): boolean | null{
+    return this.customerForm.controls[field].errors &&
+           this.customerForm.controls[field].touched
+  }
+
+  getFieldError(field:string):string | null {
+    if (!this.customerForm.controls[field]) return null;
+
+    const errors = this.customerForm.controls[field].errors || {};
+    for (const key of Object.keys(errors)) {
+
+      switch(key){
+        case 'required':
+          return 'Este campo es requerido';
+        case 'maxlength':
+          return `Máximo ${errors['maxlength'].requiredLength} caracteres`;
+        case 'minlength':
+          return `Mínimo ${errors['minlength'].requiredLength} caracteres`;
+        case 'pattern':
+          return 'Formato inválido';
+      }
+    }
+    return null;
+  }
+
+  capitalizeWords(input: string, field:string) {
+    const formattedInput = input.replace(/\w\S*/g, (txt) => {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+    this.customerForm.get(`${field}`)?.setValue(formattedInput);
+  }
+
+  onFilterChange(event: Event) {
+    const input = event?.target as HTMLInputElement;
+
+    if (input.value === 'activos') this.filteredCustomers = this.customers.filter(customer => customer.active === true);
+    else if (input.value === 'baja') this.filteredCustomers = this.customers.filter(customer => customer.active === false);
+    else if (input.value === 'todos') this.filteredCustomers = [...this.customers];
+
+    this.totalItems = this.filteredCustomers.length;
+    this.page = 1; // opcional, volver a la primera página
+    this.updatePage();
+    return;
   }
 
   onChangeDREI(event: Event): void {
@@ -183,6 +232,9 @@ export class CustomersComponent {
     this.pristine = false
     this.isNew = isNew;
     this.selectedCustomer = customer;
+    /* Por si quedó algun campo con algún valor o quedó el formulario disable por entrar primero a un inactivo */
+    this.customerForm.enable();
+    this.customerForm.reset();
 
     if (isNew) {
       this.titleForm = 'Nuevo Cliente';
@@ -192,21 +244,37 @@ export class CustomersComponent {
       this.customerForm.get('fec_alta')?.setValue(new Date());
       this.customerForm.get('fec_baja')?.setValue(null);
       this.customerForm.get('id_province')?.setValue(0);
+      this.customerForm.get('id_type')?.setValue(0);
+      this.customerForm.get('nro_cuenta_DREI')?.disable();
+            this.customerForm.get('nro_reg_DREI')?.disable();
     }
     else {
-      this.buttonForm = 'Actualizar';
-      this.titleForm = this.selectedCustomer
-        ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}`
-        : '';
-        this.customerForm.patchValue(this.selectedCustomer!);
-        if (!this.selectedCustomer?.hasDREI) {
-          this.customerForm.get('nro_cuenta_DREI')?.disable();
-          this.customerForm.get('nro_reg_DREI')?.disable();
-        }
+
+      if (!customer?.active){
+        this.customerForm.disable()
+        this.buttonForm = 'Dar de Alta Nuevamente';
+        this.titleForm = this.selectedCustomer
+          ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname} - INACTIVO`
+          : '';
+          this.customerForm.patchValue(this.selectedCustomer!);
+      }else{
+
+        this.buttonForm = 'Actualizar';
+        this.titleForm = this.selectedCustomer
+          ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}`
+          : '';
+          this.customerForm.patchValue(this.selectedCustomer!);
+          if (!this.selectedCustomer?.hasDREI) {
+            this.customerForm.get('nro_cuenta_DREI')?.disable();
+            this.customerForm.get('nro_reg_DREI')?.disable();
+          }
+      }
         // this.customerForm.patchValue({
         //   created_at: this.formatDateToDDMMYYYY(this.selectedCustomer!.created_at)
         // });
     }
+
+
 
     const modalElement = document.getElementById('staticCustomerModal');
     if (modalElement) {
@@ -228,41 +296,7 @@ export class CustomersComponent {
     this.updatePage();
   }
 
-  areAllFieldsPristine(): boolean {
-  return Object.values(this.customerForm.controls).every(control => control.pristine);
-  }
-
-  isValidField(field: string): boolean | null{
-    return this.customerForm.controls[field].errors &&
-           this.customerForm.controls[field].touched
-  }
-
-  getFieldError(field:string):string | null {
-    if (!this.customerForm.controls[field]) return null;
-
-    const errors = this.customerForm.controls[field].errors || {};
-
-    for (const key of Object.keys(errors)) {
-
-      switch(key){
-        case 'required':
-          return 'Este campo es requerido';
-
-        // case 'minlength':
-        //   return `Mínimo ${errors['minlength'].requiredLength} caracteres`
-      }
-    }
-    return null;
-  }
-
-  capitalizeWords(input: string, field:string) {
-    const formattedInput = input.replace(/\w\S*/g, (txt) => {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-    this.customerForm.get(`${field}`)?.setValue(formattedInput);
-  }
-
-  saveChanges(customer:FormGroup)   {
+  onSaveChanges(customer:FormGroup)   {
 
     //* Valido que nada este vacío
     if (this.customerForm.invalid) {
