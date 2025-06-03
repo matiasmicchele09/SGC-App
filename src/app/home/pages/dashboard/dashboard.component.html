@@ -1,7 +1,6 @@
-<div class="container py-4">
+<!-- <div class="container py-4">
   <h1 class="mb-4">¡Hola {{user?.name}}!</h1>
 
-  <!-- Resumen General -->
   <div class="row g-4">
     <div class="col-md-3">
       <div class="card text-bg-primary shadow-sm">
@@ -35,7 +34,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <!-- Vencimientos -->
   <!-- <div class="mt-5">
@@ -57,7 +56,7 @@
   </div> -->
 
   <!-- Gestión de Clientes -->
-  <div class="mt-5">
+  <!-- <div class="mt-5">
     <h4>Últimos Clientes Agregados</h4>
     <table class="table table-striped">
       <thead>
@@ -83,10 +82,10 @@
         </tr>
       </tbody>
     </table>
-  </div>
+  </div> -->
 
   <!-- Accesos rápidos -->
-  <div class="mt-5">
+  <!-- <div class="mt-5">
     <h4>Accesos rápidos</h4>
     <div class="d-flex flex-wrap gap-3">
       <button class="btn btn-outline-primary">➕ Agregar Cliente</button>
@@ -95,4 +94,80 @@
       <button class="btn btn-outline-dark">📊 Descargar Reporte</button>
     </div>
   </div>
+</div> -->
+<!-- dashboard.component.html -->
+<div class="container mt-4">
+  <h2 class="mb-4">Resumen de Clientes</h2>
+
+  <!-- KPIs -->
+  <div class="row text-center mb-4">
+    <div class="col-md-3 mb-3" *ngFor="let kpi of kpis">
+      <div class="card shadow-sm border-0">
+        <div class="card-body">
+          <i [class]="'bi ' + kpi.icon + ' fs-1 text-primary'"></i>
+          <h5 class="card-title mt-2">{{ kpi.title }}</h5>
+          <p class="card-text fs-4 fw-bold">{{ kpi.value }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clientes por provincia -->
+   <div class="d-flex">
+<div class="col-md-6 mb-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header">Clientes por Provincia</div>
+    <div class="card-body">
+      <canvas baseChart
+              [data]="barChartData"
+              [labels]="barChartLabels"
+              [options]="barChartOptions"
+              [type]="'bar'">
+      </canvas>
+    </div>
+  </div>
 </div>
+
+<!-- Clientes por condición fiscal -->
+<div class="col-md-6 mb-4">
+  <div class="card shadow-sm border-0">
+    <div class="card-header">Clientes por Condición Fiscal</div>
+    <div class="card-body">
+      <canvas baseChart
+              [data]="pieChartData"
+              [labels]="pieChartLabels"
+              [options]="pieChartOptions"
+              [type]="'pie'">
+      </canvas>
+    </div>
+  </div>
+</div>
+</div>
+
+
+    <!-- <div class="col-md-6 mb-4">
+      <div class="card shadow-sm border-0">
+        <div class="card-header">Clientes por Condición Fiscal</div>
+        <div class="card-body">
+          <ul class="list-group">
+            <li class="list-group-item" *ngFor="let c of clientesPorCondicion">
+              {{ c.condicion }}: <strong>{{ c.total }}</strong>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <!-- Clientes recientes -->
+  <div class="card shadow-sm border-0 mt-4">
+    <div class="card-header">Últimos Clientes Creados</div>
+    <div class="card-body p-0">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item" *ngFor="let cliente of ultimosClientes">
+          <i class="bi bi-person-circle me-2"></i>
+          {{ cliente.nombre }} {{ cliente.apellido }} - <small>{{ cliente.created_at | date:'dd/MM/yyyy' }}</small>
+        </li>
+      </ul>
+    </div>
+  </div>

@@ -7,6 +7,7 @@ import { SidebarComponent } from '../shared/components/sidebar/sidebar.component
 import { LayoutComponent } from './pages/layout/layout.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { ProfileComponent } from './pages/profile/profile.component';
   imports: [
     CommonModule,
     HomeRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgChartsModule
   ]
 })
 
