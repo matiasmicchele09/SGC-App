@@ -18,11 +18,12 @@ export class DashboardComponent {
   public user : User | null = null;
   public customers:Customer[] = [];
   public tax_conditions: Tax_Condition[] = [];
-  public kpis: { title: string; value: number; icon: string }[] = [];
+  public kpis: { title: string; value: number; icon: string, color: string }[] = [];
   public clientesPorCiudad: { ciudad: string; total: number }[] = [];
   public condionesFiscales: { condicion:string, total: number }[] = []
+  public ultimosClientes: { nombre: string; apellido: string; created_at: Date }[] = [];
 
-  // Datos del gráfico de barras por ciudad
+  // Datos del gráfico de barras por Ciudad
   public barChartCiudad: ChartData<'bar', number[], string> = {
     labels: [],
     datasets: [
@@ -36,50 +37,36 @@ export class DashboardComponent {
 
   public barChartOptions: ChartOptions<'bar'> = {
     responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y', // Cambia el eje de las etiquetas a horizontal
+    plugins: {
+      legend: { display: false }
+    }
+  };
+  // Datos del gráfico de barras por Cond. Fiscal
+  public barChartCondFiscal: ChartData<'bar', number[], string> = {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+        label: 'Clientes por Condición Fiscal',
+        backgroundColor: '#4dc853'
+      }
+    ]
+  };
+
+  public barChartCondFiscalOptions: ChartOptions<'bar'> = {
+    responsive: true,
+    maintainAspectRatio: false,
+    indexAxis: 'y', // Cambia el eje de las etiquetas a horizontal
     plugins: {
       legend: { display: false }
     }
   };
 
-  // Datos para gráfico de torta (condición fiscal)
-  pieChartLabels: string[] = [];
-  pieChartData: ChartConfiguration<'pie'>['data'] = {
-  labels: [],
-  datasets: [
-    {
-      data: [],
-      backgroundColor: ['#198754',
-        '#ffc107',
-        '#dc3545',
-        '#0d6efd',
-        '#6f42c1',
-        '#fd7e14',
-        '#20c997',
-        '#6610f2',
-        '#e83e8c',
-        '#17a2b8',
-        '#6c757d',
-        '#343a40'],
-
-      borderWidth: 1,
-      borderColor: '#ffffff',
-      hoverBorderColor: '#ffffff'
-    }
-    ]
-  };
-  pieChartOptions: ChartConfiguration<'pie'>['options'] = {
-    responsive: true,
-    plugins: {
-      legend: { position: 'bottom' }
-    }
-  };
-
-
   constructor(private authService: AuthService,
-              private customerService: CustomersService
-  ) {
+              private customerService: CustomersService) {}
 
-  }
   ngOnInit(): void {
 
     forkJoin({
@@ -98,14 +85,17 @@ export class DashboardComponent {
         const activos = customers.filter(c => c.active).length;
         const inactivos = customers.filter(c => !c.active).length;
         const conDREI = customers.filter(c => c.hasDREI).length;
-        // const ciudades = customers.reduce((acc, customer) => {
-        //   const ciudad = customer.city || 'Sin Ciudad';
-        //   if (!acc[ciudad]) {
-        //     acc[ciudad] = 0;
-        //   }
-        //   acc[ciudad]++;
-        //   return acc;
-        // }, {} as Record<string, number>);
+
+
+        /* KPIs */
+        this.kpis = [
+          { title: 'Total Clientes', value: total, icon: 'bi-people', color: 'text-primary' },
+          { title: 'Activos', value: activos, icon: 'bi-check-circle', color: 'text-success'  },
+          { title: 'Inactivos', value: inactivos, icon: 'bi-x-circle', color: 'text-danger'  },
+          { title: 'Con DREI', value: conDREI, icon: 'bi-file-earmark-text', color: 'text-secondary'  }
+        ];
+
+        /* Graficos */
         this.clientesPorCiudad = Object.entries(
           this.customers.reduce((acc, cliente) => {
             const ciudad = cliente.city;
@@ -114,27 +104,8 @@ export class DashboardComponent {
           }, {} as { [ciudad: string]: number }) // Asegura tipado correcto
         ).map(([ciudad, total]) => ({ ciudad, total }));
 
-        console.log(this.clientesPorCiudad);
-
         this.barChartCiudad.labels = this.clientesPorCiudad.map(c => c.ciudad);
         this.barChartCiudad.datasets[0].data = this.clientesPorCiudad.map(c => c.total);
-
-
-
-        // this.condionesFiscales = Object.entries(
-        //   this.customers.reduce((acc, cliente) => {
-        //     //console.log(cliente.id_tax_condition);
-        //     const id_condicion = cliente.id_tax_condition || 'Sin Condición';
-        //     const condicion = cliente.tax_condition
-        //     acc[id_condicion] = (acc[id_condicion] || 0) + 1;
-        //     return acc;
-        //   }, {} as { [id_condicion: string]: number }) // Asegura tipado correcto
-        // ).map(([id_condicion, total]) => ({ id_condicion, total }));
-
-        // console.log(this.condionesFiscales);
-
-        // this.pieChartLabels = this.condionesFiscales.map(c => c.condicion);
-        // console.log(this.pieChartLabels);
 
         this.condionesFiscales = this.customers.reduce((acc, cliente) => {
           const condicion = this.tax_conditions.filter(tc => tc.id === cliente.id_tax_condition);
@@ -146,22 +117,18 @@ export class DashboardComponent {
           return acc;
         }, [] as { condicion: string; total: number }[]);
 
-        console.log(this.condionesFiscales);
+        this.barChartCondFiscal.labels = this.condionesFiscales.map(c => c.condicion);
+        this.barChartCondFiscal.datasets[0].data = this.condionesFiscales.map(c => c.total);
 
-        this.pieChartLabels = this.condionesFiscales.map(c => c.condicion);
-        console.log(this.pieChartLabels);
-        this.pieChartData.labels = this.pieChartLabels;
-
-        this.pieChartData.datasets[0].data = this.condionesFiscales.map(c => c.total);
-
-
-
-        this.kpis = [
-          { title: 'Total Clientes', value: total, icon: 'bi-people' },
-          { title: 'Activos', value: activos, icon: 'bi-check-circle' },
-          { title: 'Inactivos', value: inactivos, icon: 'bi-x-circle' },
-          { title: 'Con DREI', value: conDREI, icon: 'bi-file-earmark-text' }
-        ];
+        /* Últimos Clientes */
+        this.ultimosClientes = this.customers
+          .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+          .slice(0, 5)
+          .map(cliente => ({
+            nombre: cliente.name,
+            apellido: cliente.surname,
+            created_at: new Date(cliente.created_at)
+          }));
 
       },
       error: (error) => {
@@ -170,39 +137,9 @@ export class DashboardComponent {
     });
   }
 
-
-
-
-  ultimosClientes = [
-    { nombre: 'Juan', apellido: 'Pérez', created_at: new Date('2025-05-20') },
-    { nombre: 'Ana', apellido: 'Gómez', created_at: new Date('2025-05-22') },
-    { nombre: 'Luis', apellido: 'Fernández', created_at: new Date('2025-05-30') }
-  ];
-
-  // Datos para gráfico de barras (provincias)
-  // barChartLabels: string[] = ['Santa Fe', 'Buenos Aires', 'Córdoba', 'Otras'];
-  //  barChartData: ChartConfiguration<'bar'>['data'] = {
-  // labels: ['Santa Fe', 'Buenos Aires', 'Córdoba', 'Otras'],
-  // datasets: [
-  //   {
-  //     data: [40, 30, 25, 25],
-  //     label: 'Clientes',
-  //     backgroundColor: '#0d6efd'
-  //   }
-  // ]
-  // };
-
-
-
-
-//  barChartOptions: ChartConfiguration<'bar'>['options'] = {
-//   responsive: true,
-//   plugins: {
-//     legend: { display: true }
-//   }
-// };
-
-
-
-
+  // ultimosClientes = [
+  //   { nombre: 'Juan', apellido: 'Pérez', created_at: new Date('2025-05-20') },
+  //   { nombre: 'Ana', apellido: 'Gómez', created_at: new Date('2025-05-22') },
+  //   { nombre: 'Luis', apellido: 'Fernández', created_at: new Date('2025-05-30') }
+  // ];
 }

@@ -102,71 +102,57 @@
   <!-- KPIs -->
   <div class="row text-center mb-4">
     <div class="col-md-3 mb-3" *ngFor="let kpi of kpis">
-      <div class="card shadow-sm border-0">
+      <div class="card shadow-sm">
         <div class="card-body">
-          <i [class]="'bi ' + kpi.icon + ' fs-1 text-primary'"></i>
-          <h5 class="card-title mt-2">{{ kpi.title }}</h5>
-          <p class="card-text fs-4 fw-bold">{{ kpi.value }}</p>
+          <i [class]="'bi ' + kpi.icon + ' fs-1 ' + kpi.color"></i>
+          <h5 [class]="'card-title mt-2 ' + kpi.color">{{ kpi.title }}</h5>
+          <p [class]="'card-text fs-4 fw-bold ' + kpi.color">{{ kpi.value }}</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Clientes por provincia -->
-   <div class="d-flex flex-wrap gap-4">
-      <div class="card col-md-4 mb-4 mt-4">
-    <div class="card-header">Clientes por Ciudad</div>
-        <div class="card-body">
-          <canvas baseChart
-              [data]="barChartCiudad"
-              [options]="barChartOptions"
-              [type]="'bar'">
-      </canvas>
+  <div class="graphics">
 
-        </div>
+    <!-- Clientes por provincia -->
+    <div class="card">
+      <div class="card-header">Clientes por Ciudad</div>
+      <div class="card-body">
+        <canvas baseChart
+                [data]="barChartCiudad"
+                [options]="barChartOptions"
+                [type]="'bar'">
+        </canvas>
       </div>
-
-
-<!-- Clientes por condición fiscal -->
-<div class="col-6  col-md-6 mb-4">
-  <div class="card shadow-sm border-0">
-    <div class="card-header">Clientes por Condición Fiscal</div>
-    <div class="card-body">
-      <canvas baseChart
-              [data]="pieChartData"
-              [labels]="pieChartLabels"
-              [options]="pieChartOptions"
-              [type]="'pie'">
-      </canvas>
     </div>
+
+    <!-- Clientes por condición fiscal -->
+    <div class="card">
+      <div class="card-header">Clientes por Ciudad</div>
+      <div class="card-body" >
+        <canvas baseChart
+                [data]="barChartCondFiscal"
+                [options]="barChartCondFiscalOptions"
+                [type]="'bar'">
+        </canvas>
+      </div>
+    </div>
+
+    <!-- Clientes recientes -->
+    <div class="card">
+      <div class="card-header">Nuevos Clientes <small>(Últimos Tres Meses)</small></div>
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item" *ngFor="let cliente of ultimosClientes">
+            <i class="bi bi-person-circle me-2"></i>
+            {{ cliente.nombre }} {{ cliente.apellido }} - <small>{{ cliente.created_at | date:'dd/MM/yyyy' }}</small>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+
   </div>
+
 </div>
-</div>
 
-
-    <!-- <div class="col-md-6 mb-4">
-      <div class="card shadow-sm border-0">
-        <div class="card-header">Clientes por Condición Fiscal</div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li class="list-group-item" *ngFor="let c of clientesPorCondicion">
-              {{ c.condicion }}: <strong>{{ c.total }}</strong>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div> -->
-  </div>
-
-  <!-- Clientes recientes -->
-  <div class="card shadow-sm border-0 mt-4">
-    <div class="card-header">Últimos Clientes Creados</div>
-    <div class="card-body p-0">
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item" *ngFor="let cliente of ultimosClientes">
-          <i class="bi bi-person-circle me-2"></i>
-          {{ cliente.nombre }} {{ cliente.apellido }} - <small>{{ cliente.created_at | date:'dd/MM/yyyy' }}</small>
-        </li>
-      </ul>
-    </div>
-  </div>
