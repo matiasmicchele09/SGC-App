@@ -32,46 +32,49 @@
             </div>
 
             <!-- * Search and Filter Section -->
-            <div class="d-flex flex-row align-items-center justify-content-between">
-              <input type="text" class="form-control my-3" style="max-width: 500px;" placeholder="Buscar Cliente"
+            <div class="row align-items-center gy-2 gx-3">
+              <div class="col-12 col-md-6">
+                <input type="text" class="form-control my-3" style="max-width: 500px;" placeholder="Buscar Cliente"
                 (input)="onSearch($event)"
-              >
-              <div class="">
-                <label class="form-label me-2 fw-semibold">Filtrar por estado:</label>
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input"
-                        type="radio"
-                        name="filter"
-                        id="filterTodos"
-                        value="todos"
-                        checked
-                        (change)="onFilterChange($event)">
-                  <label class="form-check-label" for="filterTodos">Todos</label>
-                </div>
+                >
+              </div>
+              <div class="col-12 col-md-6">
+                <div class="d-flex flex-wrap align-items-center">
+                  <label class="form-label me-2 fw-semibold">Filtrar por estado:</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                          type="radio"
+                          name="filter"
+                          id="filterTodos"
+                          value="todos"
+                          checked
+                          (change)="onFilterChange($event)">
+                    <label class="form-check-label" for="filterTodos">Todos</label>
+                  </div>
 
-                <div class="form-check form-check-inline">
-                  <input
-                        class="form-check-input"
-                        type="radio"
-                        name="filter"
-                        id="filterActivos"
-                        value="activos"
-                        (change)="onFilterChange($event)">
-                        <!-- [(ngModel)]="estadoFiltro" -->
-                  <label class="form-check-label" for="filterActivos">Activos</label>
-                </div>
+                  <div class="form-check form-check-inline">
+                    <input
+                          class="form-check-input"
+                          type="radio"
+                          name="filter"
+                          id="filterActivos"
+                          value="activos"
+                          (change)="onFilterChange($event)">
+                          <!-- [(ngModel)]="estadoFiltro" -->
+                    <label class="form-check-label" for="filterActivos">Activos</label>
+                  </div>
 
-                <div class="form-check form-check-inline">
-                  <input class="form-check-input"
-                        type="radio"
-                        name="filter"
-                        id="filterBaja"
-                        value="baja"
-                        (change)="onFilterChange($event)">
-                  <label class="form-check-label" for="filterBaja">Dados de baja</label>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input"
+                          type="radio"
+                          name="filter"
+                          id="filterBaja"
+                          value="baja"
+                          (change)="onFilterChange($event)">
+                    <label class="form-check-label" for="filterBaja">Dados de baja</label>
+                  </div>
                 </div>
-            </div>
-
+              </div>
             </div>
 
             <table class="table table-striped caption-top ">
