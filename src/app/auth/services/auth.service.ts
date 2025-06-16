@@ -42,24 +42,19 @@ export class AuthService {
       .pipe(
         tap(user => console.log("user", user)),
         tap(user => this._user = user),
-        // tap(user => {
-        //   //this._user = user;
-        //   this.userSubject.next(user);
-        // }),
         catchError(this.handleError)
       )
   }
 
   getCurrentUser(): Observable<User | null> {
-  return this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true }).pipe(
-    tap(user => this._user = user),
-    catchError(err => {
-      this._user = null;
-      return of(null); // Si no está autenticado
-    })
-  );
-}
-
+    return this.http.get<User>(`${this.baseUrl}/me`, { withCredentials: true }).pipe(
+      tap(user => this._user = user),
+      catchError(err => {
+        this._user = null;
+        return of(null); // Si no está autenticado
+      })
+    );
+  }
 
   getUser(id: number): Observable<User> {
     return this.http.get<User>(`${this.baseUrl}/users/${id}`)
@@ -92,20 +87,11 @@ export class AuthService {
           return of(false)
         }) // Si falla, simplemente devuelve false
       );
-    }
-
-
-  private handleError(error: HttpErrorResponse): Observable<never> {    ;
-    //return throwError('Something went wrong; please try again later.');
-    return throwError(() => new Error('Error en la autenticación'));
   }
 
-  // register(email: string, pass: string, name: string): Observable<User> {
-  //   return this.http.post<User>(`${this.baseUrl}/auth/register`, { email, pass, name })
-  //     .pipe(
-  //       tap(user => this._user = user)
-  //     )
-  // }
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    return throwError(() => error);
+  }
 
   logout(): void {
     this._user = null;

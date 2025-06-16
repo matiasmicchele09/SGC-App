@@ -94,7 +94,9 @@
                 <tr class="table-row"
                     *ngFor="let customer of customersPerPage"
                     (click)="onCustomer(customer, false)">
-                  <td>{{customer.surname}}, {{customer.name}}</td>
+
+                  <td *ngIf="customer.id_type === 1">{{customer.surname}}, {{customer.name}}</td>
+                  <td *ngIf="customer.id_type === 2">{{customer.surname}} <b>(Sociedad)</b></td>
                   <td>{{customer.cuit}}</td>
                   <td>{{customer.tax_key}}</td>
                   <td>{{customer.bank}}</td>

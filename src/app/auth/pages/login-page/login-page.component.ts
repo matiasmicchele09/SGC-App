@@ -62,8 +62,11 @@ export class LoginPageComponent {
       },
       error: (err) => {
         this.loading = false;
-        console.log(err);
-        if (err.status === 404) {
+        this.loading = false;
+        console.log('HttpErrorResponse:', err);
+        console.log('Status:', err.status);
+        console.log('Error body:', err.error);
+        if (err.status === 401 || err.status === 404) {
           console.error("Error during login:", err.error.message);
           this.statusError = true;
           this.messageError = err.error.message;
@@ -72,7 +75,7 @@ export class LoginPageComponent {
           console.error("Server error:", err.error.message);
           alert("Something went wrong; please try again later."); // Muestra un mensaje genérico de error al usuario
         } else {
-          console.error("Unexpected error:", err);
+          console.error("Unexpected error:", err.message);
           alert("An unexpected error occurred; please try again later."); // Muestra un mensaje genérico de error al usuario
         }
       }

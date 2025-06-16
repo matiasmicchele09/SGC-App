@@ -152,15 +152,6 @@ export class CustomersComponent {
     return Math.ceil(this.totalItems / this.pageSize);
   }
 
-  // formatDateToDDMMYYYY(dateStr: string): string {
-  //   const date = new Date(dateStr);
-  //   const day = String(date.getDate()).padStart(2, '0');
-  //   const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
-  //   const year = date.getFullYear();
-  //   return `${day}-${month}-${year}`;
-  // }
-
-
   areAllFieldsPristine(): boolean {
   return Object.values(this.customerForm.controls).every(control => control.pristine);
   }
