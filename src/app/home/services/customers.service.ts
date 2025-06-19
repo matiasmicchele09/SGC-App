@@ -1,6 +1,6 @@
 import { inject, Injectable, Type } from "@angular/core";
 import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
-import { enviroments } from 'src/environments/environments'
+import { environments } from 'src/environments/environments'
 import { catchError, Observable, tap, throwError } from "rxjs";
 import { Customer } from "../interfaces/customers.interface";
 import { Tax_Condition } from "../interfaces/tax_conditions";
@@ -13,7 +13,7 @@ import { Type_Person } from "../interfaces/types_persons";
 })
 
 export class CustomersService {
-  private baseUrl: string = enviroments.baseUrl;
+  private baseUrl: string = environments.baseUrl;
   private tax_conditions: Tax_Condition[] = [];
   private http = inject(HttpClient);
 

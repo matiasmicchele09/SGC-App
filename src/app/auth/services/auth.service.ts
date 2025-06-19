@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { enviroments } from 'src/environments/environments'
+import { environments } from 'src/environments/environments'
 import { User } from '../interfaces/user.interface';
 import { BehaviorSubject, Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable, catchError, map, of, tap, throwError } fro
 })
 export class AuthService {
 
-  private baseUrl: string = enviroments.baseUrl;
+  private baseUrl: string = environments.baseUrl;
   private _user!: User | null;
   private userSubject = new BehaviorSubject<User | null>(null);
   user$ = this.userSubject.asObservable(); // Para usar con async pipe

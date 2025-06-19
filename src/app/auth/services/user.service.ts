@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { enviroments } from 'src/environments/environments'
+import { environments } from 'src/environments/environments'
 import { User } from '../interfaces/user.interface';
 import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { Observable, catchError, map, of, tap, throwError } from 'rxjs';
 })
 export class UserService {
 
-  private baseUrl: string = enviroments.baseUrl;
+  private baseUrl: string = environments.baseUrl;
   private _user!: User | null;
 
   //getter para obtener el usuario de la variable privada
