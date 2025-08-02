@@ -12,7 +12,7 @@ SGCApp es una aplicación web desarrollada en Angular 16 para la gestión de cli
 
 1. Clona el repositorio:
    ```sh
-   git clone <url-del-repo>
+   git clone <https://github.com/matiasmicchele09/SGC-App>
    cd SGC-App
    ```
 2. Instala las dependencias:
