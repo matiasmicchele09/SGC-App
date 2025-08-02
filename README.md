@@ -1,27 +1,81 @@
 # SGCApp
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.2.1.
+SGCApp es una aplicación web desarrollada en Angular 16 para la gestión de clientes, usuarios y actividades administrativas. Utiliza Angular CLI y sigue una arquitectura modular, con autenticación, panel de control, gestión de clientes y perfil de usuario.
 
-## Development server
+## Requisitos
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js >= 16.x
+- Angular CLI >= 16.x
+- npm
 
-## Code scaffolding
+## Instalación
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Clona el repositorio:
+   ```sh
+   git clone <url-del-repo>
+   cd SGC-App
+   ```
+2. Instala las dependencias:
+   ```sh
+   npm install
+   ```
 
-## Build
+## Servidor de desarrollo
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Ejecuta el servidor de desarrollo con:
+```sh
+ng serve
+```
+Navega a `http://localhost:4200/`. La aplicación se recargará automáticamente si modificas algún archivo fuente.
 
-## Running unit tests
+## Estructura principal del proyecto
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- `src/app/auth/`: Módulo de autenticación (login, guards, servicios de usuario).
+- `src/app/home/`: Módulo principal tras login (dashboard, clientes, perfil, sidebar).
+- `src/app/shared/`: Componentes y servicios reutilizables (alertas, sidebar, utilidades).
+- `src/app/utils/`: Funciones utilitarias.
+- `src/environments/`: Configuración de entornos (dev/prod).
 
-## Running end-to-end tests
+## Funcionalidades principales
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- **Autenticación de usuarios** con guardas y manejo de sesión.
+- **Gestión de clientes**: alta, baja, edición, filtrado y paginación local.
+- **Dashboard**: KPIs, gráficos de clientes por ciudad y condición fiscal, últimos clientes.
+- **Perfil de usuario**: edición de datos personales y de cuenta.
+- **Alertas**: confirmaciones y notificaciones con SweetAlert2.
+- **Sidebar**: navegación principal y cierre de sesión con loader visual.
 
-## Further help
+## Variables de entorno
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Configura la URL base de la API en `src/environments/environments.ts` y `src/environments/environments.prod.ts`.
+
+## Construcción
+
+Para compilar la aplicación para producción:
+```sh
+ng build
+```
+Los archivos generados estarán en el directorio `dist/`.
+
+## Pruebas unitarias
+
+Ejecuta las pruebas unitarias con:
+```sh
+ng test
+```
+
+## Pruebas end-to-end
+
+Para pruebas E2E, primero instala un framework compatible y luego ejecuta:
+```sh
+ng e2e
+```
+
+## Notas
+
+- El backend debe estar disponible y configurado en la variable `baseUrl` del entorno correspondiente.
+- El proyecto utiliza Bootstrap 5 y Bootstrap Icons para el diseño visual.
+
+## Ayuda adicional
+
+Consulta la [documentación de Angular CLI](https://angular.io/cli) para más comandos y opciones.
