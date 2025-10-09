@@ -55,7 +55,7 @@ export class CustomersComponent {
     nro_reg_DREI: [],
     address: ['', Validators.required],
     city: ['', Validators.required],
-    cuit: ['', [Validators.required, Validators.maxLength(11), Validators.minLength(11)]],
+    cuit: ['', [Validators.required, Validators.maxLength(13), Validators.minLength(11)]],
     email: ['', [Validators.pattern(this.emailPattern)]],
     id: [0],
     id_bank: [],
@@ -240,19 +240,21 @@ export class CustomersComponent {
             this.customerForm.get('nro_reg_DREI')?.disable();
     }
     else {
+      const title = this.selectedCustomer?.id_type === 1 ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}` : `${this.selectedCustomer?.surname}`;    
 
       if (!customer?.active){
         this.customerForm.disable()
         this.buttonForm = 'Dar de Alta Nuevamente';
+
         this.titleForm = this.selectedCustomer
-          ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname} - INACTIVO`
+          ? `${title} - INACTIVO`
           : '';
           this.customerForm.patchValue(this.selectedCustomer!);
       }else{
 
         this.buttonForm = 'Actualizar';
         this.titleForm = this.selectedCustomer
-          ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}`
+          ? `${title}`
           : '';
           this.customerForm.patchValue(this.selectedCustomer!);
           if (!this.selectedCustomer?.hasDREI) {

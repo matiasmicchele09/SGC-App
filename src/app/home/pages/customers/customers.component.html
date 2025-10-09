@@ -156,26 +156,29 @@
                   <hr>
                   <div class="customer-form">
                     <!--* Nombre -->
-                    <div>
-                      <label for="name" class="form-label text-success">Nombre</label>
-                      <input #inputName
-                            type="text"
-                            class="form-control"
-                            formControlName="name"
-                            id="name"
-                            name="name"
-                            [ngClass]="{'is-valid': customerForm.get('name')?.valid && customerForm.get('name')?.touched}"
-                            (blur)="capitalizeWords(inputName.value, 'name')">
 
-                      <span *ngIf="isValidField('name')"
-                            class="form-text text-danger">
-                            {{ getFieldError('name') }}
-                      </span>
-                    </div>
+                      <div *ngIf="customerForm.get('id_type')?.value === 1">
+                        <label for="name" class="form-label text-success">Nombre</label>
+                        <input #inputName
+                              type="text"
+                              class="form-control"
+                              formControlName="name"
+                              id="name"
+                              name="name"
+                              [ngClass]="{'is-valid': customerForm.get('name')?.valid && customerForm.get('name')?.touched}"
+                              (blur)="capitalizeWords(inputName.value, 'name')">
+
+                        <span *ngIf="isValidField('name')"
+                              class="form-text text-danger">
+                              {{ getFieldError('name') }}
+                        </span>
+                      </div>
+
+
 
                     <!--* Apellido -->
                     <div>
-                      <label for="surname" class="form-label text-success">Apellido</label>
+                      <label for="surname" class="form-label text-success">{{customerForm.get('id_type')?.value === 1 ? 'Apellido': 'Razón Social'}}</label>
                       <input #inputSurname
                             type="text"
                             class="form-control"
