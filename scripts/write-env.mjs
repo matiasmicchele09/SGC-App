@@ -5,12 +5,12 @@ const isProd = process.env.VERCEL_ENV === 'production';
 
 const content = `
 // ⚙️ Auto-generado por write-env.mjs
-export const environment = {
+export const environments = {
   production: ${isProd},
-  apiBaseUrl: '${apiBaseUrl}'
+  baseUrl: '${apiBaseUrl}'
 };
 `;
 
 writeFileSync('src/environments/environment.ts', content);
 writeFileSync('src/environments/environment.prod.ts', content);
-console.log('[env] VERCEL_ENV=%s API_BASE_URL=%s', process.env.VERCEL_ENV, apiBaseUrl);
+console.log('[env] VERCEL_ENV=%s  API_BASE_URL=%s', process.env.VERCEL_ENV, apiBaseUrl);
