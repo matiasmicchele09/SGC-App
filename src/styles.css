@@ -4,7 +4,22 @@
   padding: 0px;
   box-sizing: border-box;
 }
-html, body {
-  height: 100%;
+html,
+body {
+  /* height: 100%; */
+  height: 100vh;
   margin: 0;
+}
+
+:root {
+  --black: #000;
+  --blue: #2a3fbd;
+  --gray: #e5e7eb;
+  --green: #00ca0a;
+  --light-blue: #0282fa;
+  --light-green: #4dc853;
+  --light-red: #f92323;
+  --red: #bd2a2a;
+  --white: #fff;
+  --yellow: #ffc107;
 }

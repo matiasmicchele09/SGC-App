@@ -1,44 +1,38 @@
-/* Filas pares con color rosa claro */
-/* tbody tr:nth-child(even) {
-  background-color: #ffe4e1;
-} */
-/* Filas impares con color blanco (opcional, ya que es el color por defecto) */
-/* tbody tr:nth-child(odd) {
-  background-color: white;
-} */
+.table-container{
+  max-height: 80vh; /* Altura máxima deseada */
+  overflow-y: auto; /* Habilita el scroll vertical */
+}
 
-/* .table-row, .icon-fontawesome{
-  cursor: pointer;
-} */
 .table-row:hover{
-  cursor: pointer;
   --bs-table-bg: #bdffa9; /* Color personalizado, por ejemplo, azul claro */
   /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
 }
+
 .btn-new{
-  color: #00ca0a;
+  color: var(--green);
   cursor: pointer
 }
 .btn-delete{
-  background-color: #bd2a2a;
-  color: #ffffff;
+  background-color: var(--red);
+  color: var(--white);
 }
 .btn-modif{
-  background-color: #2a3fbd;
-  color: #ffffff;
+  background-color: var(--blue);
+  color: var(--white);
   margin-left: 20px
 }
 .btn-modif:hover{
-  background-color: #0282fa;
-  color: #ffffff;
+  background-color: var(--light-blue);
+  color: var(--white);
 }
 
 .btn-delete:hover{
-  background-color: #f92323;
-  color: #FFFFFF;
+  background-color: var(--light-blue);
+  color: var(--white);
 }
 .btn-new:hover{
-  color: #4dc853;
+  background-color: var(--light-green);
+  color: var(--white);
 }
 
 .customer-form{
@@ -73,7 +67,10 @@ input, select{
   font-weight: bold;
   /* color: #194bd6; */
 }
-
+.icon-fontawesome i {
+  cursor: pointer;
+  color: var(--blue);
+}
 /** loader */
 .spinner {
   width: 100px; /* ajustá según necesidad */

@@ -1,3 +1,5 @@
+/// <reference types="@angular/localize" />
+
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { environments } from './environments/environments';
 import { AppModule } from './app/app.module';

@@ -3,10 +3,21 @@
     <div class="col">
       <!--* Loader -->
       <div class="content-spinner" *ngIf="loading">
-        <svg class="spinner" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+        <svg
+          class="spinner"
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 200 200"
+        >
           <defs>
-            <radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)">
-              <stop offset="0"/>
+            <radialGradient
+              id="a12"
+              cx=".66"
+              fx=".66"
+              cy=".3125"
+              fy=".3125"
+              gradientTransform="scale(1.5)"
+            >
+              <stop offset="0" />
               <stop offset=".3" stop-opacity=".9" />
               <stop offset=".6" stop-opacity=".6" />
               <stop offset=".8" stop-opacity=".3" />
@@ -19,67 +30,86 @@
         </svg>
         <h4>Cargando Clientes...</h4>
       </div>
-
-
       <ng-container *ngIf="customers.length > 0; else noCustomers">
-          <div class="table-responsive" *ngIf="!loading">
-            <div class="d-flex mt-3">
-              <h2 style="margin-right: 10px;">Mis Clientes</h2>
-              <button class="d-inline btn btn-outline-success"
-                (click)="onCustomer(selectedCustomer, true)"
-                ><i class="bi bi-plus-circle"></i> Agregar
-              </button>
-            </div>
+        <div *ngIf="!loading">
+          <div class="d-flex mt-3">
+            <h2 style="margin-right: 10px">Mis Clientes</h2>
+            <button
+              class="d-inline btn btn-outline-success"
+              (click)="onCustomer(selectedCustomer, true)"
+            >
+              <i class="bi bi-plus-circle"></i> Agregar
+            </button>
+          </div>
 
-            <!-- * Search and Filter Section -->
-            <div class="row align-items-center gy-2 gx-3">
-              <div class="col-12 col-md-6">
-                <input type="text" class="form-control my-3" style="max-width: 500px;" placeholder="Buscar Cliente"
+          <!-- * Search and Filter Section -->
+          <div class="row align-items-center gy-2 gx-3">
+            <div class="col-12 col-md-6">
+              <input
+                type="text"
+                class="form-control my-3"
+                style="max-width: 500px"
+                placeholder="Buscar Cliente por Nombre y Apellido"
                 (input)="onSearch($event)"
+              />
+            </div>
+            <div class="col-12 col-md-6">
+              <div class="d-flex flex-wrap align-items-center">
+                <label class="form-label me-2 fw-semibold"
+                  >Filtrar por estado:</label
                 >
-              </div>
-              <div class="col-12 col-md-6">
-                <div class="d-flex flex-wrap align-items-center">
-                  <label class="form-label me-2 fw-semibold">Filtrar por estado:</label>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input"
-                          type="radio"
-                          name="filter"
-                          id="filterTodos"
-                          value="todos"
-                          checked
-                          (change)="onFilterChange($event)">
-                    <label class="form-check-label" for="filterTodos">Todos</label>
-                  </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="filter"
+                    id="filterTodos"
+                    value="todos"
+                    checked
+                    (change)="onFilterChange($event)"
+                  />
+                  <label class="form-check-label" for="filterTodos"
+                    >Todos</label
+                  >
+                </div>
 
-                  <div class="form-check form-check-inline">
-                    <input
-                          class="form-check-input"
-                          type="radio"
-                          name="filter"
-                          id="filterActivos"
-                          value="activos"
-                          (change)="onFilterChange($event)">
-                          <!-- [(ngModel)]="estadoFiltro" -->
-                    <label class="form-check-label" for="filterActivos">Activos</label>
-                  </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="filter"
+                    id="filterActivos"
+                    value="activos"
+                    (change)="onFilterChange($event)"
+                  />
+                  <!-- [(ngModel)]="estadoFiltro" -->
+                  <label class="form-check-label" for="filterActivos"
+                    >Activos</label
+                  >
+                </div>
 
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input"
-                          type="radio"
-                          name="filter"
-                          id="filterBaja"
-                          value="baja"
-                          (change)="onFilterChange($event)">
-                    <label class="form-check-label" for="filterBaja">Dados de baja</label>
-                  </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="filter"
+                    id="filterBaja"
+                    value="baja"
+                    (change)="onFilterChange($event)"
+                  />
+                  <label class="form-check-label" for="filterBaja"
+                    >Dados de baja</label
+                  >
                 </div>
               </div>
             </div>
+          </div>
 
-            <table class="table table-striped caption-top ">
+          <div class="table-container">
+            <table class="table table-striped caption-top">
               <thead>
                 <tr>
+                  <th scope="col">#</th>
                   <th scope="col">Nombre</th>
                   <th scope="col">CUIT</th>
                   <th scope="col">Clave Fiscal</th>
@@ -88,375 +118,76 @@
                   <th scope="col">Cond. Fiscal</th>
                   <th scope="col">Actividad</th>
                   <th scope="col">Estado</th>
+                  <th scope="col">Detalle</th>
                 </tr>
               </thead>
               <tbody>
-                <tr class="table-row"
-                    *ngFor="let customer of customersPerPage"
-                    (click)="onCustomer(customer, false)">
-
-                  <td *ngIf="customer.id_type === 1">{{customer.surname}}, {{customer.name}}</td>
-                  <td *ngIf="customer.id_type === 2">{{customer.surname}} <b>(Sociedad)</b></td>
-                  <td>{{customer.cuit}}</td>
-                  <td>{{customer.tax_key}}</td>
-                  <td>{{customer.bank}}</td>
-                  <td>{{customer.phone}}</td>
-                  <td>{{customer.tax_condition}}</td>
-                  <td>{{customer.activity}}</td>
-                  <td><span class="badge" [ngClass]="customer.active ? 'bg-success' : 'bg-danger'">
-                    {{ customer.active ? 'Activo' : 'Dado de baja' }}
-                  </span></td>
+                <tr
+                  class="table-row"
+                  *ngFor="let customer of customersPerPage; let i = index"
+                >
+                  <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                  <td *ngIf="customer.id_type === 1">
+                    {{ customer.surname }}, {{ customer.name }}
+                  </td>
+                  <td *ngIf="customer.id_type === 2">
+                    {{ customer.surname }} <b>(Sociedad)</b>
+                  </td>
+                  <td>{{ customer.cuit }}</td>
+                  <td>{{ customer.tax_key }}</td>
+                  <td>{{ customer.bank }}</td>
+                  <td>{{ customer.phone }}</td>
+                  <td>{{ customer.tax_condition }}</td>
+                  <td>{{ customer.activity }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [ngClass]="customer.active ? 'bg-success' : 'bg-danger'"
+                    >
+                      {{ customer.active ? "Activo" : "Baja" }}
+                    </span>
+                  </td>
+                  <td class="text-center align-middle icon-fontawesome">
+                    <i
+                      role="button"
+                      title="Más Información"
+                      class="fa-solid fa-circle-info fa-lg"
+                      (click)="onCustomer(customer, false)"
+                    ></i>
+                  </td>
                 </tr>
               </tbody>
             </table>
-            <b class="text-success">Total de Clientes: {{totalItems}}</b>
-            <!--* Paginator -->
-            <nav *ngIf="totalPages() > 1" class="mt-3" aria-label="...">
-              <ul class="pagination">
-                <li class="page-item" [class.disabled]="page === 1">
-                  <a class="page-link" href="#" (click)="changePage(page - 1, $event)">Anterior</a>
-                </li>
-                <li class="page-item"
-                    *ngFor="let p of [].constructor(totalPages()); let i = index"
-                    [class.active]="page === i + 1">
-                  <a class="page-link" href="#" (click)="changePage(i + 1, $event)">{{ i + 1 }}</a>
-                </li>
-                <li class="page-item" [class.disabled]="page === totalPages()">
-                  <a class="page-link" href="#" (click)="changePage(page + 1, $event)">Siguiente</a>
-                </li>
-              </ul>
-            </nav>
           </div>
+
+          <!--* Paginator -->
+          <ngb-pagination
+            [(page)]="page"
+            [pageSize]="pageSize"
+            [collectionSize]="totalItems"
+            [ellipses]="true"
+            [boundaryLinks]="true"
+            [maxSize]="5"
+            (pageChange)="onNgbPageChange($event)"
+          >
+          </ngb-pagination>
+        </div>
       </ng-container>
 
       <ng-template #noCustomers>
         <div class="mt-5" *ngIf="!loading">
           <h2>¡Usted no tiene ningún cliente!</h2>
-          <button class="btn btn-outline-success" (click)="onCustomer(selectedCustomer, true)">Agregar
-            <i class="fa-solid fa-square-plus fa-lg icon-fontawesome btn-new"></i></button>
+          <button
+            class="btn btn-outline-success"
+            (click)="onCustomer(selectedCustomer, true)"
+          >
+            Agregar <i class="fa-solid fa-square-plus fa-lg btn-new"></i>
+          </button>
         </div>
       </ng-template>
 
       <!--* Modal -->
       <!--*--------->
-      <div #customerModal class="modal fade" id="staticCustomerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-          <div class="modal-content">
-
-            <div class="modal-header bg-success bg-opacity-25 text-success">
-              <h5 class="modal-title" id="staticBackdropLabel" [ngClass]="!selectedCustomer?.active ? 'text-danger': 'text-success'">{{titleForm}}</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body">
-
-              <form [formGroup]="customerForm" autocomplete="off">
-                <div class="section">
-                  <h6 class="text-success">Datos Personales</h6>
-                  <hr>
-                  <div class="customer-form">
-                    <!--* Nombre -->
-
-                      <div *ngIf="customerForm.get('id_type')?.value === 1">
-                        <label for="name" class="form-label text-success">Nombre</label>
-                        <input #inputName
-                              type="text"
-                              class="form-control"
-                              formControlName="name"
-                              id="name"
-                              name="name"
-                              [ngClass]="{'is-valid': customerForm.get('name')?.valid && customerForm.get('name')?.touched}"
-                              (blur)="capitalizeWords(inputName.value, 'name')">
-
-                        <span *ngIf="isValidField('name')"
-                              class="form-text text-danger">
-                              {{ getFieldError('name') }}
-                        </span>
-                      </div>
-
-
-
-                    <!--* Apellido -->
-                    <div>
-                      <label for="surname" class="form-label text-success">{{customerForm.get('id_type')?.value === 1 ? 'Apellido': 'Razón Social'}}</label>
-                      <input #inputSurname
-                            type="text"
-                            class="form-control"
-                            formControlName="surname"
-                            id="surname"
-                            name="surname"
-                            (blur)="capitalizeWords(inputSurname.value, 'surname')"
-                            [ngClass]="{'is-valid': customerForm.get('surname')?.valid && customerForm.get('surname')?.touched}">
-                      <span *ngIf="isValidField('surname')"
-                            class="form-text text-danger">
-                            {{ getFieldError('surname') }}
-                      </span>
-                    </div>
-
-                    <!--* Tipo Persona -->
-                    <div>
-                      <label class="form-label text-success">Tipo Persona</label>
-                        <div class="">
-                          <select class="form-select"
-                                  formControlName="id_type"
-                                  id="id_type"
-                                  name="id_type"
-                                  [ngClass]="{'is-valid': customerForm.get('id_type')?.valid && customerForm.get('id_type')?.touched}">
-                            <option value="0" disabled selected>Seleccione un Tipo de Persona</option>
-                            <option *ngFor="let type  of types_person" value="{{type.id_type}}">{{type.description}}</option>
-
-                          </select>
-                          <span *ngIf="isValidField('id_type')"
-                                class="form-text text-danger">
-                                {{ getFieldError('id_province') }}
-                          </span>
-                        </div>
-                    </div>
-
-                    <!--* CUIT -->
-                    <div>
-                      <label for="cuit" class="form-label text-success">CUIT</label>
-                      <input type="text"
-                            class="form-control"
-                            formControlName="cuit"
-                            id="cuit"
-                            name="cuit"
-                            [ngClass]="{'is-valid': customerForm.get('cuit')?.valid && customerForm.get('cuit')?.touched}">
-                      <span *ngIf="isValidField('cuit')"
-                            class="form-text text-danger">
-                            {{ getFieldError('cuit') }}
-                      </span>
-                    </div>
-
-                    <!--* Email -->
-                    <div>
-                      <label for="email" class="form-label text-success">Email</label>
-                      <input type="email"
-                            class="form-control"
-                            formControlName="email"
-                            id="email"
-                            name="email"
-                            [ngClass]="{'is-valid': customerForm.get('email')?.valid && customerForm.get('email')?.touched}">
-                      <span *ngIf="isValidField('email')"
-                            class="form-text text-danger">
-                            {{ getFieldError('email') }}
-                      </span>
-                    </div>
-
-                    <!--* Teléfono -->
-                    <div>
-                      <label for="phone" class="form-label text-success">Teléfono</label>
-                      <input type="text"
-                            class="form-control"
-                            formControlName="phone"
-                            id="phone"
-                            name="phone"
-                            [ngClass]="{'is-valid': customerForm.get('phone')?.valid && customerForm.get('phone')?.touched}">
-                      <span *ngIf="isValidField('phone')"
-                            class="form-text text-danger">
-                            {{ getFieldError('phone') }}
-                      </span>
-                    </div>
-
-                    <!--* Dirección -->
-                    <div>
-                      <label for="address" class="form-label text-success">Dirección</label>
-                      <input #inputAdress
-                            type="text"
-                            class="form-control"
-                            formControlName="address"
-                            id="address"
-                            name="address"
-                            (blur)="capitalizeWords(inputAdress.value, 'address')"
-                            [ngClass]="{'is-valid': customerForm.get('address')?.valid && customerForm.get('address')?.touched}">
-                      <span *ngIf="isValidField('address')"
-                            class="form-text text-danger">
-                            {{ getFieldError('address') }}
-                      </span>
-                    </div>
-
-                    <!--* Provincia -->
-                    <div>
-                      <label class="form-label text-success">Provincia</label>
-                        <div class="">
-                          <select class="form-select"
-                                  formControlName="id_province"
-                                  id="id_province"
-                                  name="id_province"
-                                  [ngClass]="{'is-valid': customerForm.get('id_province')?.valid && customerForm.get('id_province')?.touched}">
-                            <option value="0" disabled selected>Seleccione una Provincia</option>
-                            <option *ngFor="let type of provinces" value="{{type.id}}">{{type.name}}</option>
-                          </select>
-                          <span *ngIf="isValidField('id_province')"
-                                class="form-text text-danger">
-                                {{ getFieldError('id_province') }}
-                          </span>
-                        </div>
-                    </div>
-
-                    <!--* Ciudad -->
-                    <div>
-                      <label for="city" class="form-label text-success">Ciudad</label>
-                      <input #inputCity
-                            type="text"
-                            class="form-control"
-                            formControlName="city"
-                            id="city"
-                            name="city"
-                            (blur)="capitalizeWords(inputCity.value, 'city')"
-                            [ngClass]="{'is-valid': customerForm.get('city')?.valid && customerForm.get('city')?.touched}">
-                      <span *ngIf="isValidField('city')"
-                            class="form-text text-danger">
-                            {{ getFieldError('city') }}
-                      </span>
-                    </div>
-
-                    <!--* Fec. Alta -->
-                    <div *ngIf="!isNew && selectedCustomer?.active">
-                      <label for="created_at" class="form-label text-success">Fecha Alta</label>
-                      <input type="text" class="form-control" formControlName="created_at"
-                      [value]="customerForm.get('created_at')?.value | date:'dd/MM/yyyy'"
-                      id="created_at" name="created_at" readonly="true">
-                    </div>
-
-                    <!--* Fec. Baja -->
-                    <div *ngIf="!isNew && !selectedCustomer?.active">
-                      <label for="deactivated_at" class="form-label text-success">Fecha Baja</label>
-                      <input type="text" class="form-control" formControlName="deactivated_at"
-                      [value]="customerForm.get('deactivated_at')?.value | date:'dd/MM/yyyy'"
-                      id="deactivated_at" name="deactivated_at" readonly="true">
-                    </div>
-                  </div>
-                </div>
-
-                <div class="section">
-
-                  <h6 class="text-success">Otros Datos</h6>
-                  <hr>
-                  <div class="customer-form">
-                    <!--* Cond. Fiscal -->
-                    <div>
-                      <label class="form-label text-success">Cond. Fiscal</label>
-                        <div class="">
-                          <select class="form-select"
-                                  formControlName="id_tax_condition"
-                                  id="id_tax_condition"
-                                  name="id_tax_condition"
-                                  [ngClass]="{'is-valid': customerForm.get('id_tax_condition')?.valid && customerForm.get('id_tax_condition')?.touched}">
-                            <option value="0" disabled selected>Seleccione una Condición</option>
-                            <option *ngFor="let type of taxConditions" value="{{type.id}}">{{type.description}}</option>
-                          </select>
-                          <span *ngIf="isValidField('id_tax_condition')"
-                                class="form-text text-danger">
-                                {{ getFieldError('id_tax_condition') }}
-                          </span>
-                        </div>
-                    </div>
-
-                    <!--* Clave Fiscal -->
-                    <div>
-                      <label for="tax_key" class="form-label text-success">Clave Fiscal</label>
-                      <input type="text"
-                            class="form-control"
-                            formControlName="tax_key"
-                            id="tax_key"
-                            name="tax_key"
-                            [ngClass]="{'is-valid': customerForm.get('tax_key')?.valid && customerForm.get('tax_key')?.touched}">
-                      <span *ngIf="isValidField('tax_key')"
-                        class="form-text text-danger">
-                        {{ getFieldError('tax_key') }}
-                      </span>
-                    </div>
-
-                    <!--* Banco -->
-                    <div>
-                      <label class="form-label text-success">Banco</label>
-                        <div class="">
-                          <select class="form-select"
-                                  formControlName="id_bank"
-                                  id="id_bank"
-                                  name="id_bank"
-                                  [ngClass]="{'is-valid': customerForm.get('id_bank')?.valid && customerForm.get('id_bank')?.touched}">
-                            <option value="0" disabled selected>Seleccione un Banco</option>
-                            <option *ngFor="let type of banks" value="{{type.id_bank}}">{{type.name}}</option>
-                          </select>
-                        </div>
-                    </div>
-
-                    <!--* Actividad-->
-                    <div>
-                      <label for="activity" class="form-label text-success">Actividad</label>
-                      <input #inputActivity
-                            type="text"
-                            class="form-control"
-                            formControlName="activity"
-                            id="activity"
-                            name="activity"
-                            (blur)="capitalizeWords(inputActivity.value, 'activity')"
-                            [ngClass]="{'is-valid': customerForm.get('activity')?.valid && customerForm.get('activity')?.touched}">
-                      <span *ngIf="isValidField('activity')"
-                            class="form-text text-danger">
-                            {{ getFieldError('activity') }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="section">
-                    <h6 class="text-success">Derecho de Registro e Inspección. (DREI)</h6>
-                  <hr>
-                  <!--* DREI -->
-                  <div class="d-flex justify-content-between">
-                    <div class="form-check form-switch">
-                      <input type="checkbox"
-                        class="form-check-input"
-                        formControlName="hasDREI"
-                        id="hasDREI"
-                        name="hasDREI"
-                        (change)="onChangeDREI($event)">
-                        <label for="hasDREI" class="form-check-label text-success fw-semibold">DREI - Si/No</label>
-                    </div>
-                    <div>
-                      <label for="nro_cuenta_DREI" class="form-label text-success fw-semibold">Nro. Cuenta</label>
-                      <input type="number"
-                            class="form-control"
-                            formControlName="nro_cuenta_DREI"
-                            id="nro_cuenta_DREI"
-                            name="nro_cuenta_DREI"
-
-                      >
-                    </div>
-                    <div>
-                      <label for="nro_reg_DREI" class="form-label text-success fw-semibold">Nro. Registración</label>
-                      <input type="number"
-                            class="form-control"
-                            formControlName="nro_reg_DREI"
-                            id="nro_reg_DREI"
-                            name="nro_reg_DREI"
-
-                      >
-                    </div>
-                  </div>
-
-                </div>
-
-
-                <div *ngIf="pristine" class="form-text text-danger">
-                  Ningún campo ha sido modificado
-                </div>
-              </form>
-            </div>
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-modif" (click)="onSaveChanges(customerForm)">
-                <i [ngClass]="isNew ? 'bi bi-cloud-arrow-up' : 'bi bi-save2'"></i> {{buttonForm}}</button>
-              <button type="button" class="btn btn-delete" *ngIf="!isNew && selectedCustomer?.active" (click)="onDeleteCustomer(selectedCustomer!)">
-                <i class="bi bi-trash3"></i> Dar de Baja</button>
-            </div>
-
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </div>

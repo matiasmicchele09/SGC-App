@@ -8,6 +8,8 @@ import { LayoutComponent } from './pages/layout/layout.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { NgChartsModule } from 'ng2-charts';
+import { NgbPaginationModule } from '@ng-bootstrap/ng-bootstrap';
+import { CustomerModalComponent } from './pages/customers/customer-modal/customer-modal.component';
 
 @NgModule({
   declarations: [
@@ -16,12 +18,14 @@ import { NgChartsModule } from 'ng2-charts';
     SidebarComponent,
     LayoutComponent,
     ProfileComponent,
+    CustomerModalComponent,
   ],
   imports: [
     CommonModule,
     HomeRoutingModule,
     ReactiveFormsModule,
-    NgChartsModule
+    NgChartsModule,
+    NgbPaginationModule,
   ]
 })
 
