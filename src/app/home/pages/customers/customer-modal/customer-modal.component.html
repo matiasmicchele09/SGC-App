@@ -13,7 +13,7 @@
         type="button"
         class="btn-close"
         aria-label="Close"
-        (click)="onCloseModal()"
+        (click)="onCloseModal(null)"
       ></button>
     </div>
 
@@ -186,6 +186,11 @@
               <label for="address" class="form-label text-success"
                 >Dirección</label
               >
+              <!-- [ngClass]="{
+                  'is-valid':
+                    customerForm.get('address')?.valid &&
+                    customerForm.get('address')?.touched
+                }" -->
               <input
                 #inputAdress
                 type="text"
@@ -194,19 +199,14 @@
                 id="address"
                 name="address"
                 (blur)="capitalizeWords(inputAdress.value, 'address')"
-                [ngClass]="{
-                  'is-valid':
-                    customerForm.get('address')?.valid &&
-                    customerForm.get('address')?.touched
-                }"
               />
-              <span
-                *ngIf="isValidField('address')"
-                class="form-text text-danger"
-              >
-                {{ getFieldError("address") }}
-              </span>
             </div>
+            <!-- <span
+              *ngIf="isValidField('address')"
+              class="form-text text-danger"
+            >
+              {{ getFieldError("address") }}
+            </span> -->
 
             <!--* Provincia -->
             <div>
@@ -476,7 +476,7 @@
           </div>
         </div>
 
-        <div *ngIf="pristine" class="form-text text-danger">
+        <div *ngIf="pristine && customer?.active" class="form-text text-danger">
           Ningún campo ha sido modificado
         </div>
       </form>

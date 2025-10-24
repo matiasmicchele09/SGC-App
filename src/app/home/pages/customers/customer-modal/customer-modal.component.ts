@@ -9,7 +9,7 @@ import { Tax_Condition } from 'src/app/home/interfaces/tax_conditions';
 import { Type_Person } from 'src/app/home/interfaces/types_persons';
 import { CustomersService } from 'src/app/home/services/customers.service';
 import { AlertService } from 'src/app/shared/services/alerts.service';
-
+type Action = 'create' | 'update' | 'reactivate';
 @Component({
   selector: 'app-customer-modal',
   templateUrl: './customer-modal.component.html',
@@ -34,7 +34,7 @@ export class CustomerModalComponent implements OnInit {
     hasDREI: [false],
     nro_cuenta_DREI: [],
     nro_reg_DREI: [],
-    address: ['', Validators.required],
+    address: [''],
     city: ['', Validators.required],
     cuit: [
       '',
@@ -116,9 +116,11 @@ export class CustomerModalComponent implements OnInit {
     }
   }
 
-  onCloseModal() {
-    this.activeModal.dismiss('close-button'); // o this.activeModal.close(payload);
+  onCloseModal(payload: Customer | null = null) {
+    console.log('payload', payload);
+    this.activeModal.close(payload);
   }
+  //this.activeModal.dismiss('close-button'); // o
 
   capitalizeWords(input: string, field: string) {
     const formattedInput = input.replace(/\w\S*/g, (txt) => {
@@ -178,29 +180,75 @@ export class CustomerModalComponent implements OnInit {
     }
   }
 
+  private resolveAction(
+    isNew: boolean,
+    originalActive?: boolean, // estado al cargar el cliente
+    currentActive?: boolean // valor del form al guardar
+  ): Action {
+    if (isNew) return 'create';
+    if (originalActive === false && currentActive === true) return 'reactivate';
+    return 'update';
+  }
+
+  private getMessages(action: Action): {
+    confirmMessage: string;
+    titleMessage: string;
+    textMessage: string;
+    errorMessage: string;
+  } {
+    switch (action) {
+      case 'create':
+        return {
+          confirmMessage: '¿Desea modificar los datos?',
+          titleMessage: 'Cliente agregado',
+          textMessage: 'El cliente fue agregado correctamente',
+          errorMessage: 'Error: No se pudo agregar el cliente',
+        };
+      case 'update':
+        return {
+          confirmMessage: '¿Desea modificar los datos?',
+          titleMessage: 'Cliente modificado',
+          textMessage: 'El cliente fue modificado correctamente',
+          errorMessage: 'Error: No se pudieron modificar los datos',
+        };
+      case 'reactivate':
+        return {
+          confirmMessage: '¿Desea dar de alta nuevamente este cliente?',
+          titleMessage: 'Cliente reactivado',
+          textMessage: 'El cliente fue dado de alta correctamente',
+          errorMessage: 'Error: No se pudo reactivar el cliente',
+        };
+    }
+  }
   onSaveChanges(customer: FormGroup) {
+    console.log(customer);
+
+    const action = this.resolveAction(
+      this.isNew,
+      customer.value.active,
+      true // Siempre activo al guardar porque si estaba activo sigue activo y si estaba inactivo el form se habilita al reactivar
+    );
+
+    console.log('Action:', action);
+
+    if (customer.value.active) {
+    }
     //* Valido que nada este vacío
-    if (this.customerForm.invalid) {
+    if (this.customerForm.invalid && action !== 'reactivate') {
       this.customerForm.markAllAsTouched();
       return;
     }
+
     //* Valido que hayan cambiado algún valor
     //Si el valor NO ha sido modificado --> true | Si ha sido modificado --> false
-    if (this.areAllFieldsPristine()) {
+    if (this.areAllFieldsPristine() && action !== 'reactivate') {
       this.pristine = true;
       return;
     } else this.pristine = false;
 
-    const confirmMessage = this.isNew
-      ? '¿Desea agregar este cliente?'
-      : '¿Desea modificar los datos?';
-    const titleMessage = this.isNew ? 'Cliente agregado' : 'Cliente modificado';
-    const textMessage = this.isNew
-      ? 'El cliente fue agregado correctamente'
-      : 'El cliente fue modificado correctamente';
-    const errorMessage = this.isNew
-      ? 'Error: No se pudo agregar el cliente'
-      : 'Error: No se pudieron modificar los datos';
+    const { confirmMessage, titleMessage, textMessage, errorMessage } =
+      this.getMessages(action);
+
     /* Agrego campos al objeto */
     const newCustomer = this.isNew
       ? {
@@ -209,50 +257,74 @@ export class CustomerModalComponent implements OnInit {
           created_at: new Date().toISOString(),
           active: true,
           deactivated_at: null,
+          highlight: false,
         }
       : { ...customer.value, id_user: this.authService.user!.id_user };
     //}
 
     /* Y ahora saco algunos campos que no deben ir al back */
-    const { province, tax_condition, bank, ...backendCustomer } = newCustomer;
-    console.log(backendCustomer);
+    const { province, tax_condition, bank, highlight, ...backendCustomer } =
+      newCustomer;
+    console.log(newCustomer);
 
-    this.alertService.confirm(confirmMessage, '').then((result) => {
-      if (result.isConfirmed) {
-        this.customerService
-          .addCustomer(backendCustomer, this.isNew)
-          .subscribe({
-            next: (customer) => {
-              console.log(customer);
-              console.log(titleMessage);
-              this.alertService.success(titleMessage, textMessage);
-              if (this.isNew) this.customers.push(customer);
-              else
-                this.customers = this.customers.map((c) =>
-                  c.id === customer.id ? customer : c
-                );
+    this.alertService
+      .confirm({
+        title: confirmMessage,
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.customerService
+            .addCustomer(backendCustomer, this.isNew)
+            .subscribe({
+              next: (customer) => {
+                console.log(customer);
+                console.log(titleMessage);
+                this.alertService.success({
+                  title: titleMessage,
+                  text: textMessage,
+                  timer: 3000,
+                });
+                if (this.isNew) this.customers.push(customer);
+                else
+                  this.customers = this.customers.map((c) =>
+                    c.id === customer.id ? customer : c
+                  );
 
-              // ❌ Cerrar el modal
-              // closeBootstrapModal(this.customerModalRef);
-              // this.loadCustomers(this.authService.user!.id_user);
-            },
-            error: (err) => {
-              console.log(err);
-              this.alertService.error(errorMessage, err);
-              console.error(err);
-            },
-            complete: () => {
-              console.log('complete');
-            },
-          });
-      }
-    });
+                // ❌ Cerrar el modal
+                this.onCloseModal(newCustomer);
+                // this.loadCustomers(this.authService.user!.id_user);
+              },
+              error: (err) => {
+                console.log(err);
+                this.alertService.error({
+                  title: errorMessage,
+                  text: err,
+                  timer: 3000,
+                });
+                console.error(err);
+              },
+              complete: () => {
+                console.log('complete');
+              },
+            });
+        }
+      });
   }
 
   onDeleteCustomer(customer: Customer) {
     console.log(customer);
     this.alertService
-      .confirm('¿Desea Eliminar este cliente?', '')
+      .confirm({
+        title: '¿Desea Eliminar este cliente?',
+        showCancelButton: true,
+        showConfirmButton: true,
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'No',
+      })
       .then((result) => {
         if (result.isConfirmed) {
           const customerDelete = {
@@ -263,20 +335,24 @@ export class CustomerModalComponent implements OnInit {
           this.customerService.updateCustomer(customerDelete).subscribe({
             next: (customer) => {
               console.log(customer);
-              this.alertService.success('Cliente Eliminado', '');
+              this.alertService.success({
+                title: 'Cliente Eliminado',
+                timer: 3000,
+              });
               this.customers = this.customers.map((c) =>
                 c.id === customer.id ? customer : c
               );
 
               // ❌ Cerrar el modal
-              // closeBootstrapModal(this.customerModalRef);
+              this.onCloseModal(customer);
               // this.loadCustomers(this.authService.user!.id_user);
             },
             error: (err) => {
-              this.alertService.error(
-                'Error: No se pudo eliminar el cliente',
-                err.error.message
-              );
+              this.alertService.error({
+                title: 'Error: No se pudo eliminar el cliente',
+                text: err.error.message,
+                timer: 3000,
+              });
               console.error(err);
             },
             complete: () => {

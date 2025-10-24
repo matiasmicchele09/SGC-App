@@ -1,4 +1,4 @@
-export interface Customer{
+export interface Customer {
   active: boolean;
   activity: string;
   address: string;
@@ -26,5 +26,5 @@ export interface Customer{
   tax_condition: string;
   tax_key: string;
   type_person: string;
+  highlight?: boolean;
 }
-

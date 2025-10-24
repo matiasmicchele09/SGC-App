@@ -99,9 +99,9 @@ export class CustomersComponent {
     });
   }
 
+  //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
+  //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
   updatePage(): void {
-    //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
-    //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
     const sorted = [...this.filteredCustomers].sort((a, b) =>
       a.surname.localeCompare(b.surname)
     );
@@ -161,6 +161,8 @@ export class CustomersComponent {
     this.updatePage();
   }
 
+  trackById = (_: number, c: Customer) => c.id;
+
   onCustomer(customer: Customer | null, isNew: boolean) {
     this.pristine = false;
     this.isNew = isNew;
@@ -183,54 +185,22 @@ export class CustomersComponent {
     ref.componentInstance.taxConditions = this.taxConditions;
 
     ref.result
-      .then((result) => {
-        console.log(`Closed with: ${result}`);
+      .then((customer) => {
+        const idx = this.customers.findIndex((c) => c.id === customer.id);
+        if (idx === -1) return;
+
+        // seteo highlight en el objeto NUEVO
+        const updatedWithFlag = { ...customer, highlight: true };
+
+        // reemplazo inmutable en customers
+        const customersClone = [...this.customers];
+        customersClone[idx] = updatedWithFlag;
+        this.customers = customersClone;
+        this.filteredCustomers = this.customers;
+        this.updatePage();
       })
       .catch((res) => {
         //console.log(`Dismissed ${this.getDismissReason(res)}`);
       });
-
-    // if (isNew) {
-    //   this.titleForm = 'Nuevo Cliente';
-    //   this.buttonForm = 'Agregar';
-    //   this.customerForm.reset();
-    //   this.customerForm.get('id_tax_condition')?.setValue(0);
-    //   this.customerForm.get('fec_alta')?.setValue(new Date());
-    //   this.customerForm.get('fec_baja')?.setValue(null);
-    //   this.customerForm.get('id_province')?.setValue(0);
-    //   this.customerForm.get('id_type')?.setValue(0);
-    //   this.customerForm.get('nro_cuenta_DREI')?.disable();
-    //   this.customerForm.get('nro_reg_DREI')?.disable();
-    // } else {
-    //   const title =
-    //     this.selectedCustomer?.id_type === 1
-    //       ? `${this.selectedCustomer.name} ${this.selectedCustomer.surname}`
-    //       : `${this.selectedCustomer?.surname}`;
-
-    //   if (!customer?.active) {
-    //     this.customerForm.disable();
-    //     this.buttonForm = 'Dar de Alta Nuevamente';
-
-    //     this.titleForm = this.selectedCustomer ? `${title} - INACTIVO` : '';
-    //     this.customerForm.patchValue(this.selectedCustomer!);
-    //   } else {
-    //     this.buttonForm = 'Actualizar';
-    //     this.titleForm = this.selectedCustomer ? `${title}` : '';
-    //     this.customerForm.patchValue(this.selectedCustomer!);
-    //     if (!this.selectedCustomer?.hasDREI) {
-    //       this.customerForm.get('nro_cuenta_DREI')?.disable();
-    //       this.customerForm.get('nro_reg_DREI')?.disable();
-    //     }
-    //   }
-    //   // this.customerForm.patchValue({
-    //   //   created_at: this.formatDateToDDMMYYYY(this.selectedCustomer!.created_at)
-    //   // });
-    // }
-
-    // const modalElement = document.getElementById('staticCustomerModal');
-    // if (modalElement) {
-    //   const modal = new Modal(modalElement);
-    //   modal.show();
-    // }
   }
 }
