@@ -25,12 +25,7 @@
           <div class="customer-form">
             <!--* Nombre -->
 
-            <div
-              *ngIf="
-                customerForm.get('id_type')?.value === 1 ||
-                customerForm.get('id_type')?.value === 0
-              "
-            >
+            <div *ngIf="customerForm.get('id_type')?.value != 2">
               <label for="name" class="form-label text-success">Nombre</label>
               <input
                 #inputName
@@ -55,10 +50,9 @@
             <!--* Apellido -->
             <div>
               <label for="surname" class="form-label text-success">{{
-                customerForm.get("id_type")?.value === 1 ||
-                customerForm.get("id_type")?.value === 0
-                  ? "Apellido"
-                  : "Razón Social"
+                +customerForm.get("id_type")?.value === 2
+                  ? "Razón Social"
+                  : "Apellido"
               }}</label>
               <input
                 #inputSurname
@@ -99,6 +93,7 @@
                       customerForm.get('id_type')?.value == 0 &&
                       customerForm.get('id_type')?.touched
                   }"
+                  (change)="onChangeTypePerson($event)"
                 >
                   <option value="0" disabled selected>
                     Seleccione un Tipo de Persona
@@ -114,7 +109,7 @@
                   *ngIf="isValidField('id_type')"
                   class="form-text text-danger"
                 >
-                  {{ getFieldError("id_province") }}
+                  {{ getFieldError("id_type") }}
                 </span>
               </div>
             </div>

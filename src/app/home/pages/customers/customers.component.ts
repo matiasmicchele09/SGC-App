@@ -66,11 +66,6 @@ export class CustomersComponent {
         this.banks = banks;
         this.types_person = type_person;
 
-        /*console.log(banks);
-        console.log(customers);
-        console.log(tax_conditions);
-        console.log(provinces);*/
-
         this.customers.forEach((customer: Customer) => {
           customer.tax_condition =
             this.taxConditions.find((tc) => tc.id === customer.id_tax_condition)
@@ -186,16 +181,30 @@ export class CustomersComponent {
 
     ref.result
       .then((customer) => {
-        const idx = this.customers.findIndex((c) => c.id === customer.id);
-        if (idx === -1) return;
+        customer.tax_condition =
+          this.taxConditions.find((tc) => tc.id === customer.id_tax_condition)
+            ?.description ?? 'Desconocido';
+        customer.province =
+          this.provinces.find((p) => p.id === customer.id_province)?.name ??
+          'Desconocido';
+        customer.bank =
+          this.banks.find((b) => b.id_bank === customer.id_bank)?.name ??
+          'Desconocido';
+        customer.type_person =
+          this.types_person.find((tp) => tp.id_type === customer.id_type)
+            ?.description ?? 'Desconocido';
 
-        // seteo highlight en el objeto NUEVO
         const updatedWithFlag = { ...customer, highlight: true };
-
+        const idx = this.customers.findIndex((c) => c.id === customer.id);
+        if (idx === -1) {
+          this.customers = [updatedWithFlag, ...this.customers];
+        } else {
+          const customersClone = [...this.customers];
+          console.log(customersClone[idx]);
+          customersClone[idx] = updatedWithFlag;
+          this.customers = customersClone;
+        }
         // reemplazo inmutable en customers
-        const customersClone = [...this.customers];
-        customersClone[idx] = updatedWithFlag;
-        this.customers = customersClone;
         this.filteredCustomers = this.customers;
         this.updatePage();
       })

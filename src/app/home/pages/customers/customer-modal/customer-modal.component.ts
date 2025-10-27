@@ -54,7 +54,7 @@ export class CustomerModalComponent implements OnInit {
     surname: ['', Validators.required],
     tax_key: [''],
     tax_condition: [''],
-    type_person: ['', Validators.required],
+    type_person: [''],
   });
 
   @Input() customer: Customer | null = null;
@@ -69,9 +69,7 @@ export class CustomerModalComponent implements OnInit {
     private authService: AuthService,
     private customerService: CustomersService,
     private fb: FormBuilder
-  ) {
-    //his.loadCustomers(this.authService.user!.id_user);
-  }
+  ) {}
 
   ngOnInit(): void {
     /* Por si quedó algun campo con algún valor o quedó el formulario disable por entrar primero a un inactivo */
@@ -82,8 +80,8 @@ export class CustomerModalComponent implements OnInit {
       this.buttonForm = 'Agregar';
       this.customerForm.reset();
       this.customerForm.get('id_tax_condition')?.setValue(0);
-      this.customerForm.get('fec_alta')?.setValue(new Date());
-      this.customerForm.get('fec_baja')?.setValue(null);
+      this.customerForm.get('created_at')?.setValue(new Date());
+      this.customerForm.get('deactivated_at')?.setValue(null);
       this.customerForm.get('id_province')?.setValue(0);
       this.customerForm.get('id_type')?.setValue(0);
       this.customerForm.get('id_bank')?.setValue(0);
@@ -116,18 +114,13 @@ export class CustomerModalComponent implements OnInit {
     }
   }
 
-  onCloseModal(payload: Customer | null = null) {
-    console.log('payload', payload);
-    this.activeModal.close(payload);
-  }
-  //this.activeModal.dismiss('close-button'); // o
-
   capitalizeWords(input: string, field: string) {
     const formattedInput = input.replace(/\w\S*/g, (txt) => {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
     this.customerForm.get(`${field}`)?.setValue(formattedInput);
   }
+
   isValidField(field: string): boolean | null {
     return (
       this.customerForm.controls[field].errors &&
@@ -180,6 +173,27 @@ export class CustomerModalComponent implements OnInit {
     }
   }
 
+  onCloseModal(payload: Customer | null = null) {
+    this.activeModal.close(payload);
+  }
+
+  private areAllFieldsPristine(): boolean {
+    return Object.values(this.customerForm.controls).every(
+      (control) => control.pristine
+    );
+  }
+
+  onChangeTypePerson(event: Event): void {
+    const selectedValue = (event.target as HTMLSelectElement).value;
+    if (selectedValue === '2') {
+      this.customerForm.get('name')?.setValue('');
+      this.customerForm.get('name')?.setValidators(null);
+      this.customerForm.get('name')?.updateValueAndValidity();
+    } else {
+      this.customerForm.get('name')?.setValidators([Validators.required]);
+      this.customerForm.get('name')?.updateValueAndValidity();
+    }
+  }
   private resolveAction(
     isNew: boolean,
     originalActive?: boolean, // estado al cargar el cliente
@@ -199,7 +213,7 @@ export class CustomerModalComponent implements OnInit {
     switch (action) {
       case 'create':
         return {
-          confirmMessage: '¿Desea modificar los datos?',
+          confirmMessage: '¿Desea agregar este cliente?',
           titleMessage: 'Cliente agregado',
           textMessage: 'El cliente fue agregado correctamente',
           errorMessage: 'Error: No se pudo agregar el cliente',
@@ -220,19 +234,14 @@ export class CustomerModalComponent implements OnInit {
         };
     }
   }
-  onSaveChanges(customer: FormGroup) {
-    console.log(customer);
 
+  onSaveChanges(customer: FormGroup) {
     const action = this.resolveAction(
       this.isNew,
       customer.value.active,
       true // Siempre activo al guardar porque si estaba activo sigue activo y si estaba inactivo el form se habilita al reactivar
     );
 
-    console.log('Action:', action);
-
-    if (customer.value.active) {
-    }
     //* Valido que nada este vacío
     if (this.customerForm.invalid && action !== 'reactivate') {
       this.customerForm.markAllAsTouched();
@@ -246,57 +255,58 @@ export class CustomerModalComponent implements OnInit {
       return;
     } else this.pristine = false;
 
-    const { confirmMessage, titleMessage, textMessage, errorMessage } =
-      this.getMessages(action);
+    if (action === 'create') {
+      const { confirmMessage, titleMessage, textMessage, errorMessage } =
+        this.getMessages(action);
 
-    /* Agrego campos al objeto */
-    const newCustomer = this.isNew
-      ? {
-          ...customer.value,
-          id_user: this.authService.user!.id_user,
-          created_at: new Date().toISOString(),
-          active: true,
-          deactivated_at: null,
-          highlight: false,
-        }
-      : { ...customer.value, id_user: this.authService.user!.id_user };
-    //}
+      /* Agrego campos al objeto */
+      const newCustomer = this.isNew
+        ? {
+            ...customer.value,
+            id_user: this.authService.user!.id_user,
+            created_at: new Date().toISOString(),
+            active: true,
+            deactivated_at: null,
+            highlight: false,
+          }
+        : { ...customer.value, id_user: this.authService.user!.id_user };
+      //}
 
-    /* Y ahora saco algunos campos que no deben ir al back */
-    const { province, tax_condition, bank, highlight, ...backendCustomer } =
-      newCustomer;
-    console.log(newCustomer);
+      /* Y ahora saco algunos campos que no deben ir al back */
+      const {
+        province,
+        tax_condition,
+        bank,
+        highlight,
+        type_person,
+        ...backendCustomer
+      } = newCustomer;
 
-    this.alertService
-      .confirm({
-        title: confirmMessage,
-        showCancelButton: true,
-        showConfirmButton: true,
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'No',
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          this.customerService
-            .addCustomer(backendCustomer, this.isNew)
-            .subscribe({
+      this.alertService
+        .confirm({
+          title: confirmMessage,
+          showCancelButton: true,
+          showConfirmButton: true,
+          confirmButtonText: 'Sí',
+          cancelButtonText: 'No',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.customerService.addCustomer(backendCustomer).subscribe({
               next: (customer) => {
+                const createdCustomer = {
+                  ...newCustomer,
+                  highlight: true,
+                };
                 console.log(customer);
-                console.log(titleMessage);
                 this.alertService.success({
                   title: titleMessage,
                   text: textMessage,
                   timer: 3000,
                 });
-                if (this.isNew) this.customers.push(customer);
-                else
-                  this.customers = this.customers.map((c) =>
-                    c.id === customer.id ? customer : c
-                  );
 
                 // ❌ Cerrar el modal
-                this.onCloseModal(newCustomer);
-                // this.loadCustomers(this.authService.user!.id_user);
+                this.onCloseModal(customer);
               },
               error: (err) => {
                 console.log(err);
@@ -311,8 +321,127 @@ export class CustomerModalComponent implements OnInit {
                 console.log('complete');
               },
             });
-        }
-      });
+          }
+        });
+    } else if (action === 'update') {
+      const { confirmMessage, titleMessage, textMessage, errorMessage } =
+        this.getMessages(action);
+
+      /* Y ahora saco algunos campos que no deben ir al back y id que no cambia */
+      const {
+        province,
+        tax_condition,
+        bank,
+        highlight,
+        type_person,
+        deactivated_at,
+        created_at,
+        ...backendCustomer
+      } = customer.value;
+
+      this.alertService
+        .confirm({
+          title: confirmMessage,
+          showCancelButton: true,
+          showConfirmButton: true,
+          confirmButtonText: 'Sí',
+          cancelButtonText: 'No',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.customerService.updateCustomer(backendCustomer).subscribe({
+              next: (customer) => {
+                console.log(customer);
+                const updatedCustomer = {
+                  ...customer,
+                  highlight: true,
+                };
+
+                this.alertService.success({
+                  title: titleMessage,
+                  text: textMessage,
+                  timer: 3000,
+                });
+                this.customers = this.customers.map((c) =>
+                  c.id === customer.id ? customer : c
+                );
+
+                // ❌ Cerrar el modal
+                this.onCloseModal(customer);
+              },
+              error: (err) => {
+                console.log(err);
+                this.alertService.error({
+                  title: errorMessage,
+                  text: err,
+                  timer: 3000,
+                });
+                console.error(err);
+              },
+              complete: () => {
+                console.log('complete');
+              },
+            });
+          }
+        });
+    } else if (action === 'reactivate') {
+      const { confirmMessage, titleMessage, textMessage, errorMessage } =
+        this.getMessages(action);
+      const {
+        province,
+        tax_condition,
+        bank,
+        highlight,
+        type_person,
+        deactivated_at,
+        created_at,
+        ...backendCustomer
+      } = customer.value;
+
+      /* Agrego campos al objeto */
+      const reactivatedCustomer = {
+        ...backendCustomer,
+        active: true,
+        deactivated_at: null,
+      };
+      this.alertService
+        .confirm({
+          title: confirmMessage,
+          showCancelButton: true,
+          showConfirmButton: true,
+          confirmButtonText: 'Sí',
+          cancelButtonText: 'No',
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.customerService.updateCustomer(reactivatedCustomer).subscribe({
+              next: (customer) => {
+                console.log(customer);
+                this.alertService.success({
+                  title: titleMessage,
+                  text: textMessage,
+                  timer: 3000,
+                });
+
+                // ❌ Cerrar el modal
+                this.onCloseModal(customer);
+              },
+              error: (err) => {
+                console.log(err);
+                this.alertService.error({
+                  title: errorMessage,
+                  text: err,
+                  timer: 3000,
+                });
+                console.error(err);
+              },
+              complete: () => {
+                console.log('complete');
+              },
+            });
+          }
+        });
+    }
   }
 
   onDeleteCustomer(customer: Customer) {
@@ -361,11 +490,5 @@ export class CustomerModalComponent implements OnInit {
           });
         }
       });
-  }
-
-  areAllFieldsPristine(): boolean {
-    return Object.values(this.customerForm.controls).every(
-      (control) => control.pristine
-    );
   }
 }
