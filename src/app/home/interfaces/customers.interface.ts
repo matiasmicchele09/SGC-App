@@ -1,4 +1,4 @@
-export interface Customer{
+export interface Customer {
   active: boolean;
   activity: string;
   address: string;
@@ -8,12 +8,12 @@ export interface Customer{
   cuit: string;
   deactivated_at: string | null;
   email: string;
-  fec_alta: string;
-  fec_baja: string | null;
   hasDREI: boolean;
+  highlight?: boolean;
   id_bank: number;
   id_province: number;
   id_sex: number;
+  id_user: number;
   id_tax_condition: number;
   id_type: number;
   id: number;
@@ -27,4 +27,3 @@ export interface Customer{
   tax_key: string;
   type_person: string;
 }
-

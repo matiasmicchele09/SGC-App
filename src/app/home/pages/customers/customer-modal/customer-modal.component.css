@@ -1,40 +1,25 @@
-.table-container {
-  max-height: 80vh; /* Altura máxima deseada */
-  overflow-y: auto; /* Habilita el scroll vertical */
-  scrollbar-width: thin;
-}
-
-.table-row:hover {
-  --bs-table-bg: var(--gray); /* Color personalizado, por ejemplo, azul claro */
-  /* Aca estoy cambiando la clase de bootstrap, por eso esta escrito así */
-}
-
 .btn-new {
   color: var(--green);
   cursor: pointer;
 }
-
 .btn-delete {
   background-color: var(--red);
   color: var(--white);
 }
-
 .btn-modif {
   background-color: var(--blue);
   color: var(--white);
   margin-left: 20px;
 }
-
 .btn-modif:hover {
   background-color: var(--light-blue);
   color: var(--white);
 }
 
 .btn-delete:hover {
-  background-color: var(--light-blue);
+  background-color: var(--light-red);
   color: var(--white);
 }
-
 .btn-new:hover {
   background-color: var(--light-green);
   color: var(--white);
@@ -53,23 +38,22 @@
   background-color: #f8f9fa; /* fondo gris claro */
   margin-bottom: 15px;
 }
-
 .section {
   border-left: 4px solid #198754; /* verde Bootstrap */
 }
-
 .customer-form label {
   /* font-size: 14px;*/
   font-weight: bold;
   /*margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
 }
-
 input,
 select {
-  border: 1px solid #000000; /* Borde del input */
+  border: 1px solid #ccc;
   /* Tamaño de fuente del input */
 }
-
+input:hover {
+  border: 1px solid #198754;
+}
 .modal-title {
   font-size: 20px;
   font-weight: bold;
@@ -79,42 +63,7 @@ select {
   cursor: pointer;
   color: var(--blue);
 }
-/** loader */
-.spinner {
-  width: 100px; /* ajustá según necesidad */
-  height: 100px;
-}
 
-.spinner-animated {
-  transform-origin: center;
-  fill: none;
-  stroke: url(#a12);
-  stroke-width: 13;
-  stroke-linecap: round;
-  stroke-dasharray: 200 1000;
-  stroke-dashoffset: 0;
-  animation: spin 1.6s linear infinite;
-}
-
-.spinner-background {
-  transform-origin: center;
-  fill: none;
-  opacity: 0.2;
-  stroke: #0c7e3b;
-  stroke-width: 13;
-  stroke-linecap: round;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(360deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-/** fin loader */
 .content-spinner {
   display: flex;
   flex-direction: column;
@@ -122,15 +71,25 @@ select {
   justify-content: center;
   align-items: center;
 }
-
-:host ::ng-deep tr.highlight-row > td {
-  animation: highlightFade 15s ease-out;
+.section {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
 }
-@keyframes highlightFade {
-  0% {
-    background-color: #9eb4f0;
-  }
-  100% {
-    background-color: transparent;
-  }
+.modal-header {
+  background-color: #dff2e1;
+}
+.modal-body {
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  scrollbar-width: thin;
+}
+
+.modal-dialog {
+  margin: 0;
+}
+
+.modal-footer {
+  background-color: #f8f9fa;
 }

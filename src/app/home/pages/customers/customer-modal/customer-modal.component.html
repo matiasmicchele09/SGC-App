@@ -1,0 +1,500 @@
+<!-- <div> -->
+<div class="modal-dialog modal-lg modal-dialog-centered">
+  <div class="modal-content">
+    <div class="modal-header bg-opacity-25 text-success">
+      <h5
+        class="modal-title"
+        id="staticBackdropLabel"
+        [ngClass]="!customer?.active ? 'text-danger' : 'text-success'"
+      >
+        {{ titleForm }}
+      </h5>
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="onCloseModal(null)"
+      ></button>
+    </div>
+
+    <div class="modal-body">
+      <form [formGroup]="customerForm" autocomplete="off">
+        <div class="section">
+          <h6 class="text-success">Datos Personales</h6>
+          <hr />
+          <div class="customer-form">
+            <!--* Nombre -->
+
+            <div *ngIf="customerForm.get('id_type')?.value != 2">
+              <label for="name" class="form-label text-success">Nombre</label>
+              <input
+                #inputName
+                type="text"
+                class="form-control"
+                formControlName="name"
+                id="name"
+                name="name"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('name')?.valid &&
+                    customerForm.get('name')?.touched
+                }"
+                (blur)="capitalizeWords(inputName.value, 'name')"
+              />
+
+              <span *ngIf="isValidField('name')" class="form-text text-danger">
+                {{ getFieldError("name") }}
+              </span>
+            </div>
+
+            <!--* Apellido -->
+            <div>
+              <label for="surname" class="form-label text-success">{{
+                +customerForm.get("id_type")?.value === 2
+                  ? "Razón Social"
+                  : "Apellido"
+              }}</label>
+              <input
+                #inputSurname
+                type="text"
+                class="form-control"
+                formControlName="surname"
+                id="surname"
+                name="surname"
+                (blur)="capitalizeWords(inputSurname.value, 'surname')"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('surname')?.valid &&
+                    customerForm.get('surname')?.touched
+                }"
+              />
+              <span
+                *ngIf="isValidField('surname')"
+                class="form-text text-danger"
+              >
+                {{ getFieldError("surname") }}
+              </span>
+            </div>
+
+            <!--* Tipo Persona -->
+            <div>
+              <label class="form-label text-success">Tipo Persona</label>
+              <div class="">
+                <select
+                  class="form-select"
+                  formControlName="id_type"
+                  id="id_type"
+                  name="id_type"
+                  [ngClass]="{
+                    'is-valid':
+                      customerForm.get('id_type')?.valid &&
+                      customerForm.get('id_type')?.touched,
+                    'is-invalid':
+                      customerForm.get('id_type')?.value == 0 &&
+                      customerForm.get('id_type')?.touched
+                  }"
+                  (change)="onChangeTypePerson($event)"
+                >
+                  <option value="0" disabled selected>
+                    Seleccione un Tipo de Persona
+                  </option>
+                  <option
+                    *ngFor="let type of types_person"
+                    value="{{ type.id_type }}"
+                  >
+                    {{ type.description }}
+                  </option>
+                </select>
+                <span
+                  *ngIf="isValidField('id_type')"
+                  class="form-text text-danger"
+                >
+                  {{ getFieldError("id_type") }}
+                </span>
+              </div>
+            </div>
+
+            <!--* CUIT -->
+            <div>
+              <label for="cuit" class="form-label text-success">CUIT</label>
+              <input
+                type="text"
+                class="form-control"
+                formControlName="cuit"
+                id="cuit"
+                name="cuit"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('cuit')?.valid &&
+                    customerForm.get('cuit')?.touched
+                }"
+              />
+              <span *ngIf="isValidField('cuit')" class="form-text text-danger">
+                {{ getFieldError("cuit") }}
+              </span>
+            </div>
+
+            <!--* Email -->
+            <div>
+              <label for="email" class="form-label text-success">Email</label>
+              <input
+                type="email"
+                class="form-control"
+                formControlName="email"
+                id="email"
+                name="email"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('email')?.valid &&
+                    customerForm.get('email')?.touched
+                }"
+              />
+              <span *ngIf="isValidField('email')" class="form-text text-danger">
+                {{ getFieldError("email") }}
+              </span>
+            </div>
+
+            <!--* Teléfono -->
+            <div>
+              <label for="phone" class="form-label text-success"
+                >Teléfono</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="phone"
+                id="phone"
+                name="phone"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('phone')?.valid &&
+                    customerForm.get('phone')?.touched
+                }"
+              />
+              <span *ngIf="isValidField('phone')" class="form-text text-danger">
+                {{ getFieldError("phone") }}
+              </span>
+            </div>
+
+            <!--* Dirección -->
+            <div>
+              <label for="address" class="form-label text-success"
+                >Dirección</label
+              >
+              <!-- [ngClass]="{
+                  'is-valid':
+                    customerForm.get('address')?.valid &&
+                    customerForm.get('address')?.touched
+                }" -->
+              <input
+                #inputAdress
+                type="text"
+                class="form-control"
+                formControlName="address"
+                id="address"
+                name="address"
+                (blur)="capitalizeWords(inputAdress.value, 'address')"
+              />
+            </div>
+            <!-- <span
+              *ngIf="isValidField('address')"
+              class="form-text text-danger"
+            >
+              {{ getFieldError("address") }}
+            </span> -->
+
+            <!--* Provincia -->
+            <div>
+              <label class="form-label text-success">Provincia</label>
+              <div class="">
+                <select
+                  class="form-select"
+                  formControlName="id_province"
+                  id="id_province"
+                  name="id_province"
+                  [ngClass]="{
+                    'is-valid':
+                      customerForm.get('id_province')?.valid &&
+                      customerForm.get('id_province')?.touched,
+                    'is-invalid':
+                      customerForm.get('id_province')?.value == 0 &&
+                      customerForm.get('id_province')?.touched
+                  }"
+                >
+                  <option value="0" disabled selected>
+                    Seleccione una Provincia
+                  </option>
+                  <option *ngFor="let type of provinces" value="{{ type.id }}">
+                    {{ type.name }}
+                  </option>
+                </select>
+                <span
+                  *ngIf="isValidField('id_province')"
+                  class="form-text text-danger"
+                >
+                  {{ getFieldError("id_province") }}
+                </span>
+              </div>
+            </div>
+
+            <!--* Ciudad -->
+            <div>
+              <label for="city" class="form-label text-success">Ciudad</label>
+              <input
+                #inputCity
+                type="text"
+                class="form-control"
+                formControlName="city"
+                id="city"
+                name="city"
+                (blur)="capitalizeWords(inputCity.value, 'city')"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('city')?.valid &&
+                    customerForm.get('city')?.touched
+                }"
+              />
+              <span *ngIf="isValidField('city')" class="form-text text-danger">
+                {{ getFieldError("city") }}
+              </span>
+            </div>
+
+            <!--* Fec. Alta -->
+            <div *ngIf="!isNew && customer?.active">
+              <label for="created_at" class="form-label text-success"
+                >Fecha Alta</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="created_at"
+                [value]="
+                  customerForm.get('created_at')?.value | date : 'dd/MM/yyyy'
+                "
+                id="created_at"
+                name="created_at"
+                readonly="true"
+              />
+            </div>
+
+            <!--* Fec. Baja -->
+            <div *ngIf="!isNew && !customer?.active">
+              <label for="deactivated_at" class="form-label text-success"
+                >Fecha Baja</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="deactivated_at"
+                [value]="
+                  customerForm.get('deactivated_at')?.value
+                    | date : 'dd/MM/yyyy'
+                "
+                id="deactivated_at"
+                name="deactivated_at"
+                readonly="true"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h6 class="text-success">Otros Datos</h6>
+          <hr />
+          <div class="customer-form">
+            <!--* Cond. Fiscal -->
+            <div>
+              <label class="form-label text-success">Cond. Fiscal</label>
+              <div class="">
+                <select
+                  class="form-select"
+                  formControlName="id_tax_condition"
+                  id="id_tax_condition"
+                  name="id_tax_condition"
+                  [ngClass]="{
+                    'is-valid':
+                      customerForm.get('id_tax_condition')?.valid &&
+                      customerForm.get('id_tax_condition')?.touched,
+                    'is-invalid':
+                      customerForm.get('id_tax_condition')?.value == 0 &&
+                      customerForm.get('id_tax_condition')?.touched
+                  }"
+                >
+                  <option value="0" disabled selected>
+                    Seleccione una Condición
+                  </option>
+                  <option
+                    *ngFor="let type of taxConditions"
+                    value="{{ type.id }}"
+                  >
+                    {{ type.description }}
+                  </option>
+                </select>
+                <span
+                  *ngIf="isValidField('id_tax_condition')"
+                  class="form-text text-danger"
+                >
+                  {{ getFieldError("id_tax_condition") }}
+                </span>
+              </div>
+            </div>
+
+            <!--* Clave Fiscal -->
+            <div>
+              <label for="tax_key" class="form-label text-success"
+                >Clave Fiscal</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                formControlName="tax_key"
+                id="tax_key"
+                name="tax_key"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('tax_key')?.valid &&
+                    customerForm.get('tax_key')?.touched
+                }"
+              />
+              <span
+                *ngIf="isValidField('tax_key')"
+                class="form-text text-danger"
+              >
+                {{ getFieldError("tax_key") }}
+              </span>
+            </div>
+
+            <!--* Banco -->
+            <div>
+              <label class="form-label text-success">Banco</label>
+              <div class="">
+                <select
+                  class="form-select"
+                  formControlName="id_bank"
+                  id="id_bank"
+                  name="id_bank"
+                  [ngClass]="{
+                    'is-valid':
+                      customerForm.get('id_bank')?.valid &&
+                      customerForm.get('id_bank')?.touched,
+                    'is-invalid':
+                      customerForm.get('id_bank')?.value == 0 &&
+                      customerForm.get('id_bank')?.touched
+                  }"
+                >
+                  <option value="0" disabled selected>
+                    Seleccione un Banco
+                  </option>
+                  <option *ngFor="let type of banks" value="{{ type.id_bank }}">
+                    {{ type.name }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <!--* Actividad-->
+            <div>
+              <label for="activity" class="form-label text-success"
+                >Actividad</label
+              >
+              <input
+                #inputActivity
+                type="text"
+                class="form-control"
+                formControlName="activity"
+                id="activity"
+                name="activity"
+                (blur)="capitalizeWords(inputActivity.value, 'activity')"
+                [ngClass]="{
+                  'is-valid':
+                    customerForm.get('activity')?.valid &&
+                    customerForm.get('activity')?.touched
+                }"
+              />
+              <span
+                *ngIf="isValidField('activity')"
+                class="form-text text-danger"
+              >
+                {{ getFieldError("activity") }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h6 class="text-success">Derecho de Registro e Inspección. (DREI)</h6>
+          <hr />
+          <!--* DREI -->
+          <div class="d-flex justify-content-between">
+            <div class="form-check form-switch">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                formControlName="hasDREI"
+                id="hasDREI"
+                name="hasDREI"
+                (change)="onChangeDREI($event)"
+              />
+              <label
+                for="hasDREI"
+                class="form-check-label text-success fw-semibold"
+                >DREI - Si/No</label
+              >
+            </div>
+            <div>
+              <label
+                for="nro_cuenta_DREI"
+                class="form-label text-success fw-semibold"
+                >Nro. Cuenta</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                formControlName="nro_cuenta_DREI"
+                id="nro_cuenta_DREI"
+                name="nro_cuenta_DREI"
+              />
+            </div>
+            <div>
+              <label
+                for="nro_reg_DREI"
+                class="form-label text-success fw-semibold"
+                >Nro. Registración</label
+              >
+              <input
+                type="number"
+                class="form-control"
+                formControlName="nro_reg_DREI"
+                id="nro_reg_DREI"
+                name="nro_reg_DREI"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="pristine && customer?.active" class="form-text text-danger">
+          Ningún campo ha sido modificado
+        </div>
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-modif"
+        (click)="onSaveChanges(customerForm)"
+      >
+        <i [ngClass]="isNew ? 'bi bi-cloud-arrow-up' : 'bi bi-save2'"></i>
+        {{ buttonForm }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-delete"
+        *ngIf="!isNew && customer?.active"
+        (click)="onDeleteCustomer(customer!)"
+      >
+        <i class="bi bi-trash3"></i> Dar de Baja
+      </button>
+    </div>
+  </div>
+</div>
+<!-- </div> -->

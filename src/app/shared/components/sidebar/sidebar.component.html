@@ -1,28 +1,57 @@
-<div class="p-0 col-auto bg-success" style="width: 170px; height: 100vh;">
-  <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white">
+<div class="p-0 col-auto bg-success" style="width: 170px; height: 100vh">
+  <div
+    class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white"
+  >
+    <span
+      *ngIf="user?.name"
+      class="fs-5 fw-bold text-white text-center text-sm-start w-100"
+      >{{ user?.name }}</span
+    >
 
-    <span class="fs-5 fw-bold text-white text-center text-sm-start w-100">{{user?.name}}</span>
-    <span class="fs-5 fw-bold text-white text-center text-sm-start w-100">{{user?.surname}}</span>
+    <span class="fs-5 fw-bold text-white text-center text-sm-start w-100">{{
+      user?.surname
+    }}</span>
     <hr class="text-white w-100" />
-    <ul class="nav nav-pills flex-column w-100 mb-auto ">
+    <ul class="nav nav-pills flex-column w-100 mb-auto">
       <li>
-        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/dashboard']" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-          <i class="bi bi-speedometer2"></i> <span class="d-none d-sm-inline">Dashboard</span>
+        <a
+          class="nav-link text-white d-flex align-items-center gap-2"
+          [routerLink]="['/home/dashboard']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-speedometer2"></i>
+          <span class="d-none d-sm-inline">Dashboard</span>
         </a>
       </li>
       <li>
-        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/customers']" routerLinkActive="active">
-          <i class="bi bi-people"></i> <span class="d-none d-sm-inline">Clientes</span>
+        <a
+          class="nav-link text-white d-flex align-items-center gap-2"
+          [routerLink]="['/home/customers']"
+          routerLinkActive="active"
+        >
+          <i class="bi bi-people"></i>
+          <span class="d-none d-sm-inline">Clientes</span>
         </a>
       </li>
       <li hidden="true">
-        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/actividades']" routerLinkActive="active">
-          <i class="bi bi-activity"></i> <span class="d-none d-sm-inline">Actividades</span>
+        <a
+          class="nav-link text-white d-flex align-items-center gap-2"
+          [routerLink]="['/home/actividades']"
+          routerLinkActive="active"
+        >
+          <i class="bi bi-activity"></i>
+          <span class="d-none d-sm-inline">Actividades</span>
         </a>
       </li>
       <li hidden="true">
-        <a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/honorarios']" routerLinkActive="active">
-          <i class="bi bi-coin"></i> <span class="d-none d-sm-inline">Honorarios</span>
+        <a
+          class="nav-link text-white d-flex align-items-center gap-2"
+          [routerLink]="['/home/honorarios']"
+          routerLinkActive="active"
+        >
+          <i class="bi bi-coin"></i>
+          <span class="d-none d-sm-inline">Honorarios</span>
         </a>
       </li>
     </ul>
@@ -31,16 +60,30 @@
 
     <!-- Usuario -->
     <div class="pb-4 w-100">
-
       <ul class="nav nav-pills flex-column w-100 mb-auto">
         <!-- <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active"><span class="d-none d-sm-inline">Configuración</span></a></li> -->
-        <li><a class="nav-link text-white d-flex align-items-center gap-2" [routerLink]="['/home/my-profile']" routerLinkActive="active">
-          <i class="bi bi-person-circle"></i><span class="d-none d-sm-inline">Perfil</span>
-        </a></li>
+        <li>
+          <a
+            class="nav-link text-white d-flex align-items-center gap-2"
+            [routerLink]="['/home/my-profile']"
+            routerLinkActive="active"
+          >
+            <i class="bi bi-person-circle"></i
+            ><span class="d-none d-sm-inline">Perfil</span>
+          </a>
+        </li>
         <hr class="text-white w-100" />
-        <li><a class="btn-logout nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active" (click)="onLogout()">
-          <i class="bi bi-box-arrow-left"></i><span class="d-none d-sm-inline">Salir</span>
-        </a></li>
+        <li>
+          <a
+            class="btn-logout nav-link text-white d-flex align-items-center gap-2"
+            href="#"
+            routerLinkActive="active"
+            (click)="onLogout()"
+          >
+            <i class="bi bi-box-arrow-left"></i
+            ><span class="d-none d-sm-inline">Salir</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>

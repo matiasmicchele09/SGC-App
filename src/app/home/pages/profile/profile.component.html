@@ -1,38 +1,56 @@
 <div class="form-container">
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit('profile')">
     <h3 class="text-success">Datos del perfil</h3>
-    <hr>
+    <hr />
 
-    <div class="mb-3">
-      <label for="name" class="form-label ">
+    <div *ngIf="profileForm?.get('name')?.value" class="mb-3">
+      <label for="name" class="form-label">
         <i class="bi bi-person-fill"></i>Nombre
       </label>
-      <input type="text" id="name" class="form-control" formControlName="name">
-      <span *ngIf="isValidField('name', 'profile')"
-            class="form-text text-danger">
-            {{ getFieldError('name', 'profile') }}
+      <input
+        type="text"
+        id="name"
+        class="form-control"
+        formControlName="name"
+      />
+      <span
+        *ngIf="isValidField('name', 'profile')"
+        class="form-text text-danger"
+      >
+        {{ getFieldError("name", "profile") }}
       </span>
     </div>
 
     <div class="mb-3">
       <label for="surname" class="form-label">
-        <i class="bi bi-person-lines-fill"></i>Apellido
+        <i class="bi bi-person-lines-fill"></i
+        >{{ profileForm.get("name")?.value ? "Apellido" : "Razón Social" }}
       </label>
-      <input type="text" id="surname" class="form-control" formControlName="surname">
+      <input
+        type="text"
+        id="surname"
+        class="form-control"
+        formControlName="surname"
+      />
     </div>
-    <span *ngIf="isValidField('surname', 'profile')"
-          class="form-text text-danger">
-          {{ getFieldError('surname', 'profile') }}
+    <span
+      *ngIf="isValidField('surname', 'profile')"
+      class="form-text text-danger"
+    >
+      {{ getFieldError("surname", "profile") }}
     </span>
     <div *ngIf="pristineProfile" class="form-text text-danger">
       Ningún campo ha sido modificado
     </div>
 
     <div class="d-flex justify-content-end gap-2">
-      <button type="button"
-              [ngClass]="isEditProfile ? 'btn btn-outline-secondary' : 'btn btn-edit'"
-              (click)="onEdit('profile')">
-        <i [ngClass]="isEditProfile ? 'bi bi-x-circle' : 'bi bi-pen'"></i> {{titleButtonProfile}}
+      <button
+        type="button"
+        [ngClass]="isEditProfile ? 'btn btn-outline-secondary' : 'btn btn-edit'"
+        (click)="onEdit('profile')"
+      >
+        <i [ngClass]="isEditProfile ? 'bi bi-x-circle' : 'bi bi-pen'"></i>
+        {{ titleButtonProfile }}
       </button>
       <button type="submit" class="btn btn-primary" [disabled]="!isEditProfile">
         <i class="bi bi-check-circle"></i> Guardar
@@ -42,17 +60,24 @@
 
   <form [formGroup]="accountForm" (ngSubmit)="onSubmit('account')">
     <h3 class="text-success">Datos de la cuenta</h3>
-    <hr>
+    <hr />
 
     <div class="mb-3">
       <label for="email" class="form-label">
         <i class="bi bi-envelope-at"></i>Email
       </label>
-      <input type="email" id="email" class="form-control" formControlName="email">
+      <input
+        type="email"
+        id="email"
+        class="form-control"
+        formControlName="email"
+      />
     </div>
-    <span *ngIf="isValidField('email', 'account')"
-          class="form-text text-danger">
-          {{ getFieldError('email', 'account') }}
+    <span
+      *ngIf="isValidField('email', 'account')"
+      class="form-text text-danger"
+    >
+      {{ getFieldError("email", "account") }}
     </span>
 
     <div class="mb-3">
@@ -60,29 +85,59 @@
         <label for="password" class="form-label">
           <i class="bi bi-lock-fill"></i>Contraseña
         </label>
-        <input #inputPass type="password" id="password" class="form-control pe-5" formControlName="password" (blur)="checkPassword()">
-        <i [ngClass]="!isShowPass ? 'bi bi-eye position-absolute top-50 end-0 me-3 m' : 'bi bi-eye-slash position-absolute top-50 end-0 me-3 m'"
-           [title]="isShowPass ? 'Ocultar Contraseña' : 'Mostrar Contraseña'"
-           id="togglePassword"
-           style="cursor: pointer;"
-           (click)="showPass('password', inputPass)">
+        <input
+          #inputPass
+          type="password"
+          id="password"
+          class="form-control pe-5"
+          formControlName="password"
+          (blur)="checkPassword()"
+        />
+        <i
+          [ngClass]="
+            !isShowPass
+              ? 'bi bi-eye position-absolute top-50 end-0 me-3 m'
+              : 'bi bi-eye-slash position-absolute top-50 end-0 me-3 m'
+          "
+          [title]="isShowPass ? 'Ocultar Contraseña' : 'Mostrar Contraseña'"
+          id="togglePassword"
+          style="cursor: pointer"
+          (click)="showPass('password', inputPass)"
+        >
         </i>
       </div>
       <div class="mb-3 position-relative">
         <label for="passwordConfirm" class="form-label">
           <i class="bi bi-lock-fill"></i>Repetir Contraseña
         </label>
-        <input #inputPassConfirm type="password" id="passwordConfirm" class="form-control pe-5" formControlName="passwordConfirm" (blur)="checkPassword()">
-        <i [ngClass]="!isShowPass ? 'bi bi-eye position-absolute top-50 end-0 me-3 m' : 'bi bi-eye-slash position-absolute top-50 end-0 me-3 m'"
-           [title]="isShowPassConfirm ? 'Ocultar Contraseña' : 'Mostrar Contraseña'"
-           id="togglePassword"
-           style="cursor: pointer;"
-           (click)="showPass('passwordConfirm', inputPassConfirm)">
+        <input
+          #inputPassConfirm
+          type="password"
+          id="passwordConfirm"
+          class="form-control pe-5"
+          formControlName="passwordConfirm"
+          (blur)="checkPassword()"
+        />
+        <i
+          [ngClass]="
+            !isShowPass
+              ? 'bi bi-eye position-absolute top-50 end-0 me-3 m'
+              : 'bi bi-eye-slash position-absolute top-50 end-0 me-3 m'
+          "
+          [title]="
+            isShowPassConfirm ? 'Ocultar Contraseña' : 'Mostrar Contraseña'
+          "
+          id="togglePassword"
+          style="cursor: pointer"
+          (click)="showPass('passwordConfirm', inputPassConfirm)"
+        >
         </i>
       </div>
-      <span *ngIf="isValidField('passwordConfirm', 'account')"
-          class="form-text text-danger">
-          {{ getFieldError('passwordConfirm', 'account') }}
+      <span
+        *ngIf="isValidField('passwordConfirm', 'account')"
+        class="form-text text-danger"
+      >
+        {{ getFieldError("passwordConfirm", "account") }}
       </span>
       <div *ngIf="pristineAccount" class="form-text text-danger">
         Ningún campo ha sido modificado
@@ -90,10 +145,15 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2">
-     <button type="button"
-              [ngClass]="isEditAccount ? 'btn btn-outline-secondary' : 'btn btn-edit2'"
-              (click)="onEdit('account')">
-        <i [ngClass]="isEditAccount ? 'bi bi-x-circle' : 'bi bi-pen'"></i> {{titleButtonAccount}}
+      <button
+        type="button"
+        [ngClass]="
+          isEditAccount ? 'btn btn-outline-secondary' : 'btn btn-edit2'
+        "
+        (click)="onEdit('account')"
+      >
+        <i [ngClass]="isEditAccount ? 'bi bi-x-circle' : 'bi bi-pen'"></i>
+        {{ titleButtonAccount }}
       </button>
       <button type="submit" class="btn btn-primary" [disabled]="!isEditAccount">
         <i class="bi bi-check-circle"></i> Guardar
@@ -101,5 +161,3 @@
     </div>
   </form>
 </div>
-
-
