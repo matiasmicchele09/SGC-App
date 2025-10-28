@@ -1,14 +1,12 @@
-<div class="p-0 col-auto bg-success" style="width: 170px; height: 100vh">
+<div class="p-0 col-auto bg-sidebar" style="width: 170px; height: 100vh">
   <div
     class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white"
   >
-    <span
-      *ngIf="user?.name"
-      class="fs-5 fw-bold text-white text-center text-sm-start w-100"
-      >{{ user?.name }}</span
-    >
+    <span *ngIf="user?.name" class="text-sidebar text-center text-sm-start">{{
+      user?.name
+    }}</span>
 
-    <span class="fs-5 fw-bold text-white text-center text-sm-start w-100">{{
+    <span class="text-sidebar text-center text-sm-start">{{
       user?.surname
     }}</span>
     <hr class="text-white w-100" />
