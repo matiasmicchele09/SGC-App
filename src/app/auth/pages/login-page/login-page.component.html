@@ -1,39 +1,50 @@
-
-<div class="div-login bg-success bg-opacity-50">
-  <form [formGroup]="formLogin" class="form-login" (submit)="onSubmit()">
-    <h4 class="text-success" style="margin: 0;">Estudio Contable De Paolo</h4>
-    <hr>
-    <div>
-      <input type="email"
-             formControlName="email"
-             placeholder="Email">
-
-             <span *ngIf="isValidField('email')"
-                    class="form-text text-danger">
-                    {{ getFieldError('email') }}
-             </span>
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h2 class="tagline">CRM Estudio Contable</h2>
     </div>
 
-    <div>
-      <input type="password"
-             formControlName="pass"
-             placeholder="Contraseña">
+    <form [formGroup]="formLogin" (submit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <input
+          class="form-control"
+          formControlName="email"
+          id="username"
+          placeholder="Email"
+          type="email"
+        />
+        <span *ngIf="isValidField('email')" class="form-text text-danger">
+          {{ getFieldError("email") }}
+        </span>
+      </div>
 
-             <span *ngIf="isValidField('pass')"
-                    class="form-text text-danger">
-                    {{ getFieldError('pass') }}
-             </span>
-    </div>
+      <div class="form-group">
+        <input
+          class="form-control"
+          formControlName="pass"
+          id="password"
+          name="password"
+          placeholder="Contraseña"
+          type="password"
+        />
+        <span *ngIf="isValidField('pass')" class="form-text text-danger">
+          {{ getFieldError("pass") }}
+        </span>
+      </div>
 
-    <span *ngIf="statusError"
-           class="form-text text-danger">
-          {{messageError}}
+      <button *ngIf="!loading" class="btn-login">Ingresar</button>
+      <div *ngIf="loading" class="loader"></div>
+    </form>
+
+    <span *ngIf="statusError" class="form-text error-message">
+      {{ messageError }}
     </span>
-
-    <button *ngIf="!loading" class="btn">
-      Ingresar
-    </button>
-    <div *ngIf="loading" class="loader"></div>
-  </form>
+    <div class="login-footer">
+      <p class="demo-credentials">
+        <strong>Credenciales de prueba:</strong><br />
+        Email: prueba@prueba.com<br />
+        Password: prueba_78963
+      </p>
+    </div>
+  </div>
 </div>
-
