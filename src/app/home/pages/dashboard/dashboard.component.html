@@ -1,5 +1,5 @@
 <div class="container mt-4">
-  <h2 class="mb-4">Resumen de Clientes</h2>
+  <h2 class="title-dash">Resumen de Clientes</h2>
 
   <!-- KPIs -->
   <div class="row text-center mb-4">
@@ -15,15 +15,16 @@
   </div>
 
   <div class="graphics mb-3">
-
     <!-- Clientes por provincia -->
     <div class="card">
       <div class="card-header">Clientes por Ciudad</div>
       <div class="card-body">
-        <canvas baseChart
-                [data]="barChartCiudad"
-                [options]="barChartOptions"
-                [type]="'bar'">
+        <canvas
+          baseChart
+          [data]="barChartCiudad"
+          [options]="barChartOptions"
+          [type]="'bar'"
+        >
         </canvas>
       </div>
     </div>
@@ -31,27 +32,31 @@
     <!-- Clientes por condición fiscal -->
     <div class="card">
       <div class="card-header">Clientes por Ciudad</div>
-      <div class="card-body" >
-        <canvas baseChart
-                [data]="barChartCondFiscal"
-                [options]="barChartCondFiscalOptions"
-                [type]="'bar'">
+      <div class="card-body">
+        <canvas
+          baseChart
+          [data]="barChartCondFiscal"
+          [options]="barChartCondFiscalOptions"
+          [type]="'bar'"
+        >
         </canvas>
       </div>
     </div>
 
     <!-- Clientes recientes -->
     <div class="card">
-      <div class="card-header">Nuevos Clientes <small>(Últimos Tres Meses)</small></div>
+      <div class="card-header">
+        Nuevos Clientes <small>(Últimos Tres Meses)</small>
+      </div>
       <div class="card-body p-0">
         <ul class="list-group list-group-flush">
           <li class="list-group-item" *ngFor="let cliente of ultimosClientes">
             <i class="bi bi-person-circle me-2"></i>
-            {{ cliente.nombre }} {{ cliente.apellido }} - <small>{{ cliente.created_at | date:'dd/MM/yyyy' }}</small>
+            {{ cliente.nombre }} {{ cliente.apellido }} -
+            <small>{{ cliente.created_at | date : "dd/MM/yyyy" }}</small>
           </li>
         </ul>
       </div>
     </div>
   </div>
 </div>
-

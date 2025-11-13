@@ -38,14 +38,17 @@
   background-color: #f8f9fa; /* fondo gris claro */
   margin-bottom: 15px;
 }
+
 .section {
   border-left: 4px solid #198754; /* verde Bootstrap */
 }
+
 .customer-form label {
   /* font-size: 14px;*/
   font-weight: bold;
   /*margin-bottom: 5px; /* Espacio entre la etiqueta y el input */
 }
+
 input,
 select {
   border: 1px solid #ccc;

@@ -23,7 +23,6 @@
           <hr />
           <div class="customer-form">
             <!--* Nombre -->
-
             <div *ngIf="customerForm.get('id_type')?.value != 2">
               <label for="name" class="form-label text-success">Nombre</label>
               <input
@@ -195,12 +194,6 @@
                 (blur)="capitalizeWords(inputAdress.value, 'address')"
               />
             </div>
-            <!-- <span
-              *ngIf="isValidField('address')"
-              class="form-text text-danger"
-            >
-              {{ getFieldError("address") }}
-            </span> -->
 
             <!--* Provincia -->
             <div>
@@ -390,9 +383,10 @@
                 </select>
               </div>
             </div>
-            <!--* Actividad-->
-            <div>
-              <label for="activity" class="form-label text-success"
+          </div>
+          <!--* Actividad-->
+          <div class="form-label mt-2">
+            <!-- <label for="activity" class="form-label text-success"
                 >Actividad</label
               >
               <input
@@ -414,11 +408,52 @@
                 class="form-text text-danger"
               >
                 {{ getFieldError("activity") }}
-              </span>
-            </div>
+              </span> -->
+            <label
+              for="actividad"
+              class="form-label text-success"
+              style="font-weight: bold"
+              >Actividad ARCA</label
+            >
+
+            <input
+              id="actividad"
+              type="text"
+              class="form-control"
+              formControlName="activity"
+              [ngbTypeahead]="search"
+              [inputFormatter]="inputFormatter"
+              [focusFirst]="true"
+              [editable]="false"
+              [resultTemplate]="rt"
+              [popupClass]="'arca-typeahead'"
+              [container]="'body'"
+              placeholder="Escribí código o nombre..."
+              (selectItem)="onSelect($event)"
+            />
+
+            <!-- <div
+              [resultFormatter]="resultFormatter"
+                class="form-text activities-selected"
+                *ngIf="customerForm.get('activity')?.value as a"
+              >
+                Seleccionado: {{ a.codActividadArca }} —
+                {{ a.nombreActividadArca }}
+              </div> -->
           </div>
         </div>
 
+        <ng-template #rt let-r="result" let-t="term">
+          <div class="d-flex align-items-start gap-2">
+            <span class="ta-code">{{ r.codActividadArca }}</span>
+            <span class="ta-name">
+              <ngb-highlight
+                [result]="r.nombreActividadArca"
+                [term]="t"
+              ></ngb-highlight>
+            </span>
+          </div>
+        </ng-template>
         <div class="section">
           <h6 class="text-success">Derecho de Registro e Inspección. (DREI)</h6>
           <hr />

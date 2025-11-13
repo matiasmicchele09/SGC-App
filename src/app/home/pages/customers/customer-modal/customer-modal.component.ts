@@ -1,7 +1,12 @@
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbActiveModal,
+  NgbTypeaheadSelectItemEvent,
+} from '@ng-bootstrap/ng-bootstrap';
+import { debounceTime, distinctUntilChanged, map, Observable } from 'rxjs';
 import { AuthService } from 'src/app/auth/services/auth.service';
+import { Actividad, ACTIVIDADES_ARCA } from 'src/app/data/actividades-arca';
 import { Bank } from 'src/app/home/interfaces/banks.interface';
 import { Customer } from 'src/app/home/interfaces/customers.interface';
 import { Province } from 'src/app/home/interfaces/provinces.interface';
@@ -9,6 +14,7 @@ import { Tax_Condition } from 'src/app/home/interfaces/tax_conditions';
 import { Type_Person } from 'src/app/home/interfaces/types_persons';
 import { CustomersService } from 'src/app/home/services/customers.service';
 import { AlertService } from 'src/app/shared/services/alerts.service';
+
 type Action = 'create' | 'update' | 'reactivate';
 @Component({
   selector: 'app-customer-modal',
@@ -16,12 +22,13 @@ type Action = 'create' | 'update' | 'reactivate';
   styleUrls: ['./customer-modal.component.css'],
 })
 export class CustomerModalComponent implements OnInit {
-  public emailPattern: string =
+  private actividades: Actividad[] = [];
+  private emailPattern: string =
     '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$';
   public titleForm: string = '';
   public pristine: boolean = false;
   public buttonForm: string = '';
-  public customers: Customer[] = [];
+  private customers: Customer[] = [];
 
   public activeModal = inject(NgbActiveModal);
 
@@ -72,6 +79,9 @@ export class CustomerModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    console.log(this.customer);
+    // Cargá tu JSON (local o desde API)
+    this.actividades = ACTIVIDADES_ARCA;
     /* Por si quedó algun campo con algún valor o quedó el formulario disable por entrar primero a un inactivo */
     this.customerForm.enable();
     this.customerForm.reset();
@@ -98,11 +108,27 @@ export class CustomerModalComponent implements OnInit {
         this.buttonForm = 'Dar de Alta Nuevamente';
 
         this.titleForm = this.customer ? `${title} - INACTIVO` : '';
+
         this.customerForm.patchValue(this.customer!);
+        const activity = this.actividades.find(
+          (a) => a.codActividadArca === Number(this.customer?.activity)
+        );
+        this.customerForm.get('activity')?.setValue(activity);
       } else {
         this.buttonForm = 'Actualizar';
         this.titleForm = this.customer ? `${title}` : '';
         this.customerForm.patchValue(this.customer!);
+
+        const activity = this.actividades.find(
+          (a) => a.codActividadArca === Number(this.customer?.activity)
+        );
+
+        this.customerForm.get('activity')?.setValue(activity);
+        // ejemplo
+        // this.customerForm.patchValue({
+        //   activity: this.toActividadValue(this.customer.activity),
+        // });
+
         if (!this.customer?.hasDREI) {
           this.customerForm.get('nro_cuenta_DREI')?.disable();
           this.customerForm.get('nro_reg_DREI')?.disable();
@@ -113,6 +139,54 @@ export class CustomerModalComponent implements OnInit {
       // });
     }
   }
+
+  // private toActividadValue = (val: any): any => {
+  //   console.log(val);
+  //   if (val == null) return '';
+
+  //   // Caso string tipo "11111 — Cultivo de arroz"
+  //   if (typeof val === 'string') {
+  //     const m = val.match(/^\s*(\d+)\s+—\s+(.+)$/);
+  //     if (m) {
+  //       const byCode = this.actividades.find(
+  //         (a) => String(a.codActividadArca) === m[1]
+  //       );
+  //       return byCode ?? { codActividadArca: m[1], nombreActividadArca: m[2] };
+  //     }
+  //     // Solo código o solo nombre
+  //     const byCode = this.actividades.find(
+  //       (a) => String(a.codActividadArca) === val.trim()
+  //     );
+  //     if (byCode) return byCode;
+
+  //     const byName = this.actividades.find(
+  //       (a) => this.norm(a.nombreActividadArca) === this.norm(val)
+  //     );
+  //     return byName ?? val; // si no existe, lo dejamos como string libre
+  //   }
+
+  //   // Caso número: buscar por código
+  //   if (typeof val === 'number') {
+  //     const byCode = this.actividades.find(
+  //       (a) => Number(a.codActividadArca) === val
+  //     );
+  //     return byCode ?? val;
+  //   }
+
+  //   // Caso objeto ya correcto
+  //   if (val.codActividadArca && val.nombreActividadArca) return val;
+
+  //   // Caso objeto con otras keys
+  //   const code = val.code ?? val.codigo ?? val.cod;
+  //   const name = val.name ?? val.nombre ?? val.desc;
+  //   if (code && name)
+  //     return {
+  //       codActividadArca: String(code),
+  //       nombreActividadArca: String(name),
+  //     };
+
+  //   return val; // lo que sea, que el formatter lo muestre
+  // };
 
   capitalizeWords(input: string, field: string) {
     const formattedInput = input.replace(/\w\S*/g, (txt) => {
@@ -194,6 +268,7 @@ export class CustomerModalComponent implements OnInit {
       this.customerForm.get('name')?.updateValueAndValidity();
     }
   }
+
   private resolveAction(
     isNew: boolean,
     originalActive?: boolean, // estado al cargar el cliente
@@ -235,7 +310,50 @@ export class CustomerModalComponent implements OnInit {
     }
   }
 
+  private norm = (v: string) =>
+    (v || '')
+      .normalize('NFD')
+      .replace(/\p{Diacritic}/gu, '')
+      .toLowerCase()
+      .trim();
+
+  public search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map((term) => {
+        const t = this.norm(term);
+        if (!t) return this.actividades.slice(0, 20);
+        return this.actividades
+          .filter(
+            (a) =>
+              this.norm(a.nombreActividadArca).includes(t) ||
+              this.norm(String(a.codActividadArca)).includes(t)
+          )
+          .slice(0, 20); // limitá resultados por performance
+      })
+    );
+  // Cómo se muestra en el input cuando está seleccionado
+  public inputFormatter = (a: Actividad | null) =>
+    a ? `${a.codActividadArca} — ${a.nombreActividadArca}` : '';
+
+  // Cómo se muestra cada item del dropdown (si no usás ng-template)
+  // public resultFormatter = (a: Actividad) =>
+  //   `${a.codActividadArca} — ${a.nombreActividadArca}`;
+
+  // Cuando el usuario selecciona un item del dropdown
+  public onSelect(e: NgbTypeaheadSelectItemEvent<Actividad>) {
+    console.log('e', e);
+    // Guardamos el OBJETO en el form control
+    this.customerForm
+      .get('activity')!
+      .setValue(String(e.item.codActividadArca), { emitEvent: true });
+    // Si preferís guardar solo el código:
+    // this.form.get('actividad')!.setValue(e.item.codActividadArca, { emitEvent: true });
+  }
+
   onSaveChanges(customer: FormGroup) {
+    console.log(customer);
     const action = this.resolveAction(
       this.isNew,
       customer.value.active,
@@ -263,6 +381,7 @@ export class CustomerModalComponent implements OnInit {
       const newCustomer = this.isNew
         ? {
             ...customer.value,
+            activity: String(customer.value.activity.codActividadArca),
             id_user: this.authService.user!.id_user,
             created_at: new Date().toISOString(),
             active: true,
@@ -336,8 +455,15 @@ export class CustomerModalComponent implements OnInit {
         type_person,
         deactivated_at,
         created_at,
-        ...backendCustomer
+        ...restCustomer
       } = customer.value;
+
+      console.log(restCustomer);
+      const backendCustomer = {
+        ...restCustomer,
+        activity: String(customer.value.activity.codActividadArca),
+      };
+      console.log(backendCustomer);
 
       this.alertService
         .confirm({

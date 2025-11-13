@@ -24,6 +24,14 @@
   }
 }
 /** fin LOADER */
+
+.login-logo {
+  width: 90px;
+  height: auto;
+  margin: 0 10px auto;
+  display: block;
+}
+
 .login-footer {
   border-top: 1px solid #e9ecef;
   padding-top: 20px;
@@ -61,7 +69,7 @@
 }
 
 .login-header {
-  margin-bottom: 30px;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   align-items: center; /* centra el logo y el tagline */

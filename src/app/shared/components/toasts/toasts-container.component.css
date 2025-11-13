@@ -1,0 +1,5 @@
+/* src/app/shared/toasts-container/toasts-container.component.css */
+/* opcional: sombras y bordes suaves */
+.toast-container :host ::ng-deep .toast {
+  border-radius: 0.5rem;
+}
