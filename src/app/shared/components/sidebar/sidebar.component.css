@@ -1,6 +1,13 @@
 .bg-sidebar {
   background-image: linear-gradient(90deg, #198754 0%, #20c997 100%);
 }
+
+.login-logo {
+  width: 90px;
+  height: auto;
+  margin: 0 auto 10px auto;
+  display: block;
+}
 .text-sidebar {
   margin: 0;
   font-size: 16px;

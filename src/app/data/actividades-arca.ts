@@ -1,4 +1,9 @@
-export default [
+export interface Actividad {
+  codActividadArca: number; // o number
+  nombreActividadArca: string;
+}
+
+export const ACTIVIDADES_ARCA: Actividad[] = [
   {
     codActividadArca: 11111,
     nombreActividadArca: 'Cultivo de arroz',

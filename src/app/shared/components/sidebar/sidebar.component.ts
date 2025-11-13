@@ -14,7 +14,6 @@ export class SidebarComponent {
   public user: User | null = null;
   //user$ = this.authService.user$;
   constructor(private authService: AuthService, private router: Router) {
-    console.log(this.authService.user?.id_user);
     this.authService
       .getUser(this.authService.user!.id_user)
       .subscribe((user) => {
@@ -24,10 +23,11 @@ export class SidebarComponent {
   }
 
   onLogout() {
+    console.log('en Logout');
     this.logOut = true;
-    setTimeout(() => {
-      this.authService.logout();
-      this.router.navigate(['/auth/login']);
-    }, 1500);
+    this.authService.logout();
+    // setTimeout(() => {
+    //   this.router.navigate(['/auth/login']);
+    // }, 1500);
   }
 }

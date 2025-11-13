@@ -2,6 +2,11 @@
   <div
     class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white"
   >
+    <!-- <img
+      src="assets/logo-nexoStudio.png"
+      alt="NexoStudio Logo"
+      class="login-logo"
+    /> -->
     <span *ngIf="user?.name" class="text-sidebar text-center text-sm-start">{{
       user?.name
     }}</span>
@@ -42,10 +47,10 @@
           <span class="d-none d-sm-inline">Actividades</span>
         </a>
       </li>
-      <li hidden="true">
+      <li>
         <a
           class="nav-link text-white d-flex align-items-center gap-2"
-          [routerLink]="['/home/honorarios']"
+          [routerLink]="['/home/fees']"
           routerLinkActive="active"
         >
           <i class="bi bi-coin"></i>

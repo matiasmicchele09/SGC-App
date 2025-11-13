@@ -1,0 +1,21 @@
+<div
+  class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3 d-flex flex-column align-items-center"
+  style="z-index: 1200"
+>
+  <ngb-toast
+    *ngFor="let toast of toastService.toasts"
+    [autohide]="true"
+    [delay]="toast.delay || 5000"
+    [class]="toast.classname || ''"
+    (hidden)="toastService.remove(toast)"
+  >
+    <ng-template [ngIf]="isTemplate(toast.textOrTpl)" [ngIfElse]="text">
+      <ng-template
+        [ngTemplateOutlet]="
+          isTemplate(toast.textOrTpl) ? toast.textOrTpl : null
+        "
+      ></ng-template>
+    </ng-template>
+    <ng-template #text>{{ toast.textOrTpl }}</ng-template>
+  </ngb-toast>
+</div>
