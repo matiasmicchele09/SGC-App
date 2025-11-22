@@ -43,27 +43,47 @@ export class AuthService {
     this.userSubject.next(null);
   }
 
-  login(email: string, pass: string): Observable<User> {
-    const body = { email, pass };
+  login(credentials: { email: string; pass: string }) {
     return this.http
-      .post<User>(`${this.baseUrl}/login`, body, { withCredentials: true })
+      .post<{ token: string }>(`${this.baseUrl}/login`, credentials)
       .pipe(
-        tap((user) => console.log('user', user)),
-        tap((user) => (this._user = user)),
-        catchError(this.handleError)
+        tap((res) => {
+          sessionStorage.setItem('token', res.token);
+          // o localStorage.setItem('token', res.token);
+        })
       );
   }
 
+  // login(email: string, pass: string): Observable<User> {
+  //   const body = { email, pass };
+  //   return this.http
+  //     .post<User>(`${this.baseUrl}/login`, body, { withCredentials: true })
+  //     .pipe(
+  //       tap((user) => console.log('user', user)),
+  //       tap((user) => (this._user = user)),
+  //       catchError(this.handleError)
+  //     );
+  // }
+
+  // getCurrentUser(): Observable<User | null> {
+  //   return this.http
+  //     .get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
+  //     .pipe(
+  //       tap((user) => (this._user = user)),
+  //       catchError(() => {
+  //         this._user = null;
+  //         return of(null);
+  //       })
+  //     );
+  // }
   getCurrentUser(): Observable<User | null> {
-    return this.http
-      .get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
-      .pipe(
-        tap((user) => (this._user = user)),
-        catchError(() => {
-          this._user = null;
-          return of(null);
-        })
-      );
+    return this.http.get<User>(`${this.baseUrl}/validateSession`).pipe(
+      tap((user) => (this._user = user)),
+      catchError(() => {
+        this._user = null;
+        return of(null);
+      })
+    );
   }
 
   getUser(id: number): Observable<User> {
@@ -79,42 +99,68 @@ export class AuthService {
     );
   }
 
+  // validateSession(): Observable<boolean> {
+  //   return this.http
+  //     .get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
+  //     .pipe(
+  //       tap((user) => {
+  //         this._user = user;
+  //       }),
+  //       map((user) => {
+  //         const isAuthenticated = !!user;
+  //         return isAuthenticated;
+  //       }), // Si existe el usuario, devuelve true, sino false
+  //       catchError((error) => {
+  //         console.log('Error en validateSession:', error);
+  //         return of(false);
+  //       }) // Si falla, simplemente devuelve false
+  //     );
+  // }
   validateSession(): Observable<boolean> {
-    return this.http
-      .get<User>(`${this.baseUrl}/validateSession`, { withCredentials: true })
-      .pipe(
-        tap((user) => {
-          this._user = user;
-        }),
-        map((user) => {
-          const isAuthenticated = !!user;
-          return isAuthenticated;
-        }), // Si existe el usuario, devuelve true, sino false
-        catchError((error) => {
-          console.log('Error en validateSession:', error);
-          return of(false);
-        }) // Si falla, simplemente devuelve false
-      );
+    return this.http.get<User>(`${this.baseUrl}/validateSession`).pipe(
+      tap((user) => (this._user = user)),
+      map((user) => !!user),
+      catchError((error) => {
+        console.log('Error en validateSession:', error);
+        return of(false);
+      })
+    );
+  }
+
+  logout(): void {
+    this.http.post(`${this.baseUrl}/logout`, {}).subscribe({
+      next: () => {
+        this._user = null;
+        sessionStorage.removeItem('token');
+        this.router.navigate(['/auth/login']);
+      },
+      error: () => {
+        // incluso si falla, igual cerrás sesión
+        this._user = null;
+        sessionStorage.removeItem('token');
+        this.router.navigate(['/auth/login']);
+      },
+    });
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     return throwError(() => error);
   }
 
-  logout(): void {
-    console.log('aca en logout');
-    this._user = null;
-    this.http
-      .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
-      .subscribe({
-        next: () => {
-          console.log('next');
-          //this.router.navigate(['/auth/login']);
-        },
-        error: () => {
-          console.log('error');
-          //this.router.navigate(['/auth/login']);
-        },
-      });
-  }
+  // logout(): void {
+  //   console.log('aca en logout');
+  //   this._user = null;
+  //   this.http
+  //     .post(`${this.baseUrl}/logout`, {}, { withCredentials: true })
+  //     .subscribe({
+  //       next: () => {
+  //         console.log('next');
+  //         //this.router.navigate(['/auth/login']);
+  //       },
+  //       error: () => {
+  //         console.log('error');
+  //         //this.router.navigate(['/auth/login']);
+  //       },
+  //     });
+  // }
 }

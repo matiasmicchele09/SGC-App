@@ -53,7 +53,10 @@ export class LoginPageComponent {
     }
     this.loading = true;
     this.authService
-      .login(this.formLogin.value.email, this.formLogin.value.pass)
+      .login({
+        email: this.formLogin.value.email,
+        pass: this.formLogin.value.pass,
+      })
       .subscribe({
         next: (resp) => {
           console.log('resp', resp);
