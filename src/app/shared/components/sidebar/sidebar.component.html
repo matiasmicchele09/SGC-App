@@ -1,16 +1,14 @@
-<div class="p-0 col-auto bg-sidebar" style="width: 170px; height: 100vh">
+<!-- Desktop / Tablet Sidebar (visible sm and up) -->
+<div
+  class="p-0 col-auto bg-sidebar d-none d-sm-block"
+  style="width: 170px; height: 100vh"
+>
   <div
     class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white"
   >
-    <!-- <img
-      src="assets/logo-nexoStudio.png"
-      alt="NexoStudio Logo"
-      class="login-logo"
-    /> -->
     <span *ngIf="user?.name" class="text-sidebar text-center text-sm-start">{{
       user?.name
     }}</span>
-
     <span class="text-sidebar text-center text-sm-start">{{
       user?.surname
     }}</span>
@@ -64,7 +62,6 @@
     <!-- Usuario -->
     <div class="pb-4 w-100">
       <ul class="nav nav-pills flex-column w-100 mb-auto">
-        <!-- <li><a class="nav-link text-white d-flex align-items-center gap-2" href="#" routerLinkActive="active"><span class="d-none d-sm-inline">Configuración</span></a></li> -->
         <li>
           <a
             class="nav-link text-white d-flex align-items-center gap-2"
@@ -91,6 +88,121 @@
     </div>
   </div>
 </div>
+
+<!-- Mobile top bar with offcanvas toggle (visible only xs) -->
+<nav class="navbar bg-sidebar d-flex d-sm-none">
+  <div class="container-fluid align-items-center">
+    <button
+      class="btn btn-sm text-white"
+      type="button"
+      data-bs-toggle="offcanvas"
+      data-bs-target="#mobileSidebar"
+      aria-controls="mobileSidebar"
+    >
+      <i class="bi bi-list" style="font-size: 1.25rem"></i>
+    </button>
+    <!-- Nombre oculto en móvil: se muestra solo el botón hamburguesa -->
+  </div>
+</nav>
+
+<!-- Offcanvas for mobile -->
+<div
+  class="offcanvas offcanvas-start bg-sidebar text-white d-sm-none"
+  tabindex="-1"
+  id="mobileSidebar"
+  aria-labelledby="mobileSidebarLabel"
+>
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title text-white" id="mobileSidebarLabel">Menú</h5>
+    <button
+      type="button"
+      class="btn-close btn-close-white text-reset"
+      data-bs-dismiss="offcanvas"
+      aria-label="Close"
+    ></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="d-flex flex-column">
+      <span *ngIf="user?.name" class="text-sidebar mb-1"
+        >{{ user?.name }} {{ user?.surname }}</span
+      >
+      <hr class="text-white w-100" />
+      <ul class="nav nav-pills flex-column w-100 mb-auto">
+        <li>
+          <a
+            class="nav-link text-white d-flex align-items-center gap-2"
+            [routerLink]="['/home/dashboard']"
+            routerLinkActive="active"
+            data-bs-dismiss="offcanvas"
+          >
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="nav-link text-white d-flex align-items-center gap-2"
+            [routerLink]="['/home/customers']"
+            routerLinkActive="active"
+            data-bs-dismiss="offcanvas"
+          >
+            <i class="bi bi-people"></i>
+            <span>Clientes</span>
+          </a>
+        </li>
+        <li hidden="true">
+          <a
+            class="nav-link text-white d-flex align-items-center gap-2"
+            [routerLink]="['/home/actividades']"
+            routerLinkActive="active"
+            data-bs-dismiss="offcanvas"
+          >
+            <i class="bi bi-activity"></i>
+            <span>Actividades</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="nav-link text-white d-flex align-items-center gap-2"
+            [routerLink]="['/home/fees']"
+            routerLinkActive="active"
+            data-bs-dismiss="offcanvas"
+          >
+            <i class="bi bi-coin"></i>
+            <span>Honorarios</span>
+          </a>
+        </li>
+      </ul>
+
+      <hr class="text-white w-100" />
+
+      <ul class="nav nav-pills flex-column w-100 mb-auto">
+        <li>
+          <a
+            class="nav-link text-white d-flex align-items-center gap-2"
+            [routerLink]="['/home/my-profile']"
+            routerLinkActive="active"
+            data-bs-dismiss="offcanvas"
+          >
+            <i class="bi bi-person-circle"></i>
+            <span>Perfil</span>
+          </a>
+        </li>
+        <li>
+          <a
+            class="btn-logout nav-link text-white d-flex align-items-center gap-2"
+            href="#"
+            (click)="onLogout()"
+          >
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Salir</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
 <div *ngIf="logOut" class="d-flex flex-column overlay">
   <p>Cerrando sesión</p>
   <span class="loader-logout"></span>
