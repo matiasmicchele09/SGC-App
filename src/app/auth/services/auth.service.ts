@@ -127,20 +127,18 @@ export class AuthService {
     );
   }
 
+  // logout(): void {
+  //   this.http.post(`${this.baseUrl}/logout`, {}).subscribe(() => {
+  //     this._user = null;
+  //     sessionStorage.removeItem('token');
+  //     this.router.navigate(['/auth/login']);
+  //   });
+  // }
+
   logout(): void {
-    this.http.post(`${this.baseUrl}/logout`, {}).subscribe({
-      next: () => {
-        this._user = null;
-        sessionStorage.removeItem('token');
-        this.router.navigate(['/auth/login']);
-      },
-      error: () => {
-        // incluso si falla, igual cerrás sesión
-        this._user = null;
-        sessionStorage.removeItem('token');
-        this.router.navigate(['/auth/login']);
-      },
-    });
+    this._user = null;
+    sessionStorage.removeItem('token');
+    this.router.navigate(['/auth/login']);
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {

@@ -35,7 +35,7 @@
           <div class="d-flex mt-3">
             <h2 style="margin-right: 10px">Mis Clientes</h2>
             <button
-              class="d-inline btn btn-outline-success"
+              class="d-inline btn btn-outline-success btn-sm"
               (click)="onCustomer(selectedCustomer, true)"
             >
               <i class="bi bi-plus-circle"></i> Agregar
@@ -106,63 +106,81 @@
           </div>
 
           <div class="table-container">
-            <table class="table table-striped caption-top">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Nombre</th>
-                  <th scope="col">CUIT</th>
-                  <th scope="col">Clave Fiscal</th>
-                  <th scope="col">Banco</th>
-                  <th scope="col">N° Tel.</th>
-                  <th scope="col">Cond. Fiscal</th>
-                  <!-- <th scope="col">Actividad</th> -->
-                  <th scope="col">Estado</th>
-                  <th scope="col">Detalle</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  class="table-row"
-                  *ngFor="
-                    let customer of customersPerPage;
-                    let i = index;
-                    trackBy: trackById
-                  "
-                  [class.highlight-row]="customer.highlight === true"
-                >
-                  <td>{{ (page - 1) * pageSize + i + 1 }}</td>
-                  <td *ngIf="customer.id_type === 1">
-                    {{ customer.surname }}, {{ customer.name }}
-                  </td>
-                  <td *ngIf="customer.id_type === 2">
-                    {{ customer.surname }} <b>(Sociedad)</b>
-                  </td>
-                  <td>{{ customer.cuit }}</td>
-                  <td>{{ customer.tax_key }}</td>
-                  <td>{{ customer.bank }}</td>
-                  <td>{{ customer.phone }}</td>
-                  <td>{{ customer.tax_condition }}</td>
-                  <!-- <td>{{ customer.activity }}</td> -->
-                  <td>
-                    <span
-                      class="badge"
-                      [ngClass]="customer.active ? 'bg-success' : 'bg-danger'"
+            <div class="table-responsive">
+              <table class="table table-striped caption-top">
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col" class="d-none d-sm-table-cell">CUIT</th>
+                    <th scope="col" class="d-none d-sm-table-cell">
+                      Clave Fiscal
+                    </th>
+                    <th scope="col" class="d-none d-sm-table-cell">Banco</th>
+                    <th scope="col" class="d-none d-sm-table-cell">N° Tel.</th>
+                    <th scope="col" class="d-none d-sm-table-cell">
+                      Cond. Fiscal
+                    </th>
+                    <!-- <th scope="col">Actividad</th> -->
+                    <th scope="col">Estado</th>
+                    <th scope="col">Detalle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    class="table-row"
+                    *ngFor="
+                      let customer of customersPerPage;
+                      let i = index;
+                      trackBy: trackById
+                    "
+                    [class.highlight-row]="customer.highlight === true"
+                  >
+                    <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+                    <td
+                      *ngIf="customer.id_type === 1"
+                      class="text-truncate"
+                      style="max-width: 200px"
                     >
-                      {{ customer.active ? "Activo" : "Baja" }}
-                    </span>
-                  </td>
-                  <td class="text-center align-middle icon-fontawesome">
-                    <i
-                      role="button"
-                      title="Más Información"
-                      class="fa-solid fa-circle-info fa-lg"
-                      (click)="onCustomer(customer, false)"
-                    ></i>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                      {{ customer.surname }}, {{ customer.name }}
+                    </td>
+                    <td
+                      *ngIf="customer.id_type === 2"
+                      class="text-truncate"
+                      style="max-width: 200px"
+                    >
+                      {{ customer.surname }} <b>(Sociedad)</b>
+                    </td>
+                    <td class="d-none d-sm-table-cell">{{ customer.cuit }}</td>
+                    <td class="d-none d-sm-table-cell">
+                      {{ customer.tax_key }}
+                    </td>
+                    <td class="d-none d-sm-table-cell">{{ customer.bank }}</td>
+                    <td class="d-none d-sm-table-cell">{{ customer.phone }}</td>
+                    <td class="d-none d-sm-table-cell">
+                      {{ customer.tax_condition }}
+                    </td>
+                    <!-- <td>{{ customer.activity }}</td> -->
+                    <td>
+                      <span
+                        class="badge"
+                        [ngClass]="customer.active ? 'bg-success' : 'bg-danger'"
+                      >
+                        {{ customer.active ? "Activo" : "Baja" }}
+                      </span>
+                    </td>
+                    <td class="text-center align-middle icon-fontawesome">
+                      <i
+                        role="button"
+                        title="Más Información"
+                        class="fa-solid fa-circle-info fa-lg"
+                        (click)="onCustomer(customer, false)"
+                      ></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <!--* Paginator -->
@@ -183,7 +201,7 @@
         <div class="mt-5" *ngIf="!loading">
           <h2>¡Usted no tiene ningún cliente!</h2>
           <button
-            class="btn btn-outline-success"
+            class="btn btn-outline-success btn-sm"
             (click)="onCustomer(selectedCustomer, true)"
           >
             Agregar <i class="fa-solid fa-square-plus fa-lg btn-new"></i>
