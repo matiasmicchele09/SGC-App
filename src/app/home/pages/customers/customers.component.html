@@ -43,17 +43,49 @@
           </div>
 
           <!-- * Search and Filter Section -->
-          <div class="row align-items-center gy-2 gx-3">
-            <div class="col-12 col-md-6">
+          <div class="row align-items-center gx-3">
+            <div class="col-12">
               <input
                 type="text"
-                class="form-control my-3"
+                class="form-control mt-3 mb-0"
                 style="max-width: 500px"
                 placeholder="Buscar Cliente por Nombre y Apellido"
                 (input)="onSearch($event)"
               />
             </div>
-            <div class="col-12 col-md-6">
+            <div class="col-12 col-md-6 my-2">
+              <div class="d-flex flex-wrap align-items-center">
+                <label class="form-label me-2 fw-semibold">Ordenar por:</label>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="sort"
+                    id="filterUltimo"
+                    value="ultimo"
+                    checked
+                    (change)="onSortChange($event)"
+                  />
+                  <label class="form-check-label" for="filterUltimo"
+                    >Más reciente</label
+                  >
+                </div>
+                <div class="form-check form-check-inline">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="sort"
+                    id="filterAbc"
+                    value="abc"
+                    (change)="onSortChange($event)"
+                  />
+                  <label class="form-check-label" for="filterAbc"
+                    >Alfabeto</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 my-2">
               <div class="d-flex flex-wrap align-items-center">
                 <label class="form-label me-2 fw-semibold"
                   >Filtrar por estado:</label

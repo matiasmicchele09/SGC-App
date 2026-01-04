@@ -31,6 +31,7 @@ export class CustomersComponent {
   public taxConditions: Tax_Condition[] = [];
   public types_person: Type_Person[] = [];
 
+  public order: 'ultimo' | 'abc' = 'ultimo';
   //* Variables para paginación local. Es decir, mi backend no tiene paginación
   public customersPerPage: Customer[] = [];
   public page: number = 1;
@@ -83,7 +84,7 @@ export class CustomersComponent {
 
         this.loading = false;
 
-        this.updatePage(); //Corta el array para mostrar solo los elementos de la página actual
+        this.updatePage(this.order); //Corta el array para mostrar solo los elementos de la página actual
       },
       error: (err) => {
         console.error(err);
@@ -96,20 +97,33 @@ export class CustomersComponent {
 
   //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
   //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
-  updatePage(): void {
-    const sorted = [...this.filteredCustomers].sort((a, b) =>
-      a.surname.localeCompare(b.surname)
-    );
+  updatePage(order: 'ultimo' | 'abc'): void {
+    let sorted;
+    if (order === 'abc') {
+      sorted = [...this.filteredCustomers].sort((a, b) =>
+        a.surname.localeCompare(b.surname)
+      );
+    } else if (order === 'ultimo') {
+      sorted = [...this.filteredCustomers].sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
+    this.order = order;
     const startIndex = (this.page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.customersPerPage = sorted.slice(startIndex, endIndex);
+    this.customersPerPage = sorted!.slice(startIndex, endIndex);
   }
 
   onNgbPageChange(p: number) {
     this.page = p;
-    this.updatePage();
+    this.updatePage(this.order);
   }
-
+  onSortChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.order = input.value as 'ultimo' | 'abc';
+    this.updatePage(this.order);
+  }
   onFilterChange(event: Event) {
     const input = event?.target as HTMLInputElement;
 
@@ -126,7 +140,7 @@ export class CustomersComponent {
 
     this.totalItems = this.filteredCustomers.length;
     this.page = 1; // opcional, volver a la primera página
-    this.updatePage();
+    this.updatePage(this.order);
     return;
   }
 
@@ -153,7 +167,7 @@ export class CustomersComponent {
 
     this.totalItems = this.filteredCustomers.length;
     this.page = 1; // opcional, volver a la primera página
-    this.updatePage();
+    this.updatePage(this.order);
   }
 
   trackById = (_: number, c: Customer) => c.id;
@@ -206,7 +220,7 @@ export class CustomersComponent {
         }
         // reemplazo inmutable en customers
         this.filteredCustomers = this.customers;
-        this.updatePage();
+        this.updatePage(this.order);
       })
       .catch((res) => {
         //console.log(`Dismissed ${this.getDismissReason(res)}`);
