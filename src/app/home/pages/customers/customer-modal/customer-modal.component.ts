@@ -36,7 +36,7 @@ export class CustomerModalComponent implements OnInit {
     activity: ['', Validators.required],
     active: [true],
     bank: [''],
-    created_at: [''],
+    // created_at: [''],
     deactivated_at: [null],
     hasDREI: [false],
     nro_cuenta_DREI: [],
@@ -134,59 +134,8 @@ export class CustomerModalComponent implements OnInit {
           this.customerForm.get('nro_reg_DREI')?.disable();
         }
       }
-      // this.customerForm.patchValue({
-      //   created_at: this.formatDateToDDMMYYYY(this.customer!.created_at)
-      // });
     }
   }
-
-  // private toActividadValue = (val: any): any => {
-  //   console.log(val);
-  //   if (val == null) return '';
-
-  //   // Caso string tipo "11111 — Cultivo de arroz"
-  //   if (typeof val === 'string') {
-  //     const m = val.match(/^\s*(\d+)\s+—\s+(.+)$/);
-  //     if (m) {
-  //       const byCode = this.actividades.find(
-  //         (a) => String(a.codActividadArca) === m[1]
-  //       );
-  //       return byCode ?? { codActividadArca: m[1], nombreActividadArca: m[2] };
-  //     }
-  //     // Solo código o solo nombre
-  //     const byCode = this.actividades.find(
-  //       (a) => String(a.codActividadArca) === val.trim()
-  //     );
-  //     if (byCode) return byCode;
-
-  //     const byName = this.actividades.find(
-  //       (a) => this.norm(a.nombreActividadArca) === this.norm(val)
-  //     );
-  //     return byName ?? val; // si no existe, lo dejamos como string libre
-  //   }
-
-  //   // Caso número: buscar por código
-  //   if (typeof val === 'number') {
-  //     const byCode = this.actividades.find(
-  //       (a) => Number(a.codActividadArca) === val
-  //     );
-  //     return byCode ?? val;
-  //   }
-
-  //   // Caso objeto ya correcto
-  //   if (val.codActividadArca && val.nombreActividadArca) return val;
-
-  //   // Caso objeto con otras keys
-  //   const code = val.code ?? val.codigo ?? val.cod;
-  //   const name = val.name ?? val.nombre ?? val.desc;
-  //   if (code && name)
-  //     return {
-  //       codActividadArca: String(code),
-  //       nombreActividadArca: String(name),
-  //     };
-
-  //   return val; // lo que sea, que el formatter lo muestre
-  // };
 
   capitalizeWords(input: string, field: string) {
     const formattedInput = input.replace(/\w\S*/g, (txt) => {
