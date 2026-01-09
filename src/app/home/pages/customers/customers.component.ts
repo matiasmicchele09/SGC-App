@@ -35,7 +35,7 @@ export class CustomersComponent {
   //* Variables para paginación local. Es decir, mi backend no tiene paginación
   public customersPerPage: Customer[] = [];
   public page: number = 1;
-  public pageSize: number = 10;
+  public pageSize: number = 7;
   public totalItems: number = 0;
 
   constructor(

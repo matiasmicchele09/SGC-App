@@ -6,10 +6,12 @@
 }
 html,
 body {
-  /* height: 100%; */
   height: 100vh;
+  padding: 0;
   margin: 0;
-  background-color: #f8f9fa;
+  background-color: var(--gray);
+  font-family: "Inter", Arial, sans-serif !important;
+  letter-spacing: -0.01em;
 }
 
 :root {
@@ -19,6 +21,7 @@ body {
   --green: #00ca0a;
   --light-blue: #0282fa;
   --light-green: #4dc853;
+  --light-green: #a3f0a7;
   --light-red: #f92323;
   --red: #bd2a2a;
   --white: #fff;
