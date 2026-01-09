@@ -137,7 +137,7 @@
             </div>
           </div>
 
-          <div class="table-container">
+          <!-- <div class="table-container">
             <div class="table-responsive">
               <table class="table table-striped caption-top">
                 <thead>
@@ -153,7 +153,6 @@
                     <th scope="col" class="d-none d-sm-table-cell">
                       Cond. Fiscal
                     </th>
-                    <!-- <th scope="col">Actividad</th> -->
                     <th scope="col">Estado</th>
                     <th scope="col">Detalle</th>
                   </tr>
@@ -192,7 +191,6 @@
                     <td class="d-none d-sm-table-cell">
                       {{ customer.tax_condition }}
                     </td>
-                    <!-- <td>{{ customer.activity }}</td> -->
                     <td>
                       <span
                         class="badge"
@@ -213,10 +211,168 @@
                 </tbody>
               </table>
             </div>
+          </div> -->
+          <div class="table-container">
+            <!-- ✅ MOBILE: Cards (xs) -->
+            <div class="d-block d-sm-none">
+              <div
+                class="card mb-2 shadow-sm"
+                *ngFor="
+                  let customer of customersPerPage;
+                  let i = index;
+                  trackBy: trackById
+                "
+                [class.border-primary]="customer.highlight === true"
+              >
+                <div class="card-body py-2">
+                  <div
+                    class="d-flex justify-content-between align-items-start gap-2"
+                  >
+                    <div class="flex-grow-1">
+                      <div class="fw-semibold text-truncate">
+                        <ng-container
+                          *ngIf="customer.id_type === 1; else sociedadTpl"
+                        >
+                          {{ customer.surname }}, {{ customer.name }}
+                        </ng-container>
+                        <ng-template #sociedadTpl>
+                          {{ customer.surname }}
+                          <span class="fw-normal">(Sociedad)</span>
+                        </ng-template>
+                      </div>
+
+                      <div class="small text-muted mt-1">
+                        <span *ngIf="customer.cuit"
+                          >CUIT: {{ customer.cuit }}</span
+                        >
+                        <span *ngIf="customer.phone" class="ms-2"
+                          >Tel: {{ customer.phone }}</span
+                        >
+                      </div>
+
+                      <div
+                        class="small text-muted mt-1"
+                        *ngIf="customer.tax_condition"
+                      >
+                        Cond. Fiscal: {{ customer.tax_condition }}
+                      </div>
+                    </div>
+
+                    <div class="text-end">
+                      <span
+                        class="badge"
+                        [ngClass]="customer.active ? 'bg-success' : 'bg-danger'"
+                      >
+                        {{ customer.active ? "Activo" : "Baja" }}
+                      </span>
+
+                      <button
+                        type="button"
+                        class="btn btn-outline-secondary btn-sm mt-2"
+                        (click)="onCustomer(customer, false)"
+                      >
+                        Ver
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ✅ DESKTOP/TABLET: Tabla (sm+) -->
+            <div class="d-none d-sm-block">
+              <div class="table-responsive">
+                <table class="table table-striped caption-top">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Nombre</th>
+                      <th scope="col" class="d-none d-md-table-cell">CUIT</th>
+                      <th scope="col" class="d-none d-lg-table-cell">
+                        Clave Fiscal
+                      </th>
+                      <th scope="col" class="d-none d-lg-table-cell">Banco</th>
+                      <th scope="col" class="d-none d-md-table-cell">
+                        N° Tel.
+                      </th>
+                      <th scope="col" class="d-none d-xl-table-cell">
+                        Cond. Fiscal
+                      </th>
+                      <th scope="col">Estado</th>
+                      <th scope="col">Detalle</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      class="table-row"
+                      *ngFor="
+                        let customer of customersPerPage;
+                        let i = index;
+                        trackBy: trackById
+                      "
+                      [class.highlight-row]="customer.highlight === true"
+                    >
+                      <td>{{ (page - 1) * pageSize + i + 1 }}</td>
+
+                      <td class="text-truncate" style="max-width: 260px">
+                        <ng-container
+                          *ngIf="
+                            customer.id_type === 1;
+                            else sociedadDesktopTpl
+                          "
+                        >
+                          {{ customer.surname }}, {{ customer.name }}
+                        </ng-container>
+                        <ng-template #sociedadDesktopTpl>
+                          {{ customer.surname }} <b>(Sociedad)</b>
+                        </ng-template>
+                      </td>
+
+                      <td class="d-none d-md-table-cell">
+                        {{ customer.cuit }}
+                      </td>
+                      <td class="d-none d-lg-table-cell">
+                        {{ customer.tax_key }}
+                      </td>
+                      <td class="d-none d-lg-table-cell">
+                        {{ customer.bank }}
+                      </td>
+                      <td class="d-none d-md-table-cell">
+                        {{ customer.phone }}
+                      </td>
+                      <td class="d-none d-xl-table-cell">
+                        {{ customer.tax_condition }}
+                      </td>
+
+                      <td>
+                        <span
+                          class="badge"
+                          [ngClass]="
+                            customer.active ? 'bg-success' : 'bg-danger'
+                          "
+                        >
+                          {{ customer.active ? "Activo" : "Baja" }}
+                        </span>
+                      </td>
+
+                      <td class="text-center align-middle icon-fontawesome">
+                        <i
+                          role="button"
+                          title="Más Información"
+                          class="fa-solid fa-circle-info fa-lg"
+                          (click)="onCustomer(customer, false)"
+                        ></i>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
           <!--* Paginator -->
-          <ngb-pagination
+          <!-- <ngb-pagination
             [(page)]="page"
             [pageSize]="pageSize"
             [collectionSize]="totalItems"
@@ -225,7 +381,34 @@
             [maxSize]="5"
             (pageChange)="onNgbPageChange($event)"
           >
-          </ngb-pagination>
+          </ngb-pagination> -->
+          <!-- MOBILE paginator -->
+          <div class="d-flex justify-content-center d-sm-none mt-3">
+            <ngb-pagination
+              [(page)]="page"
+              [pageSize]="pageSize"
+              [collectionSize]="totalItems"
+              [maxSize]="3"
+              [ellipses]="false"
+              [boundaryLinks]="false"
+              (pageChange)="onNgbPageChange($event)"
+            >
+            </ngb-pagination>
+          </div>
+
+          <!-- DESKTOP paginator -->
+          <div class="d-none d-sm-flex justify-content-end mt-3">
+            <ngb-pagination
+              [(page)]="page"
+              [pageSize]="pageSize"
+              [collectionSize]="totalItems"
+              [maxSize]="5"
+              [ellipses]="true"
+              [boundaryLinks]="true"
+              (pageChange)="onNgbPageChange($event)"
+            >
+            </ngb-pagination>
+          </div>
         </div>
       </ng-container>
 
