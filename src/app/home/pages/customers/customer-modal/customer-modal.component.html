@@ -256,17 +256,18 @@
               <label for="created_at" class="form-label text-success"
                 >Fecha Alta</label
               >
-              <input
+              <!-- <input
                 type="text"
                 class="form-control"
                 formControlName="created_at"
-                [value]="
-                  customerForm.get('created_at')?.value | date : 'dd/MM/yyyy'
-                "
+                [value]="customerForm.get('created_at')?.value"
                 id="created_at"
                 name="created_at"
                 readonly="true"
-              />
+              /> -->
+              <span class="form-control bg-light">
+                {{ customer?.created_at | date : "dd/MM/yyyy HH:mm" }}
+              </span>
             </div>
 
             <!--* Fec. Baja -->
@@ -381,34 +382,17 @@
                     {{ type.name }}
                   </option>
                 </select>
+                <span
+                  *ngIf="isValidField('id_bank')"
+                  class="form-text text-danger"
+                >
+                  {{ getFieldError("id_bank") }}
+                </span>
               </div>
             </div>
           </div>
           <!--* Actividad-->
           <div class="form-label mt-2">
-            <!-- <label for="activity" class="form-label text-success"
-                >Actividad</label
-              >
-              <input
-                #inputActivity
-                type="text"
-                class="form-control"
-                formControlName="activity"
-                id="activity"
-                name="activity"
-                (blur)="capitalizeWords(inputActivity.value, 'activity')"
-                [ngClass]="{
-                  'is-valid':
-                    customerForm.get('activity')?.valid &&
-                    customerForm.get('activity')?.touched
-                }"
-              />
-              <span
-                *ngIf="isValidField('activity')"
-                class="form-text text-danger"
-              >
-                {{ getFieldError("activity") }}
-              </span> -->
             <label
               for="actividad"
               class="form-label text-success"
@@ -430,16 +414,21 @@
               [container]="'body'"
               placeholder="Escribí código o nombre..."
               (selectItem)="onSelect($event)"
+              [ngClass]="{
+                'is-valid':
+                  customerForm.get('activity')?.valid &&
+                  customerForm.get('activity')?.touched,
+                'is-invalid':
+                  customerForm.get('activity')?.value == 0 &&
+                  customerForm.get('activity')?.touched
+              }"
             />
-
-            <!-- <div
-              [resultFormatter]="resultFormatter"
-                class="form-text activities-selected"
-                *ngIf="customerForm.get('activity')?.value as a"
-              >
-                Seleccionado: {{ a.codActividadArca }} —
-                {{ a.nombreActividadArca }}
-              </div> -->
+            <span
+              *ngIf="isValidField('activity')"
+              class="form-text text-danger"
+            >
+              {{ getFieldError("activity") }}
+            </span>
           </div>
         </div>
 
