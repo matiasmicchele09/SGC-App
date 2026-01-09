@@ -134,3 +134,17 @@ select {
     background-color: transparent;
   }
 }
+.table-row.highlight-row {
+  outline: 2px solid rgba(13, 110, 253, 0.3); /* tipo bootstrap primary */
+  outline-offset: -2px;
+}
+
+.card.border-primary {
+  border-width: 2px !important;
+}
+@media (max-width: 576px) {
+  ngb-pagination .page-link {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+  }
+}
