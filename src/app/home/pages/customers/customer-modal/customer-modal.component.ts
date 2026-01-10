@@ -45,7 +45,7 @@ export class CustomerModalComponent implements OnInit {
     city: ['', Validators.required],
     cuit: [
       '',
-      [Validators.required, Validators.maxLength(13), Validators.minLength(11)],
+      [Validators.required, Validators.maxLength(11), Validators.minLength(11)],
     ],
     email: ['', [Validators.pattern(this.emailPattern)]],
     id: [0],

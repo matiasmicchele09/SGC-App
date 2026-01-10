@@ -101,8 +101,7 @@
                           name="filter"
                           id="filterTodos"
                           value="todos"
-                          checked
-                          (change)="onFilterChange($event)"
+                          (change)="onFilterChange('todos')"
                         />
                         <label class="form-check-label" for="filterTodos"
                           >Todos</label
@@ -116,9 +115,9 @@
                           name="filter"
                           id="filterActivos"
                           value="activos"
-                          (change)="onFilterChange($event)"
+                          checked
+                          (change)="onFilterChange('activos')"
                         />
-                        <!-- [(ngModel)]="estadoFiltro" -->
                         <label class="form-check-label" for="filterActivos"
                           >Activos</label
                         >
@@ -131,7 +130,7 @@
                           name="filter"
                           id="filterBaja"
                           value="baja"
-                          (change)="onFilterChange($event)"
+                          (change)="onFilterChange('baja')"
                         />
                         <label class="form-check-label" for="filterBaja"
                           >Dados de baja</label
@@ -143,7 +142,7 @@
               </div>
             </div>
           </section>
-          <section class="container-fluid p-3">
+          <section class="container-fluid container-table">
             <div class="rounded-3 shadow-sm bg-white p-3">
               <div class="row justify-content-between align-items-center">
                 <div class="table-container">
