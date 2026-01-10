@@ -36,7 +36,7 @@
             <div class="rounded-3 shadow-sm bg-white p-3">
               <div class="row justify-content-between align-items-center">
                 <div class="d-flex justify-content-between">
-                  <h2 style="margin-right: 10px">Mis Clientes</h2>
+                  <h2>Mis Clientes</h2>
                   <button
                     class="d-inline btn btn-success"
                     (click)="onCustomer(selectedCustomer, true)"
@@ -176,11 +176,19 @@
                             </div>
 
                             <div class="small text-muted mt-1">
+                              <span
+                                class="d-inline"
+                                [ngClass]="
+                                  customer.active ? 'bg-active' : 'bg-noActive'
+                                "
+                              >
+                                {{ customer.active ? "Activo" : "Baja" }}
+                              </span>
+                            </div>
+
+                            <div class="small text-muted mt-1">
                               <span *ngIf="customer.cuit"
                                 >CUIT: {{ customer.cuit }}</span
-                              >
-                              <span *ngIf="customer.phone" class="ms-2"
-                                >Tel: {{ customer.phone }}</span
                               >
                             </div>
 
@@ -190,25 +198,15 @@
                             >
                               Cond. Fiscal: {{ customer.tax_condition }}
                             </div>
-                          </div>
-
-                          <div class="text-end">
-                            <span
-                              class="d-block"
-                              [ngClass]="
-                                customer.active ? 'bg-active' : 'bg-noActive'
-                              "
-                            >
-                              {{ customer.active ? "Activo" : "Baja" }}
-                            </span>
-
-                            <button
-                              type="button"
-                              class="d-block btn btn-outline-secondary mt-2"
-                              (click)="onCustomer(customer, false)"
-                            >
-                              Ver
-                            </button>
+                            <div class="small text-muted mt-1">
+                              <button
+                                type="button"
+                                class="d-block btn btn-outline-secondary mt-2"
+                                (click)="onCustomer(customer, false)"
+                              >
+                                Ver
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
