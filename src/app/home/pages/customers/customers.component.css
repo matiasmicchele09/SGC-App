@@ -1,6 +1,9 @@
+.container-table {
+  padding: 0 16px 16px 16px;
+}
+
 .table-container {
-  max-height: 80vh; /* Altura máxima deseada */
-  overflow-y: auto; /* Habilita el scroll vertical */
+  overflow-y: auto;
   scrollbar-width: thin;
 }
 

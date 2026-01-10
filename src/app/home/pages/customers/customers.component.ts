@@ -84,6 +84,7 @@ export class CustomersComponent {
 
         this.loading = false;
 
+        this.onFilterChange('activos');
         this.updatePage(this.order); //Corta el array para mostrar solo los elementos de la página actual
       },
       error: (err) => {
@@ -124,19 +125,20 @@ export class CustomersComponent {
     this.order = input.value as 'ultimo' | 'abc';
     this.updatePage(this.order);
   }
-  onFilterChange(event: Event) {
+  onFilterChange(filter: string) {
+    /*console.log(event);
     const input = event?.target as HTMLInputElement;
+    console.log(input);*/
 
-    if (input.value === 'activos')
+    if (filter === 'activos')
       this.filteredCustomers = this.customers.filter(
         (customer) => customer.active === true
       );
-    else if (input.value === 'baja')
+    else if (filter === 'baja')
       this.filteredCustomers = this.customers.filter(
         (customer) => customer.active === false
       );
-    else if (input.value === 'todos')
-      this.filteredCustomers = [...this.customers];
+    else if (filter === 'todos') this.filteredCustomers = [...this.customers];
 
     this.totalItems = this.filteredCustomers.length;
     this.page = 1; // opcional, volver a la primera página
