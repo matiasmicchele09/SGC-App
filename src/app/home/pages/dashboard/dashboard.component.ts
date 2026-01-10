@@ -16,6 +16,7 @@ export class DashboardComponent {
   public user: User | null = null;
   public customers: Customer[] = [];
   public tax_conditions: Tax_Condition[] = [];
+  public hasData: boolean = false;
   public kpis: { title: string; value: number; icon: string; color: string }[] =
     [];
   public clientesPorCiudad: { ciudad: string; total: number }[] = [];
@@ -73,6 +74,7 @@ export class DashboardComponent {
   ) {}
 
   ngOnInit(): void {
+    this.hasData = false;
     forkJoin({
       user: this.authService.getUser(this.authService.user!.id_user),
       customers: this.customerService.getCustomers(
@@ -84,6 +86,7 @@ export class DashboardComponent {
         this.user = user;
         this.customers = customers;
         this.tax_conditions = tax_conditions;
+        this.hasData = true;
         // console.log(tax_conditions);
         // console.log('User:', this.user);
         // console.log('Customers:', this.customers);
