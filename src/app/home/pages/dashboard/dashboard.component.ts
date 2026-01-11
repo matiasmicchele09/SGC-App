@@ -98,7 +98,7 @@ export class DashboardComponent {
         /* KPIs */
         this.kpis = [
           {
-            title: 'Total Clientes',
+            title: 'Total',
             value: total,
             icon: 'bi-people',
             color: 'text-primary',
