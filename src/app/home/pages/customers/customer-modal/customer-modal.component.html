@@ -35,7 +35,7 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('name')?.valid &&
-                    customerForm.get('name')?.touched
+                    customerForm.get('name')?.touched,
                 }"
                 (blur)="capitalizeWords(inputName.value, 'name')"
               />
@@ -63,7 +63,7 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('surname')?.valid &&
-                    customerForm.get('surname')?.touched
+                    customerForm.get('surname')?.touched,
                 }"
               />
               <span
@@ -89,7 +89,7 @@
                       customerForm.get('id_type')?.touched,
                     'is-invalid':
                       customerForm.get('id_type')?.value == 0 &&
-                      customerForm.get('id_type')?.touched
+                      customerForm.get('id_type')?.touched,
                   }"
                   (change)="onChangeTypePerson($event)"
                 >
@@ -124,7 +124,7 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('cuit')?.valid &&
-                    customerForm.get('cuit')?.touched
+                    customerForm.get('cuit')?.touched,
                 }"
               />
               <span *ngIf="isValidField('cuit')" class="form-text text-danger">
@@ -144,7 +144,7 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('email')?.valid &&
-                    customerForm.get('email')?.touched
+                    customerForm.get('email')?.touched,
                 }"
               />
               <span *ngIf="isValidField('email')" class="form-text text-danger">
@@ -166,7 +166,7 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('phone')?.valid &&
-                    customerForm.get('phone')?.touched
+                    customerForm.get('phone')?.touched,
                 }"
               />
               <span *ngIf="isValidField('phone')" class="form-text text-danger">
@@ -210,7 +210,7 @@
                       customerForm.get('id_province')?.touched,
                     'is-invalid':
                       customerForm.get('id_province')?.value == 0 &&
-                      customerForm.get('id_province')?.touched
+                      customerForm.get('id_province')?.touched,
                   }"
                 >
                   <option value="0" disabled selected>
@@ -243,12 +243,27 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('city')?.valid &&
-                    customerForm.get('city')?.touched
+                    customerForm.get('city')?.touched,
                 }"
               />
               <span *ngIf="isValidField('city')" class="form-text text-danger">
                 {{ getFieldError("city") }}
               </span>
+            </div>
+
+            <!--* Observaciones -->
+            <div class="customer-form__full">
+              <label for="observations" class="form-label text-success"
+                >Observaciones</label
+              >
+              <textarea
+                class="form-control"
+                formControlName="observations"
+                id="observations"
+                name="observations"
+                [placeholder]="defaultObservations"
+                rows="3"
+              ></textarea>
             </div>
 
             <!--* Fec. Alta -->
@@ -266,7 +281,7 @@
                 readonly="true"
               /> -->
               <span class="form-control bg-light">
-                {{ customer?.created_at | date : "dd/MM/yyyy HH:mm" }}
+                {{ customer?.created_at | date: "dd/MM/yyyy HH:mm" }}
               </span>
             </div>
 
@@ -276,7 +291,7 @@
                 >Fecha Baja</label
               >
               <span class="form-control bg-light">
-                {{ customer?.deactivated_at | date : "dd/MM/yyyy HH:mm" }}
+                {{ customer?.deactivated_at | date: "dd/MM/yyyy HH:mm" }}
               </span>
             </div>
           </div>
@@ -301,7 +316,7 @@
                       customerForm.get('id_tax_condition')?.touched,
                     'is-invalid':
                       customerForm.get('id_tax_condition')?.value == 0 &&
-                      customerForm.get('id_tax_condition')?.touched
+                      customerForm.get('id_tax_condition')?.touched,
                   }"
                 >
                   <option value="0" disabled selected>
@@ -337,7 +352,7 @@
                 [ngClass]="{
                   'is-valid':
                     customerForm.get('tax_key')?.valid &&
-                    customerForm.get('tax_key')?.touched
+                    customerForm.get('tax_key')?.touched,
                 }"
               />
               <span
@@ -363,7 +378,7 @@
                       customerForm.get('id_bank')?.touched,
                     'is-invalid':
                       customerForm.get('id_bank')?.value == 0 &&
-                      customerForm.get('id_bank')?.touched
+                      customerForm.get('id_bank')?.touched,
                   }"
                 >
                   <option value="0" disabled selected>
@@ -411,7 +426,7 @@
                   customerForm.get('activity')?.touched,
                 'is-invalid':
                   customerForm.get('activity')?.value == 0 &&
-                  customerForm.get('activity')?.touched
+                  customerForm.get('activity')?.touched,
               }"
             />
             <span
