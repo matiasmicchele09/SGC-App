@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {
@@ -162,6 +163,18 @@ export class CustomerModalComponent implements OnInit {
       ...customer,
       observations: customer.observations?.trim() || null,
     };
+  }
+
+  private getCustomerErrorText(error: unknown): string {
+    if (error instanceof HttpErrorResponse && error.status === 409) {
+      return 'Ya existe un cliente con ese CUIT para este usuario.';
+    }
+
+    if (error instanceof HttpErrorResponse) {
+      return error.error?.message ?? error.message;
+    }
+
+    return 'Ocurrió un error inesperado. Intentá nuevamente.';
   }
 
   isValidField(field: string): boolean | null {
@@ -411,15 +424,18 @@ export class CustomerModalComponent implements OnInit {
                 console.log(err);
                 this.alertService.error({
                   title: errorMessage,
-                  text: err,
+                  text: this.getCustomerErrorText(err),
                   timer: 3000,
                 });
                 console.error(err);
+                this.isSubmitting = false;
               },
               complete: () => {
                 this.isSubmitting = false;
               },
             });
+          } else {
+            this.isSubmitting = false;
           }
         });
     } else if (action === 'update') {
@@ -483,15 +499,18 @@ export class CustomerModalComponent implements OnInit {
                   console.log(err);
                   this.alertService.error({
                     title: errorMessage,
-                    text: err,
+                    text: this.getCustomerErrorText(err),
                     timer: 3000,
                   });
                   console.error(err);
+                  this.isSubmitting = false;
                 },
                 complete: () => {
                   this.isSubmitting = false;
                 },
               });
+          } else {
+            this.isSubmitting = false;
           }
         });
     } else if (action === 'reactivate') {
@@ -544,15 +563,18 @@ export class CustomerModalComponent implements OnInit {
                   console.log(err);
                   this.alertService.error({
                     title: errorMessage,
-                    text: err,
+                    text: this.getCustomerErrorText(err),
                     timer: 3000,
                   });
                   console.error(err);
+                  this.isSubmitting = false;
                 },
                 complete: () => {
                   this.isSubmitting = false;
                 },
               });
+          } else {
+            this.isSubmitting = false;
           }
         });
     }
@@ -598,15 +620,18 @@ export class CustomerModalComponent implements OnInit {
             error: (err) => {
               this.alertService.error({
                 title: 'Error: No se pudo eliminar el cliente',
-                text: err.error.message,
+                text: this.getCustomerErrorText(err),
                 timer: 3000,
               });
               console.error(err);
+              this.isDeleting = false;
             },
             complete: () => {
               this.isDeleting = false;
             },
           });
+        } else {
+          this.isDeleting = false;
         }
       });
   }

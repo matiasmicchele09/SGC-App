@@ -47,7 +47,7 @@ export class CustomersService {
       .get<Customer[]>(`${this.baseUrl}/customers`, { params })
       .pipe(
         //tap(customers=> console.log("customers", customers)),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
@@ -55,9 +55,9 @@ export class CustomersService {
     // if (isNew){
     return this.http.post<Customer>(`${this.baseUrl}/customers`, customer).pipe(
       tap((newCustomer: Customer) =>
-        console.log('added customer', newCustomer)
+        console.log('added customer', newCustomer),
       ),
-      catchError(this.handleError)
+      catchError(this.handleError),
     );
     // }
     // else{
@@ -82,16 +82,14 @@ export class CustomersService {
       .put<Customer>(`${this.baseUrl}/customers/${customer.id}`, customer)
       .pipe(
         tap((updatedCustomer: Customer) =>
-          console.log('updated customer', updatedCustomer)
+          console.log('updated customer', updatedCustomer),
         ),
-        catchError(this.handleError)
+        catchError(this.handleError),
       );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
     console.error('An error occurred:', error.message);
-    return throwError(
-      () => new Error('Something bad happened; please try again later.')
-    );
+    return throwError(() => error);
   }
 }
