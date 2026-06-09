@@ -20,6 +20,7 @@ export interface Customer {
   name: string;
   nro_cuenta_DREI: number;
   nro_reg_DREI: number;
+  observations: string | null;
   phone: string;
   province: string;
   surname: string;

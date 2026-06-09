@@ -23,6 +23,7 @@ type Action = 'create' | 'update' | 'reactivate';
 })
 export class CustomerModalComponent implements OnInit {
   private actividades: Actividad[] = [];
+  public readonly defaultObservations = 'Sin Observaciones...';
   private emailPattern: string =
     '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$';
   public titleForm: string = '';
@@ -41,6 +42,7 @@ export class CustomerModalComponent implements OnInit {
     hasDREI: [false],
     nro_cuenta_DREI: [],
     nro_reg_DREI: [],
+    observations: [null],
     address: [''],
     city: ['', Validators.required],
     cuit: [
@@ -75,7 +77,7 @@ export class CustomerModalComponent implements OnInit {
     private alertService: AlertService,
     private authService: AuthService,
     private customerService: CustomersService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
   ) {}
 
   ngOnInit(): void {
@@ -95,6 +97,7 @@ export class CustomerModalComponent implements OnInit {
       this.customerForm.get('id_province')?.setValue(0);
       this.customerForm.get('id_type')?.setValue(0);
       this.customerForm.get('id_bank')?.setValue(0);
+      this.customerForm.get('observations')?.setValue(null);
       this.customerForm.get('nro_cuenta_DREI')?.disable();
       this.customerForm.get('nro_reg_DREI')?.disable();
     } else {
@@ -110,17 +113,19 @@ export class CustomerModalComponent implements OnInit {
         this.titleForm = this.customer ? `${title} - INACTIVO` : '';
 
         this.customerForm.patchValue(this.customer!);
+        this.setObservationsValue();
         const activity = this.actividades.find(
-          (a) => a.codActividadArca === Number(this.customer?.activity)
+          (a) => a.codActividadArca === Number(this.customer?.activity),
         );
         this.customerForm.get('activity')?.setValue(activity);
       } else {
         this.buttonForm = 'Actualizar';
         this.titleForm = this.customer ? `${title}` : '';
         this.customerForm.patchValue(this.customer!);
+        this.setObservationsValue();
 
         const activity = this.actividades.find(
-          (a) => a.codActividadArca === Number(this.customer?.activity)
+          (a) => a.codActividadArca === Number(this.customer?.activity),
         );
 
         this.customerForm.get('activity')?.setValue(activity);
@@ -142,6 +147,21 @@ export class CustomerModalComponent implements OnInit {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
     this.customerForm.get(`${field}`)?.setValue(formattedInput);
+  }
+
+  private setObservationsValue(): void {
+    this.customerForm
+      .get('observations')
+      ?.setValue(this.customer?.observations ?? null);
+  }
+
+  private normalizeObservations<T extends { observations?: string | null }>(
+    customer: T,
+  ): T {
+    return {
+      ...customer,
+      observations: customer.observations?.trim() || null,
+    };
   }
 
   isValidField(field: string): boolean | null {
@@ -183,13 +203,13 @@ export class CustomerModalComponent implements OnInit {
         .get('nro_cuenta_DREI')
         ?.setValue(
           this.customers.find((c) => c.id === this.customer?.id)
-            ?.nro_cuenta_DREI ?? null
+            ?.nro_cuenta_DREI ?? null,
         );
       this.customerForm
         .get('nro_reg_DREI')
         ?.setValue(
           this.customers.find((c) => c.id === this.customer?.id)
-            ?.nro_reg_DREI ?? null
+            ?.nro_reg_DREI ?? null,
         );
       this.customerForm.get('nro_cuenta_DREI')?.enable();
       this.customerForm.get('nro_reg_DREI')?.enable();
@@ -202,7 +222,7 @@ export class CustomerModalComponent implements OnInit {
 
   private areAllFieldsPristine(): boolean {
     return Object.values(this.customerForm.controls).every(
-      (control) => control.pristine
+      (control) => control.pristine,
     );
   }
 
@@ -221,7 +241,7 @@ export class CustomerModalComponent implements OnInit {
   private resolveAction(
     isNew: boolean,
     originalActive?: boolean, // estado al cargar el cliente
-    currentActive?: boolean // valor del form al guardar
+    currentActive?: boolean, // valor del form al guardar
   ): Action {
     if (isNew) return 'create';
     if (originalActive === false && currentActive === true) return 'reactivate';
@@ -277,10 +297,10 @@ export class CustomerModalComponent implements OnInit {
           .filter(
             (a) =>
               this.norm(a.nombreActividadArca).includes(t) ||
-              this.norm(String(a.codActividadArca)).includes(t)
+              this.norm(String(a.codActividadArca)).includes(t),
           )
           .slice(0, 20); // limitá resultados por performance
-      })
+      }),
     );
   // Cómo se muestra en el input cuando está seleccionado
   public inputFormatter = (a: Actividad | null) =>
@@ -301,17 +321,27 @@ export class CustomerModalComponent implements OnInit {
     // this.form.get('actividad')!.setValue(e.item.codActividadArca, { emitEvent: true });
   }
 
+  private isSubmitting: boolean = false;
+  private isDeleting: boolean = false;
+
   onSaveChanges(customer: FormGroup) {
     console.log(customer);
+    if (this.isSubmitting) {
+      alert('Ya se está procesando la solicitud, por favor espere.');
+      return;
+    }
+    this.isSubmitting = true;
+
     const action = this.resolveAction(
       this.isNew,
       customer.value.active,
-      true // Siempre activo al guardar porque si estaba activo sigue activo y si estaba inactivo el form se habilita al reactivar
+      true, // Siempre activo al guardar porque si estaba activo sigue activo y si estaba inactivo el form se habilita al reactivar
     );
 
     //* Valido que nada este vacío
     if (this.customerForm.invalid && action !== 'reactivate') {
       this.customerForm.markAllAsTouched();
+      this.isSubmitting = false;
       return;
     }
 
@@ -319,6 +349,7 @@ export class CustomerModalComponent implements OnInit {
     //Si el valor NO ha sido modificado --> true | Si ha sido modificado --> false
     if (this.areAllFieldsPristine() && action !== 'reactivate') {
       this.pristine = true;
+      this.isSubmitting = false;
       return;
     } else this.pristine = false;
 
@@ -328,7 +359,7 @@ export class CustomerModalComponent implements OnInit {
 
       /* Agrego campos al objeto */
       const newCustomer = this.isNew
-        ? {
+        ? this.normalizeObservations({
             ...customer.value,
             activity: String(customer.value.activity.codActividadArca),
             id_user: this.authService.user!.id_user,
@@ -336,7 +367,7 @@ export class CustomerModalComponent implements OnInit {
             active: true,
             deactivated_at: null,
             highlight: false,
-          }
+          })
         : { ...customer.value, id_user: this.authService.user!.id_user };
       //}
 
@@ -386,7 +417,7 @@ export class CustomerModalComponent implements OnInit {
                 console.error(err);
               },
               complete: () => {
-                console.log('complete');
+                this.isSubmitting = false;
               },
             });
           }
@@ -412,6 +443,8 @@ export class CustomerModalComponent implements OnInit {
         ...restCustomer,
         activity: String(customer.value.activity.codActividadArca),
       };
+      const normalizedBackendCustomer =
+        this.normalizeObservations(backendCustomer);
       console.log(backendCustomer);
 
       this.alertService
@@ -424,39 +457,41 @@ export class CustomerModalComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.customerService.updateCustomer(backendCustomer).subscribe({
-              next: (customer) => {
-                console.log(customer);
-                const updatedCustomer = {
-                  ...customer,
-                  highlight: true,
-                };
+            this.customerService
+              .updateCustomer(normalizedBackendCustomer)
+              .subscribe({
+                next: (customer) => {
+                  console.log(customer);
+                  const updatedCustomer = {
+                    ...customer,
+                    highlight: true,
+                  };
 
-                this.alertService.success({
-                  title: titleMessage,
-                  text: textMessage,
-                  timer: 3000,
-                });
-                this.customers = this.customers.map((c) =>
-                  c.id === customer.id ? customer : c
-                );
+                  this.alertService.success({
+                    title: titleMessage,
+                    text: textMessage,
+                    timer: 3000,
+                  });
+                  this.customers = this.customers.map((c) =>
+                    c.id === customer.id ? customer : c,
+                  );
 
-                // ❌ Cerrar el modal
-                this.onCloseModal(customer);
-              },
-              error: (err) => {
-                console.log(err);
-                this.alertService.error({
-                  title: errorMessage,
-                  text: err,
-                  timer: 3000,
-                });
-                console.error(err);
-              },
-              complete: () => {
-                console.log('complete');
-              },
-            });
+                  // ❌ Cerrar el modal
+                  this.onCloseModal(customer);
+                },
+                error: (err) => {
+                  console.log(err);
+                  this.alertService.error({
+                    title: errorMessage,
+                    text: err,
+                    timer: 3000,
+                  });
+                  console.error(err);
+                },
+                complete: () => {
+                  this.isSubmitting = false;
+                },
+              });
           }
         });
     } else if (action === 'reactivate') {
@@ -479,6 +514,8 @@ export class CustomerModalComponent implements OnInit {
         active: true,
         deactivated_at: null,
       };
+      const normalizedReactivatedCustomer =
+        this.normalizeObservations(reactivatedCustomer);
       this.alertService
         .confirm({
           title: confirmMessage,
@@ -489,31 +526,33 @@ export class CustomerModalComponent implements OnInit {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            this.customerService.updateCustomer(reactivatedCustomer).subscribe({
-              next: (customer) => {
-                console.log(customer);
-                this.alertService.success({
-                  title: titleMessage,
-                  text: textMessage,
-                  timer: 3000,
-                });
+            this.customerService
+              .updateCustomer(normalizedReactivatedCustomer)
+              .subscribe({
+                next: (customer) => {
+                  console.log(customer);
+                  this.alertService.success({
+                    title: titleMessage,
+                    text: textMessage,
+                    timer: 3000,
+                  });
 
-                // ❌ Cerrar el modal
-                this.onCloseModal(customer);
-              },
-              error: (err) => {
-                console.log(err);
-                this.alertService.error({
-                  title: errorMessage,
-                  text: err,
-                  timer: 3000,
-                });
-                console.error(err);
-              },
-              complete: () => {
-                console.log('complete');
-              },
-            });
+                  // ❌ Cerrar el modal
+                  this.onCloseModal(customer);
+                },
+                error: (err) => {
+                  console.log(err);
+                  this.alertService.error({
+                    title: errorMessage,
+                    text: err,
+                    timer: 3000,
+                  });
+                  console.error(err);
+                },
+                complete: () => {
+                  this.isSubmitting = false;
+                },
+              });
           }
         });
     }
@@ -521,6 +560,11 @@ export class CustomerModalComponent implements OnInit {
 
   onDeleteCustomer(customer: Customer) {
     console.log(customer);
+    if (this.isDeleting) {
+      alert('Ya se está procesando la solicitud, por favor espere.');
+      return;
+    }
+    this.isDeleting = true;
     this.alertService
       .confirm({
         title: '¿Desea Eliminar este cliente?',
@@ -544,7 +588,7 @@ export class CustomerModalComponent implements OnInit {
                 timer: 3000,
               });
               this.customers = this.customers.map((c) =>
-                c.id === customer.id ? customer : c
+                c.id === customer.id ? customer : c,
               );
 
               // ❌ Cerrar el modal
@@ -560,7 +604,7 @@ export class CustomerModalComponent implements OnInit {
               console.error(err);
             },
             complete: () => {
-              console.log('complete');
+              this.isDeleting = false;
             },
           });
         }

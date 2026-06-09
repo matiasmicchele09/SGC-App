@@ -31,6 +31,10 @@
   grid-gap: 10px;
 }
 
+.customer-form__full {
+  grid-column: 1 / -1;
+}
+
 .section {
   grid-column: 1 / -1; /*que ocupe el ancho completo del grid*/
   padding: 10px;
@@ -50,11 +54,13 @@
 }
 
 input,
-select {
+select,
+textarea {
   border: 1px solid #ccc;
   /* Tamaño de fuente del input */
 }
-input:hover {
+input:hover,
+textarea:hover {
   border: 1px solid #198754;
 }
 .modal-title {
