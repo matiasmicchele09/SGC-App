@@ -11,6 +11,10 @@ import { Tax_Condition } from '../../interfaces/tax_conditions';
 import { Type_Person } from '../../interfaces/types_persons';
 import { CustomerModalComponent } from './customer-modal/customer-modal.component';
 
+type ActiveFilter = 'todos' | 'activos' | 'baja';
+type TypePersonFilter = 'todos' | 'fisica' | 'juridica';
+type TaxConditionFilter = number | 'todos';
+
 @Component({
   selector: 'app-customers',
   templateUrl: './customers.component.html',
@@ -32,6 +36,10 @@ export class CustomersComponent {
   public types_person: Type_Person[] = [];
 
   public order: 'ultimo' | 'abc' = 'ultimo';
+  public activeFilter: ActiveFilter = 'activos';
+  public typePersonFilter: TypePersonFilter = 'todos';
+  public taxConditionFilter: TaxConditionFilter = 'todos';
+  private searchTerm: string = '';
   //* Variables para paginación local. Es decir, mi backend no tiene paginación
   public customersPerPage: Customer[] = [];
   public page: number = 1;
@@ -40,7 +48,7 @@ export class CustomersComponent {
 
   constructor(
     private customerService: CustomersService,
-    private authService: AuthService
+    private authService: AuthService,
   ) {
     this.loadCustomers(this.authService.user!.id_user);
   }
@@ -84,8 +92,7 @@ export class CustomersComponent {
 
         this.loading = false;
 
-        this.onFilterChange('activos');
-        this.updatePage(this.order); //Corta el array para mostrar solo los elementos de la página actual
+        this.applyFilters();
       },
       error: (err) => {
         console.error(err);
@@ -99,21 +106,11 @@ export class CustomersComponent {
   //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
   //const sorted = [...this.filteredCustomers].sort((a, b) => a.id - b.id);
   updatePage(order: 'ultimo' | 'abc'): void {
-    let sorted;
-    if (order === 'abc') {
-      sorted = [...this.filteredCustomers].sort((a, b) =>
-        a.surname.localeCompare(b.surname)
-      );
-    } else if (order === 'ultimo') {
-      sorted = [...this.filteredCustomers].sort(
-        (a, b) =>
-          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-      );
-    }
     this.order = order;
+    const sortedCustomers = this.getSortedFilteredCustomers(order);
     const startIndex = (this.page - 1) * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.customersPerPage = sorted!.slice(startIndex, endIndex);
+    this.customersPerPage = sortedCustomers.slice(startIndex, endIndex);
   }
 
   onNgbPageChange(p: number) {
@@ -125,51 +122,170 @@ export class CustomersComponent {
     this.order = input.value as 'ultimo' | 'abc';
     this.updatePage(this.order);
   }
-  onFilterChange(filter: string) {
-    /*console.log(event);
-    const input = event?.target as HTMLInputElement;
-    console.log(input);*/
 
-    if (filter === 'activos')
-      this.filteredCustomers = this.customers.filter(
-        (customer) => customer.active === true
-      );
-    else if (filter === 'baja')
-      this.filteredCustomers = this.customers.filter(
-        (customer) => customer.active === false
-      );
-    else if (filter === 'todos') this.filteredCustomers = [...this.customers];
+  onFilterChange(filter: ActiveFilter) {
+    this.activeFilter = filter;
+    this.applyFilters();
+  }
 
-    this.totalItems = this.filteredCustomers.length;
-    this.page = 1; // opcional, volver a la primera página
-    this.updatePage(this.order);
-    return;
+  onTypePersonFilterChange(filter: TypePersonFilter) {
+    this.typePersonFilter = filter;
+    this.applyFilters();
+  }
+
+  onTaxConditionFilterChange(event: Event) {
+    const input = event.target as HTMLSelectElement;
+    this.taxConditionFilter =
+      input.value === 'todos' ? 'todos' : Number(input.value);
+    this.applyFilters();
   }
 
   onSearch(event: Event) {
-    const normalize = (s = '') =>
-      s
-        .normalize('NFD') // separa acentos
-        .replace(/[\u0300-\u036f]/g, '') // quita acentos
-        .toLowerCase()
-        .replace(/\s+/g, ' ') // colapsa espacios
-        .trim();
     const input = event.target as HTMLInputElement;
-    const search = input.value.toLowerCase();
-    const q = normalize(search);
-    if (!q) {
-      this.filteredCustomers = this.customers.slice();
-    } else {
-      const tokens = q.split(' ');
-      this.filteredCustomers = this.customers.filter((c: Customer) => {
-        const haystack = normalize(`${c.name ?? ''} ${c.surname ?? ''}`);
-        return tokens.every((t) => haystack.includes(t));
+    this.searchTerm = input.value;
+    this.applyFilters();
+  }
+
+  private applyFilters(): void {
+    let filteredCustomers = [...this.customers];
+
+    if (this.activeFilter === 'activos') {
+      filteredCustomers = filteredCustomers.filter(
+        (customer) => customer.active === true,
+      );
+    } else if (this.activeFilter === 'baja') {
+      filteredCustomers = filteredCustomers.filter(
+        (customer) => customer.active === false,
+      );
+    }
+
+    if (this.typePersonFilter === 'fisica') {
+      filteredCustomers = filteredCustomers.filter(
+        (customer) => customer.id_type === 1,
+      );
+    } else if (this.typePersonFilter === 'juridica') {
+      filteredCustomers = filteredCustomers.filter(
+        (customer) => customer.id_type === 2,
+      );
+    }
+
+    if (this.taxConditionFilter !== 'todos') {
+      filteredCustomers = filteredCustomers.filter(
+        (customer) => customer.id_tax_condition === this.taxConditionFilter,
+      );
+    }
+
+    const searchQuery = this.normalizeSearchText(this.searchTerm);
+    if (searchQuery) {
+      const tokens = searchQuery.split(' ');
+      filteredCustomers = filteredCustomers.filter((customer) => {
+        const haystack = this.normalizeSearchText(
+          `${customer.name ?? ''} ${customer.surname ?? ''}`,
+        );
+
+        return tokens.every((token) => haystack.includes(token));
       });
     }
 
+    this.filteredCustomers = filteredCustomers;
     this.totalItems = this.filteredCustomers.length;
     this.page = 1; // opcional, volver a la primera página
     this.updatePage(this.order);
+  }
+
+  private normalizeSearchText(value = ''): string {
+    return value
+      .normalize('NFD') // separa acentos
+      .replace(/[\u0300-\u036f]/g, '') // quita acentos
+      .toLowerCase()
+      .replace(/\s+/g, ' ') // colapsa espacios
+      .trim();
+  }
+
+  onExportCsv(): void {
+    const customersToExport = this.getSortedFilteredCustomers(this.order);
+
+    if (customersToExport.length === 0) return;
+
+    const headers = [
+      'Nro',
+      'Nombre/Razon Social',
+      'Tipo Persona',
+      'CUIT',
+      'Clave Fiscal',
+      'Banco',
+      'Telefono',
+      'Email',
+      'Condicion Fiscal',
+      'Provincia',
+      'Ciudad',
+      'Direccion',
+      'Estado',
+      'Fecha Alta',
+      'Fecha Baja',
+      'Observaciones',
+    ];
+
+    const rows = customersToExport.map((customer, index) => [
+      index + 1,
+      customer.id_type === 1
+        ? `${customer.surname}, ${customer.name}`
+        : customer.surname,
+      customer.type_person,
+      customer.cuit,
+      customer.tax_key,
+      customer.bank,
+      customer.phone,
+      customer.email,
+      customer.tax_condition,
+      customer.province,
+      customer.city,
+      customer.address,
+      customer.active ? 'Activo' : 'Baja',
+      customer.created_at,
+      customer.deactivated_at ?? '',
+      customer.observations ?? '',
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map((row) => row.map((value) => this.formatCsvValue(value)).join(';'))
+      .join('\r\n');
+
+    const blob = new Blob([`\uFEFF${csvContent}`], {
+      type: 'text/csv;charset=utf-8;',
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const date = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+    link.download = `clientes-filtrados-${date}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
+  private getSortedFilteredCustomers(order: 'ultimo' | 'abc'): Customer[] {
+    if (order === 'abc') {
+      return [...this.filteredCustomers].sort((firstCustomer, secondCustomer) =>
+        firstCustomer.surname.localeCompare(secondCustomer.surname),
+      );
+    }
+
+    return [...this.filteredCustomers].sort(
+      (firstCustomer, secondCustomer) =>
+        new Date(secondCustomer.created_at).getTime() -
+        new Date(firstCustomer.created_at).getTime(),
+    );
+  }
+
+  private formatCsvValue(value: unknown): string {
+    if (value === null || value === undefined) return '';
+
+    const text = String(value).replace(/"/g, '""');
+
+    if (/[";\r\n]/.test(text)) return `"${text}"`;
+
+    return text;
   }
 
   trackById = (_: number, c: Customer) => c.id;
@@ -220,9 +336,7 @@ export class CustomersComponent {
           customersClone[idx] = updatedWithFlag;
           this.customers = customersClone;
         }
-        // reemplazo inmutable en customers
-        this.filteredCustomers = this.customers;
-        this.updatePage(this.order);
+        this.applyFilters();
       })
       .catch((res) => {
         //console.log(`Dismissed ${this.getDismissReason(res)}`);
