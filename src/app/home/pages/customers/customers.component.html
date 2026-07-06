@@ -45,96 +45,180 @@
                   </button>
                 </div>
                 <!-- * Search and Filter Section -->
-                <div class="row align-items-center gx-3">
-                  <div class="col-12">
-                    <input
-                      type="text"
-                      class="form-control mt-1"
-                      style="max-width: 500px"
-                      placeholder="Buscar Cliente por Nombre y Apellido"
-                      (input)="onSearch($event)"
-                    />
-                  </div>
-                  <div class="col-12 col-md-6 my-2">
-                    <div class="d-flex flex-wrap align-items-center">
-                      <label class="form-label me-2 fw-semibold"
-                        >Ordenar por:</label
+                <div class="mt-3">
+                  <div class="row g-3 mb-3">
+                    <div class="col-12 col-lg-6">
+                      <label
+                        class="form-label fw-semibold"
+                        for="customerSearch"
                       >
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="sort"
-                          id="filterUltimo"
-                          value="ultimo"
-                          checked
-                          (change)="onSortChange($event)"
-                        />
-                        <label class="form-check-label" for="filterUltimo"
-                          >Más reciente</label
+                        Buscar cliente
+                      </label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="customerSearch"
+                        placeholder="Nombre o apellido"
+                        (input)="onSearch($event)"
+                      />
+                    </div>
+
+                    <div class="col-12 col-lg-6">
+                      <label
+                        class="form-label fw-semibold"
+                        for="taxConditionFilter"
+                      >
+                        Condición fiscal
+                      </label>
+                      <select
+                        class="form-select"
+                        id="taxConditionFilter"
+                        (change)="onTaxConditionFilterChange($event)"
+                      >
+                        <option value="todos" selected>Todas</option>
+                        <option
+                          *ngFor="let taxCondition of taxConditions"
+                          [value]="taxCondition.id"
                         >
-                      </div>
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="sort"
-                          id="filterAbc"
-                          value="abc"
-                          (change)="onSortChange($event)"
-                        />
-                        <label class="form-check-label" for="filterAbc"
-                          >Alfabeto</label
-                        >
-                      </div>
+                          {{ taxCondition.description }}
+                        </option>
+                      </select>
                     </div>
                   </div>
-                  <div class="col-12 col-md-6 my-2">
-                    <div class="d-flex flex-wrap align-items-center">
-                      <label class="form-label me-2 fw-semibold"
-                        >Filtrar por estado:</label
+
+                  <div class="row g-3">
+                    <div class="col-12 col-lg-6">
+                      <span class="form-label fw-semibold d-block mb-2"
+                        >Ordenar por</span
                       >
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="filter"
-                          id="filterTodos"
-                          value="todos"
-                          (change)="onFilterChange('todos')"
-                        />
-                        <label class="form-check-label" for="filterTodos"
-                          >Todos</label
-                        >
+                      <div class="d-flex flex-wrap gap-2 gap-md-3">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="sort"
+                            id="filterUltimo"
+                            value="ultimo"
+                            checked
+                            (change)="onSortChange($event)"
+                          />
+                          <label class="form-check-label" for="filterUltimo"
+                            >Más reciente</label
+                          >
+                        </div>
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="sort"
+                            id="filterAbc"
+                            value="abc"
+                            (change)="onSortChange($event)"
+                          />
+                          <label class="form-check-label" for="filterAbc"
+                            >Alfabeto</label
+                          >
+                        </div>
                       </div>
+                    </div>
 
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="filter"
-                          id="filterActivos"
-                          value="activos"
-                          checked
-                          (change)="onFilterChange('activos')"
-                        />
-                        <label class="form-check-label" for="filterActivos"
-                          >Activos</label
-                        >
+                    <div class="col-12 col-lg-6">
+                      <span class="form-label fw-semibold d-block mb-2"
+                        >Estado</span
+                      >
+                      <div class="d-flex flex-wrap gap-2 gap-md-3">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="filter"
+                            id="filterTodos"
+                            value="todos"
+                            (change)="onFilterChange('todos')"
+                          />
+                          <label class="form-check-label" for="filterTodos"
+                            >Todos</label
+                          >
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="filter"
+                            id="filterActivos"
+                            value="activos"
+                            checked
+                            (change)="onFilterChange('activos')"
+                          />
+                          <label class="form-check-label" for="filterActivos"
+                            >Activos</label
+                          >
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="filter"
+                            id="filterBaja"
+                            value="baja"
+                            (change)="onFilterChange('baja')"
+                          />
+                          <label class="form-check-label" for="filterBaja"
+                            >Dados de baja</label
+                          >
+                        </div>
                       </div>
+                    </div>
 
-                      <div class="form-check form-check-inline">
-                        <input
-                          class="form-check-input"
-                          type="radio"
-                          name="filter"
-                          id="filterBaja"
-                          value="baja"
-                          (change)="onFilterChange('baja')"
-                        />
-                        <label class="form-check-label" for="filterBaja"
-                          >Dados de baja</label
-                        >
+                    <div class="col-12 col-lg-6">
+                      <span class="form-label fw-semibold d-block mb-2"
+                        >Tipo de persona</span
+                      >
+                      <div class="d-flex flex-wrap gap-2 gap-md-3">
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="typeFilter"
+                            id="filterTipoTodos"
+                            value="todos"
+                            checked
+                            (change)="onTypePersonFilterChange('todos')"
+                          />
+                          <label class="form-check-label" for="filterTipoTodos"
+                            >Todos</label
+                          >
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="typeFilter"
+                            id="filterFisica"
+                            value="fisica"
+                            (change)="onTypePersonFilterChange('fisica')"
+                          />
+                          <label class="form-check-label" for="filterFisica"
+                            >Persona física</label
+                          >
+                        </div>
+
+                        <div class="form-check form-check-inline">
+                          <input
+                            class="form-check-input"
+                            type="radio"
+                            name="typeFilter"
+                            id="filterJuridica"
+                            value="juridica"
+                            (change)="onTypePersonFilterChange('juridica')"
+                          />
+                          <label class="form-check-label" for="filterJuridica"
+                            >Persona jurídica</label
+                          >
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -146,6 +230,22 @@
             <div class="rounded-3 shadow-sm bg-white p-3">
               <div class="row justify-content-between align-items-center">
                 <div class="table-container">
+                  <div
+                    class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mb-3"
+                  >
+                    <p class="mb-0 fw-semibold">
+                      Cant. Registros: {{ totalItems }}
+                    </p>
+                    <button
+                      type="button"
+                      class="btn btn-outline-success btn-sm"
+                      [disabled]="totalItems === 0"
+                      (click)="onExportCsv()"
+                    >
+                      <i class="bi bi-download"></i> Exportar CSV
+                    </button>
+                  </div>
+
                   <!-- MOBILE: Cards (xs) -->
                   <div class="d-block d-sm-none">
                     <div
