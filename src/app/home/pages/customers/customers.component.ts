@@ -13,7 +13,7 @@ import { CustomerModalComponent } from './customer-modal/customer-modal.componen
 
 type ActiveFilter = 'todos' | 'activos' | 'baja';
 type TypePersonFilter = 'todos' | 'fisica' | 'juridica';
-type TaxConditionFilter = number | 'todos';
+type TaxConditionFilter = number | 'todos' | 'desconocido';
 
 @Component({
   selector: 'app-customers',
@@ -136,7 +136,9 @@ export class CustomersComponent {
   onTaxConditionFilterChange(event: Event) {
     const input = event.target as HTMLSelectElement;
     this.taxConditionFilter =
-      input.value === 'todos' ? 'todos' : Number(input.value);
+      input.value === 'todos' || input.value === 'desconocido'
+        ? input.value
+        : Number(input.value);
     this.applyFilters();
   }
 
@@ -169,7 +171,11 @@ export class CustomersComponent {
       );
     }
 
-    if (this.taxConditionFilter !== 'todos') {
+    if (this.taxConditionFilter === 'desconocido') {
+      filteredCustomers = filteredCustomers.filter(
+        (customer) => customer.tax_condition === 'Desconocido',
+      );
+    } else if (this.taxConditionFilter !== 'todos') {
       filteredCustomers = filteredCustomers.filter(
         (customer) => customer.id_tax_condition === this.taxConditionFilter,
       );

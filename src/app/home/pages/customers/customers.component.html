@@ -76,6 +76,7 @@
                         (change)="onTaxConditionFilterChange($event)"
                       >
                         <option value="todos" selected>Todas</option>
+                        <option value="desconocido">Desconocido</option>
                         <option
                           *ngFor="let taxCondition of taxConditions"
                           [value]="taxCondition.id"
