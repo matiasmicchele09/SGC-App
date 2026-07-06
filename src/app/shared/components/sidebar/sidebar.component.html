@@ -1,17 +1,38 @@
 <!-- Desktop / Tablet Sidebar (visible sm and up) -->
 <div
-  class="p-0 col-auto bg-sidebar d-none d-sm-block"
-  style="width: 170px; height: 100vh"
+  class="sidebar-desktop p-0 bg-sidebar d-none d-sm-block"
+  [class.sidebar-collapsed]="isCollapsed"
 >
-  <div
-    class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white"
+  <button
+    type="button"
+    class="sidebar-toggle btn btn-sm text-white"
+    (click)="toggleSidebar()"
+    [attr.aria-label]="isCollapsed ? 'Expandir sidebar' : 'Colapsar sidebar'"
+    [attr.aria-expanded]="!isCollapsed"
   >
-    <span *ngIf="user?.name" class="text-sidebar text-center text-sm-start">{{
-      user?.name
-    }}</span>
-    <span class="text-sidebar text-center text-sm-start">{{
-      user?.surname
-    }}</span>
+    <i
+      class="bi"
+      [class.bi-chevron-right]="isCollapsed"
+      [class.bi-chevron-left]="!isCollapsed"
+    ></i>
+  </button>
+
+  <div
+    class="sidebar-content d-flex flex-column align-items-center align-items-sm-start px-3 pt-3 w-100 h-100 text-white"
+    [class.align-items-sm-center]="isCollapsed"
+  >
+    <ng-container *ngIf="user as currentUser">
+      <span
+        *ngIf="currentUser.name && !isCollapsed"
+        class="text-sidebar text-center text-sm-start"
+        >{{ currentUser.name }}</span
+      >
+      <span
+        *ngIf="!isCollapsed"
+        class="text-sidebar text-center text-sm-start"
+        >{{ currentUser.surname }}</span
+      >
+    </ng-container>
     <hr class="text-white w-100" />
     <ul class="nav nav-pills flex-column w-100 mb-auto">
       <li>
@@ -20,9 +41,12 @@
           [routerLink]="['/home/dashboard']"
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
+          data-sidebar-label="Dashboard"
+          [attr.title]="isCollapsed ? 'Dashboard' : null"
+          [attr.aria-label]="isCollapsed ? 'Dashboard' : null"
         >
           <i class="bi bi-speedometer2"></i>
-          <span class="d-none d-sm-inline">Dashboard</span>
+          <span *ngIf="!isCollapsed" class="d-none d-sm-inline">Dashboard</span>
         </a>
       </li>
       <li>
@@ -30,9 +54,12 @@
           class="nav-link text-white d-flex align-items-center gap-2"
           [routerLink]="['/home/customers']"
           routerLinkActive="active"
+          data-sidebar-label="Clientes"
+          [attr.title]="isCollapsed ? 'Clientes' : null"
+          [attr.aria-label]="isCollapsed ? 'Clientes' : null"
         >
           <i class="bi bi-people"></i>
-          <span class="d-none d-sm-inline">Clientes</span>
+          <span *ngIf="!isCollapsed" class="d-none d-sm-inline">Clientes</span>
         </a>
       </li>
       <li hidden="true">
@@ -40,9 +67,14 @@
           class="nav-link text-white d-flex align-items-center gap-2"
           [routerLink]="['/home/actividades']"
           routerLinkActive="active"
+          data-sidebar-label="Actividades"
+          [attr.title]="isCollapsed ? 'Actividades' : null"
+          [attr.aria-label]="isCollapsed ? 'Actividades' : null"
         >
           <i class="bi bi-activity"></i>
-          <span class="d-none d-sm-inline">Actividades</span>
+          <span *ngIf="!isCollapsed" class="d-none d-sm-inline"
+            >Actividades</span
+          >
         </a>
       </li>
       <li>
@@ -50,9 +82,14 @@
           class="nav-link text-white d-flex align-items-center gap-2"
           [routerLink]="['/home/fees']"
           routerLinkActive="active"
+          data-sidebar-label="Honorarios"
+          [attr.title]="isCollapsed ? 'Honorarios' : null"
+          [attr.aria-label]="isCollapsed ? 'Honorarios' : null"
         >
           <i class="bi bi-coin"></i>
-          <span class="d-none d-sm-inline">Honorarios</span>
+          <span *ngIf="!isCollapsed" class="d-none d-sm-inline"
+            >Honorarios</span
+          >
         </a>
       </li>
     </ul>
@@ -67,9 +104,12 @@
             class="nav-link text-white d-flex align-items-center gap-2"
             [routerLink]="['/home/my-profile']"
             routerLinkActive="active"
+            data-sidebar-label="Perfil"
+            [attr.title]="isCollapsed ? 'Perfil' : null"
+            [attr.aria-label]="isCollapsed ? 'Perfil' : null"
           >
             <i class="bi bi-person-circle"></i
-            ><span class="d-none d-sm-inline">Perfil</span>
+            ><span *ngIf="!isCollapsed" class="d-none d-sm-inline">Perfil</span>
           </a>
         </li>
         <hr class="text-white w-100" />
@@ -79,9 +119,12 @@
             href="#"
             routerLinkActive="active"
             (click)="onLogout()"
+            data-sidebar-label="Salir"
+            [attr.title]="isCollapsed ? 'Salir' : null"
+            [attr.aria-label]="isCollapsed ? 'Salir' : null"
           >
             <i class="bi bi-box-arrow-left"></i
-            ><span class="d-none d-sm-inline">Salir</span>
+            ><span *ngIf="!isCollapsed" class="d-none d-sm-inline">Salir</span>
           </a>
         </li>
       </ul>
@@ -123,8 +166,8 @@
   </div>
   <div class="offcanvas-body">
     <div class="d-flex flex-column">
-      <span *ngIf="user?.name" class="text-sidebar mb-1"
-        >{{ user?.name }} {{ user?.surname }}</span
+      <span *ngIf="user as currentUser" class="text-sidebar mb-1"
+        >{{ currentUser.name }} {{ currentUser.surname }}</span
       >
       <hr class="text-white w-100" />
       <ul class="nav nav-pills flex-column w-100 mb-auto">

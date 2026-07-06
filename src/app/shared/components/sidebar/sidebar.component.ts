@@ -12,8 +12,12 @@ import { AuthService } from 'src/app/auth/services/auth.service';
 export class SidebarComponent {
   public logOut: boolean = false;
   public user: User | null = null;
+  public isCollapsed: boolean = false;
   //user$ = this.authService.user$;
-  constructor(private authService: AuthService, private router: Router) {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {
     this.authService
       .getUser(this.authService.user!.id_user)
       .subscribe((user) => {
@@ -29,5 +33,9 @@ export class SidebarComponent {
     // setTimeout(() => {
     //   this.router.navigate(['/auth/login']);
     // }, 1500);
+  }
+
+  toggleSidebar() {
+    this.isCollapsed = !this.isCollapsed;
   }
 }
