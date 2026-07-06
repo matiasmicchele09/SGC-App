@@ -1,0 +1,9 @@
+.layout-shell {
+  flex-direction: row;
+}
+
+@media (max-width: 575.98px) {
+  .layout-shell {
+    flex-direction: column;
+  }
+}
